@@ -1,0 +1,48 @@
+/* Quiet luxury — warm ivory editorial palette */
+:root {
+  /* Foundations */
+  --maison-ivory: #f7f4ef;
+  --maison-warm-white: #fbf9f6;
+  --maison-beige: #ede8df;
+  --maison-champagne: #e8dfd0;
+  --maison-surface: #f2ede6;
+  --maison-surface-soft: #faf8f5;
+
+  /* Typography */
+  --maison-charcoal: #3a3834;
+  --maison-gray: #6e6a63;
+  --maison-mist: #9a958c;
+  --maison-whisper: rgba(58, 56, 52, 0.45);
+
+  /* Accents */
+  --maison-gold: #b8a078;
+  --maison-gold-muted: rgba(184, 160, 120, 0.35);
+  --maison-gold-soft: rgba(196, 176, 138, 0.18);
+
+  /* Lines & overlays */
+  --maison-hairline: rgba(58, 56, 52, 0.1);
+  --maison-hairline-strong: rgba(58, 56, 52, 0.16);
+  --maison-overlay-light: rgba(251, 249, 246, 0.72);
+  --maison-overlay-warm: rgba(247, 244, 239, 0.55);
+
+  /* Hero campaign — near-solid warm ivory (Givenchy-level legibility) */
+  --hero-text-ivory: #fbf9f6;
+  --hero-text-champagne: #f3ede4;
+
+  /* Legacy aliases — mapped to quiet luxury */
+  --maison-black: var(--maison-ivory);
+  --maison-ink: var(--maison-beige);
+  --maison-stone: var(--maison-champagne);
+  --maison-white: var(--maison-charcoal);
+
+  --header-height: 80px;
+  --header-height-mobile: 72px;
+  --container-max: 1440px;
+  --section-py: clamp(5rem, 12vw, 9rem);
+  --section-px: clamp(1.5rem, 4vw, 3.5rem);
+
+  --ease-maison: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-cinematic: cubic-bezier(0.76, 0, 0.24, 1);
+  --duration-base: 700ms;
+  --duration-slow: 1100ms;
+}

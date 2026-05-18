@@ -1,26 +1,254 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/typography.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--maison-ivory);
+  --foreground: var(--maison-charcoal);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ivory: var(--maison-ivory);
+  --color-warm-white: var(--maison-warm-white);
+  --color-beige: var(--maison-beige);
+  --color-champagne: var(--maison-champagne);
+  --color-charcoal: var(--maison-charcoal);
+  --color-maison-gray: var(--maison-gray);
+  --color-maison-mist: var(--maison-mist);
+  --color-maison-gold: var(--maison-gold);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--maison-ivory);
+  color: var(--maison-charcoal);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--maison-gold-soft);
+  color: var(--maison-charcoal);
+}
+
+/* Hero campaign reveal — compositor-friendly */
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal {
+  animation: hero-reveal 0.9s var(--ease-maison) both;
+  animation-delay: 0.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    animation: none;
+  }
+}
+
+/* Contain paint for main sections */
+main > section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 80vh;
+}
+
+/* Prefer compositor-friendly transitions */
+a,
+button {
+  transition-property: color, border-color, opacity, background-color;
+  transition-duration: 0.3s;
+  transition-timing-function: var(--ease-maison);
+}
+
+/* Hero campaign overlay — unified chrome typography, hero colors only */
+.hero-campaign-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--maison-chrome-size);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  color: var(--hero-text-ivory);
+  width: 100%;
+  text-align: center;
+}
+
+/* Symmetric CTA row — divider locked to the center axis, links mirror outward */
+.hero-campaign-cta {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.hero-campaign-link--start {
+  grid-column: 1;
+  justify-self: end;
+  padding-inline-end: 1.5rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.hero-campaign-link--end {
+  grid-column: 3;
+  justify-self: start;
+  padding-inline-start: 1.5rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+@media (max-width: 639px) {
+  .hero-campaign-cta {
+    grid-template-columns: 1fr;
+    row-gap: 0.5rem;
+    justify-items: center;
+  }
+
+  .hero-campaign-link--start,
+  .hero-campaign-link--end {
+    justify-self: center;
+    padding-inline: 0;
+    text-align: center;
+  }
+
+  .hero-campaign-divider {
+    display: none;
+  }
+}
+
+.hero-campaign-link {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--maison-chrome-size);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  color: var(--hero-text-ivory);
+  transition: color 0.4s var(--ease-maison);
+}
+
+.hero-campaign-link:hover {
+  color: #fdfcf9;
+}
+
+.hero-campaign-divider {
+  grid-column: 2;
+  justify-self: center;
+  align-self: center;
+  display: block;
+  width: 1px;
+  height: var(--maison-chrome-size);
+  background-color: var(--hero-text-champagne);
+  opacity: 0.42;
+}
+
+/* Navbar — locked typography; only CSS variables change between states */
+.site-header {
+  --navbar-nav-color: var(--maison-gray);
+  --navbar-nav-hover: var(--maison-charcoal);
+  --navbar-brand-color: var(--maison-charcoal);
+  --navbar-brand-hover: var(--maison-charcoal);
+  --navbar-icon-color: var(--maison-gray);
+  --navbar-icon-hover: var(--maison-charcoal);
+}
+
+.site-header[data-over-hero] {
+  --navbar-nav-color: var(--hero-text-ivory);
+  --navbar-nav-hover: #fdfcf9;
+  --navbar-brand-color: var(--hero-text-ivory);
+  --navbar-brand-hover: #fdfcf9;
+  --navbar-icon-color: var(--hero-text-ivory);
+  --navbar-icon-hover: #fdfcf9;
+}
+
+.navbar-nav-link,
+.navbar-brand-link {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--maison-chrome-size);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  transition-property: color;
+  transition-duration: 500ms;
+  transition-timing-function: var(--ease-maison);
+}
+
+.navbar-nav-link {
+  color: var(--navbar-nav-color);
+}
+
+.navbar-nav-link:hover {
+  color: var(--navbar-nav-hover);
+}
+
+.site-header:not([data-over-hero]) .navbar-nav-link--active {
+  color: var(--maison-charcoal);
+}
+
+.navbar-brand-link {
+  color: var(--navbar-brand-color);
+}
+
+.navbar-brand-link:hover {
+  color: var(--navbar-brand-hover);
+}
+
+.navbar-icon-btn {
+  color: var(--navbar-icon-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  transition-property: color;
+  transition-duration: 500ms;
+  transition-timing-function: var(--ease-maison);
+}
+
+.navbar-icon-btn:hover {
+  color: var(--navbar-icon-hover);
 }

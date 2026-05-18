@@ -1,0 +1,140 @@
+/* Admin CMS — quiet luxury, isolated from storefront */
+
+.admin-shell {
+  min-height: 100dvh;
+  background: var(--maison-ivory);
+  color: var(--maison-charcoal);
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--maison-mist);
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--maison-hairline);
+  background: transparent;
+  padding: 0.625rem 0;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 0.875rem;
+  color: var(--maison-charcoal);
+  outline: none;
+  transition: border-color 0.5s var(--ease-maison);
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  border-color: var(--maison-charcoal);
+}
+
+.admin-textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.admin-panel {
+  border: 1px solid var(--maison-hairline);
+  background: var(--maison-warm-white);
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .admin-panel {
+    padding: 2rem;
+  }
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--maison-hairline-strong);
+  background: transparent;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 0.8125rem;
+  color: var(--maison-charcoal);
+  transition:
+    border-color 0.5s var(--ease-maison),
+    opacity 0.5s var(--ease-maison);
+}
+
+.admin-btn:hover {
+  border-color: var(--maison-gold);
+}
+
+.admin-btn--solid {
+  border-color: var(--maison-charcoal);
+  background: var(--maison-charcoal);
+  color: var(--maison-warm-white);
+}
+
+.admin-btn--solid:hover {
+  border-color: var(--maison-gray);
+  background: var(--maison-gray);
+}
+
+.admin-btn--danger {
+  border-color: transparent;
+  color: var(--maison-mist);
+}
+
+.admin-btn--danger:hover {
+  color: var(--maison-charcoal);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.admin-table th {
+  border-bottom: 1px solid var(--maison-hairline);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  color: var(--maison-mist);
+}
+
+.admin-table td {
+  border-bottom: 1px solid var(--maison-hairline);
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-sortable-item {
+  cursor: grab;
+  touch-action: none;
+}
+
+.admin-sortable-item:active {
+  cursor: grabbing;
+}
+
+.admin-sortable-item[data-dragging="true"] {
+  opacity: 0.45;
+}

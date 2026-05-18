@@ -1,0 +1,16 @@
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from "./env";
+
+/**
+ * Service-role client for dashboard mutations and admin scripts.
+ * Never import in Client Components or expose to the browser.
+ */
+export function createSupabaseAdminClient() {
+  return createClient<Database>(getSupabaseUrl(), getSupabaseServiceRoleKey(), {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}

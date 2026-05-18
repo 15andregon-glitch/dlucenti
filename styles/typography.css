@@ -1,0 +1,186 @@
+/* Quiet luxury typography — Loewe / Toteme / Loro Piana direction */
+
+/* ─── Font families ─── */
+.font-serif,
+.font-display {
+  font-family: var(--font-serif), "Source Serif 4", Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* ─── Scale tokens ─── */
+:root {
+  --type-display: clamp(2.5rem, 5.5vw, 4.25rem);
+  --type-h1: clamp(2.125rem, 4.5vw, 3.25rem);
+  --type-h2: clamp(1.75rem, 3vw, 2.375rem);
+  --type-h3: clamp(1.25rem, 2vw, 1.5rem);
+  --type-body: clamp(0.9375rem, 1.1vw, 1rem);
+  --type-small: 0.8125rem;
+  --type-caption: 0.75rem;
+
+  --leading-tight: 1.12;
+  --leading-snug: 1.35;
+  --leading-body: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-label: 0.08em;
+
+  /* Navbar + hero campaign — unified chrome scale */
+  --maison-chrome-size: 0.875rem;
+}
+
+/* ─── Eyebrow / label (sans, understated) ─── */
+.text-maison-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--type-caption);
+  font-weight: 400;
+  letter-spacing: var(--tracking-label);
+  text-transform: none;
+  color: var(--maison-mist);
+}
+
+/* ─── Unified chrome typography (navbar, hero campaign, logo) ─── */
+.maison-chrome-text,
+.text-maison-nav {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--maison-chrome-size);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+.text-maison-nav {
+  color: var(--maison-gray);
+}
+
+/* ─── Display & headlines (serif, intentional weight) ─── */
+.text-maison-headline {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--type-h1);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--maison-charcoal);
+}
+
+.text-maison-display {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--type-display);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--maison-charcoal);
+}
+
+.text-maison-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  font-size: var(--type-h3);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  color: var(--maison-charcoal);
+}
+
+/* ─── Body copy (sans, readable) ─── */
+.text-maison-body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-weight: 300;
+  font-size: var(--type-body);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-body);
+  color: var(--maison-gray);
+}
+
+.text-maison-body-sm {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-weight: 300;
+  font-size: var(--type-small);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-body);
+  color: var(--maison-gray);
+}
+
+/* ─── Semantic colors ─── */
+.text-maison-primary {
+  color: var(--maison-charcoal);
+}
+
+.text-maison-secondary {
+  color: var(--maison-gray);
+}
+
+.text-maison-muted {
+  color: var(--maison-mist);
+}
+
+.text-maison-accent {
+  color: var(--maison-gold);
+}
+
+.text-maison-italic-soft {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--maison-gray);
+}
+
+/* ─── UI helpers ─── */
+.text-maison-link {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--type-small);
+  font-weight: 400;
+  color: var(--maison-gray);
+  transition: color 0.4s var(--ease-maison);
+}
+
+.text-maison-link:hover {
+  color: var(--maison-charcoal);
+}
+
+.text-maison-price {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--type-small);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  color: var(--maison-charcoal);
+}
+
+.text-maison-brand {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  font-weight: 400;
+  letter-spacing: var(--tracking-tight);
+  color: var(--maison-charcoal);
+}
+
+.text-maison-brand-sub {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: var(--type-caption);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  color: var(--maison-mist);
+}
+
+.bg-maison-ivory {
+  background-color: var(--maison-ivory);
+}
+
+.bg-maison-beige {
+  background-color: var(--maison-beige);
+}
+
+.bg-maison-surface {
+  background-color: var(--maison-surface);
+}
+
+.border-maison-hairline {
+  border-color: var(--maison-hairline);
+}

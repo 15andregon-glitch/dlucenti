@@ -1,0 +1,90 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import type { Product } from "@/lib/types";
+import { ROUTES } from "@/lib/routes";
+import { useCartStore } from "@/store/cart";
+import { cn } from "@/lib/cn";
+
+interface NewInProductCardProps {
+  product: Product;
+  className?: string;
+}
+
+const META_HEIGHT = "h-[3.375rem] md:h-[3.5rem]";
+
+const quickAddLabel =
+  "font-sans text-[0.6875rem] font-normal tracking-[var(--tracking-label)] text-[var(--hero-text-champagne)] drop-shadow-[0_1px_14px_rgba(42,40,36,0.22)] transition-opacity duration-500 ease-[var(--ease-maison)]";
+
+export function NewInProductCard({ product, className }: NewInProductCardProps) {
+  const imageSrc = product.images[0];
+  const addItem = useCartStore((s) => s.addItem);
+  const setOpen = useCartStore((s) => s.setOpen);
+
+  const handleQuickAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product, 1);
+    setOpen(true);
+  };
+
+  return (
+    <article className={cn("group flex h-full min-h-0 flex-col", className)}>
+      <div className="relative aspect-[3/4] w-full shrink-0 overflow-hidden bg-[var(--maison-warm-white)]">
+        <Link
+          href={ROUTES.product(product.slug)}
+          className="absolute inset-0 z-0"
+          aria-label={`View ${product.name}`}
+        >
+          <span
+            className="pointer-events-none absolute right-4 top-4 z-[1] font-sans text-[0.6875rem] font-normal tracking-[var(--tracking-label)] text-[var(--hero-text-champagne)] drop-shadow-[0_1px_14px_rgba(42,40,36,0.22)]"
+            aria-hidden
+          >
+            New In
+          </span>
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt=""
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              quality={90}
+              className="object-cover object-center transition-[transform,opacity] duration-[800ms] ease-[var(--ease-maison)] group-hover:scale-[1.02] group-hover:opacity-[0.96] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-hover:opacity-100"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-[var(--maison-surface-soft)]" aria-hidden />
+          )}
+        </Link>
+
+        <button
+          type="button"
+          onClick={handleQuickAdd}
+          aria-label={`Add ${product.name} to bag`}
+          className={cn(
+            "absolute inset-x-0 bottom-0 z-10 flex min-h-[3rem] items-end justify-center pb-4",
+            "transition-[opacity,transform] duration-500 ease-[var(--ease-maison)] motion-reduce:transition-none",
+            "opacity-75 md:translate-y-0.5 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+            "active:opacity-100 md:hover:[&_span]:opacity-70",
+          )}
+        >
+          <span className={quickAddLabel}>Add to bag</span>
+        </button>
+      </div>
+
+      <Link
+        href={ROUTES.product(product.slug)}
+        className="mt-5 flex flex-col justify-between md:mt-6"
+      >
+        <div className={cn(META_HEIGHT)}>
+          <h3 className="line-clamp-2 min-h-[2.53125rem] font-sans text-[0.9375rem] font-normal leading-[1.35] tracking-[var(--tracking-normal)] text-[var(--maison-charcoal)] transition-colors duration-500 ease-[var(--ease-maison)] group-hover:text-[var(--maison-gray)]">
+            {product.name}
+          </h3>
+          <p className="font-sans text-[0.8125rem] font-normal tabular-nums leading-none tracking-[var(--tracking-normal)] text-[var(--maison-gray)]">
+            {product.price.toLocaleString("fr-FR")} {product.currency}
+          </p>
+        </div>
+      </Link>
+    </article>
+  );
+}
