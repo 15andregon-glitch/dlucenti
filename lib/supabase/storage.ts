@@ -31,6 +31,13 @@ export function collectionCoverPath(collectionId: string, filename: string): str
   return `${collectionId}/${filename}`;
 }
 
+export function collectionCampaignVideoPath(
+  collectionId: string,
+  filename: string,
+): string {
+  return `${collectionId}/campaign/${filename}`;
+}
+
 export function heroVideoPath(filename: string): string {
   return filename;
 }

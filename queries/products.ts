@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { ProductCategory } from "@/lib/types/product";
+import type { Database, ProductTargetGender } from "@/types/database";
 
 export const PRODUCT_SELECT = `
   *,
@@ -14,6 +15,32 @@ export async function fetchActiveProducts(client: Client) {
     .from("products")
     .select(PRODUCT_SELECT)
     .eq("active", true)
+    .order("created_at", { ascending: false });
+}
+
+export async function fetchActiveProductsByTargetGenders(
+  client: Client,
+  genders: ProductTargetGender[],
+) {
+  return client
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .eq("active", true)
+    .in("target_gender", genders)
+    .order("created_at", { ascending: false });
+}
+
+export async function fetchActiveProductsByTargetGendersAndCategory(
+  client: Client,
+  genders: ProductTargetGender[],
+  category: ProductCategory,
+) {
+  return client
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .eq("active", true)
+    .in("target_gender", genders)
+    .eq("category", category)
     .order("created_at", { ascending: false });
 }
 

@@ -1,8 +1,7 @@
 export const SITE = {
-  name: "Maison Aurélie",
+  name: "D'LUCENTI",
   tagline: "Haute Joaillerie",
-  description:
-    "Cinematic fine jewelry composed with the restraint of couture — luminous, architectural, eternal.",
+  description: "Contemporary minimalism shaped by tradition.",
   locale: "en",
   currency: "EUR",
   heritage: "Paris · Since 1892",

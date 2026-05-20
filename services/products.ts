@@ -1,6 +1,16 @@
 import { products } from "@/lib/data/products";
 import type { Product, ProductCategory } from "@/lib/types";
+import type { ShopNavCategory } from "@/lib/shop-catalog";
+import {
+  targetGendersForAudience,
+  type ShopAudienceSegment,
+} from "@/lib/shop-audience";
 import { useSupabaseDataSource } from "./data-source";
+
+function filterByAudience(list: Product[], audience: ShopAudienceSegment): Product[] {
+  const allowed = new Set(targetGendersForAudience(audience));
+  return list.filter((p) => allowed.has(p.targetGender));
+}
 
 const NEW_IN_CATEGORY_ORDER: ProductCategory[] = [
   "necklaces",
@@ -20,12 +30,34 @@ async function fromSupabase<T>(
 }
 
 export async function getProducts(): Promise<Product[]> {
+  return getProductsByShopAudience("all");
+}
+
+export async function getProductsByShopAudience(
+  audience: ShopAudienceSegment,
+): Promise<Product[]> {
   return fromSupabase(
     async () => {
-      const { getProducts: get } = await import("./supabase/products");
-      return get();
+      const { getProductsByShopAudience: get } = await import("./supabase/products");
+      return get(audience);
     },
-    () => products,
+    () => filterByAudience(products, audience),
+  );
+}
+
+export async function getProductsByShopAudienceAndCategory(
+  audience: ShopAudienceSegment,
+  category: ShopNavCategory,
+): Promise<Product[]> {
+  return fromSupabase(
+    async () => {
+      const { getProductsByShopAudienceAndCategory: get } = await import(
+        "./supabase/products"
+      );
+      return get(audience, category);
+    },
+    () =>
+      filterByAudience(products, audience).filter((p) => p.category === category),
   );
 }
 

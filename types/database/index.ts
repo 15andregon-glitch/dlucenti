@@ -5,17 +5,28 @@ export type {
   TablesInsert,
   TablesUpdate,
   Enums,
+  ProductTargetGender,
 } from "./schema";
 
 export type {
   ProductRow,
   ProductImageRow,
   CollectionRow,
+  CollectionMediaRow,
+  CollectionBlockRow,
   HomepageSettingsRow,
   HomepageNewInRow,
   CampaignRow,
+  FooterSettingsRow,
+  FooterSocialLinkRow,
   AdminRow,
   ProductWithImages,
   ProductWithCollection,
   HomepageContentRaw,
+  ReportingPeriodRow,
+  FinancialCategoryRow,
+  FinancialEntryRow,
+  DRSnapshotRow,
+  OrderRow,
+  OrderItemRow,
 } from "./tables";

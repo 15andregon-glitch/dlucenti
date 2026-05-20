@@ -4,17 +4,17 @@ import { useId } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import {
-  SHOP_MEGA_MENU,
+  getShopNavCategories,
+  getShopNavItems,
+  shopMenuLabel,
   shopNavHref,
-  type ShopAudience,
+  shopNavPieceHref,
+  shopPieceMenuLabel,
   type ShopNavItem,
 } from "@/lib/shop-nav";
-import { ROUTES } from "@/lib/routes";
+import type { ShopNavCategory } from "@/lib/shop-catalog";
+import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
-
-function itemKey(audience: ShopAudience, item: ShopNavItem) {
-  return `${audience}-${item.category ?? "all"}`;
-}
 
 function MegaLink({
   href,
@@ -36,7 +36,7 @@ function MegaLink({
       className={cn(
         "inline-flex w-fit font-sans text-[var(--maison-chrome-size)] font-normal tracking-[var(--tracking-normal)] transition-opacity duration-500 ease-[var(--ease-maison)] hover:opacity-55 motion-reduce:transition-none",
         emphasized
-          ? "text-[var(--maison-gray)]"
+          ? "text-[var(--maison-charcoal)]"
           : "text-[var(--maison-mist)]",
         className,
       )}
@@ -46,31 +46,43 @@ function MegaLink({
   );
 }
 
-function ShopMenuColumn({
-  group,
+function ShopAudienceColumn({
+  audience,
   onNavigate,
+  className,
 }: {
-  group: (typeof SHOP_MEGA_MENU)[number];
+  audience: ShopNavItem;
   onNavigate?: () => void;
+  className?: string;
 }) {
+  const { messages, locale } = useTranslations();
+  const categories = getShopNavCategories();
+
   return (
-    <div className="min-w-[6.5rem] text-center md:min-w-[7.5rem] md:text-left">
-      <p className="mb-4 font-sans text-[0.9375rem] font-normal tracking-[var(--tracking-wide)] text-[var(--maison-charcoal)]">
-        {group.label}
-      </p>
-      <ul className="flex flex-col items-center gap-3 md:items-start" role="list">
-        {group.items.map((item) => (
-          <li key={itemKey(group.audience, item)}>
-            <MegaLink
-              href={shopNavHref(group.audience, item.category)}
-              label={item.label}
-              onNavigate={onNavigate}
-              emphasized={!item.category}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <nav
+      aria-label={shopMenuLabel(messages, audience.key)}
+      className={cn("flex flex-col", className)}
+    >
+      <MegaLink
+        href={shopNavHref(locale, audience.segment)}
+        label={shopMenuLabel(messages, audience.key)}
+        onNavigate={onNavigate}
+        emphasized
+      />
+      {audience.segment !== "all" ? (
+        <ul className="mt-4 flex flex-col gap-2.5 md:mt-5 md:gap-3" role="list">
+          {categories.map((category: ShopNavCategory) => (
+            <li key={`${audience.segment}-${category}`}>
+              <MegaLink
+                href={shopNavPieceHref(locale, audience.segment, category)}
+                label={shopPieceMenuLabel(messages, category)}
+                onNavigate={onNavigate}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </nav>
   );
 }
 
@@ -81,21 +93,22 @@ function ShopMenuColumns({
   onNavigate?: () => void;
   className?: string;
 }) {
+  const items = getShopNavItems();
+
   return (
     <div
       className={cn(
-        "grid grid-cols-2 gap-x-12 sm:gap-x-16 lg:gap-x-20",
+        "flex flex-col items-center gap-12 sm:gap-14",
+        "md:flex-row md:items-start md:justify-center md:gap-16 lg:gap-20 xl:gap-24",
         className,
       )}
     >
-      {SHOP_MEGA_MENU.map((group) => (
-        <ShopMenuColumn key={group.audience} group={group} onNavigate={onNavigate} />
+      {items.map((item) => (
+        <ShopAudienceColumn key={item.segment} audience={item} onNavigate={onNavigate} />
       ))}
     </div>
   );
 }
-
-/* ─── Desktop mega panel ─── */
 
 export function ShopMegaMenuDesktop({
   open,
@@ -110,7 +123,7 @@ export function ShopMegaMenuDesktop({
     <div
       id={panelId}
       role="region"
-      aria-label="Shop categories"
+      aria-label="Shop"
       aria-hidden={!open}
       className={cn(
         "absolute inset-x-0 top-full hidden border-t border-[var(--maison-hairline)] md:block",
@@ -122,14 +135,12 @@ export function ShopMegaMenuDesktop({
           : "pointer-events-none -translate-y-1 opacity-0",
       )}
     >
-      <div className="flex justify-center px-6 py-8 md:px-12 md:py-9 lg:py-10">
+      <div className="flex justify-center px-6 py-9 md:px-12 md:py-10 lg:py-11">
         <ShopMenuColumns onNavigate={onNavigate} />
       </div>
     </div>
   );
 }
-
-/* ─── Desktop trigger ─── */
 
 export function ShopNavTrigger({
   open,
@@ -140,9 +151,11 @@ export function ShopNavTrigger({
   panelId: string;
   active?: boolean;
 }) {
+  const { t, routes } = useTranslations();
+
   return (
     <Link
-      href={ROUTES.shop}
+      href={routes.shopAll}
       aria-haspopup="true"
       aria-expanded={open}
       aria-controls={panelId}
@@ -151,7 +164,7 @@ export function ShopNavTrigger({
         active && "navbar-nav-link--active",
       )}
     >
-      Shop
+      {t("nav.shop")}
       <span
         aria-hidden
         className={cn(
@@ -162,8 +175,6 @@ export function ShopNavTrigger({
     </Link>
   );
 }
-
-/* ─── Mobile accordion ─── */
 
 export function ShopMobileAccordion({
   expanded,
@@ -177,6 +188,7 @@ export function ShopMobileAccordion({
   index: number;
 }) {
   const panelId = useId();
+  const { t } = useTranslations();
 
   return (
     <li className="border-b border-[var(--maison-hairline)]">
@@ -188,7 +200,7 @@ export function ShopMobileAccordion({
         className="flex w-full items-baseline justify-between py-6 text-left"
       >
         <span className="font-serif text-[clamp(1.75rem,7vw,2.25rem)] font-normal leading-none tracking-tight text-[var(--maison-charcoal)]">
-          Shop
+          {t("nav.shop")}
         </span>
         <span className="flex items-center gap-4">
           <ChevronDown
@@ -213,8 +225,11 @@ export function ShopMobileAccordion({
         )}
       >
         <div className="overflow-hidden">
-          <div className="flex justify-center pb-8 pt-3">
-            <ShopMenuColumns onNavigate={onNavigate} />
+          <div className="flex justify-center pb-8 pt-2">
+            <ShopMenuColumns
+              onNavigate={onNavigate}
+              className="items-start gap-10 px-2 sm:gap-12"
+            />
           </div>
         </div>
       </div>

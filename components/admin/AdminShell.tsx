@@ -3,6 +3,7 @@ import { SITE } from "@/lib/constants";
 import { ADMIN_NAV, ADMIN_ROUTES } from "@/lib/admin/routes";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/cn";
+import { AdminSidebarFooter } from "@/components/admin/AdminSidebarFooter";
 
 interface AdminShellProps {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ export function AdminShell({
       <aside className="flex w-[15rem] shrink-0 flex-col border-r border-[var(--maison-hairline)] bg-[var(--maison-warm-white)] px-6 py-10">
         <Link
           href={ADMIN_ROUTES.home}
-          className="font-serif text-[1.125rem] tracking-tight text-[var(--maison-charcoal)]"
+          className="font-sans font-extralight text-[1.125rem] tracking-tight text-[var(--maison-charcoal)]"
         >
           {SITE.name}
         </Link>
@@ -44,7 +45,7 @@ export function AdminShell({
             </Link>
           ))}
         </nav>
-        <div className="mt-auto pt-10">
+        <div className="pt-10">
           <Link
             href={ROUTES.home}
             className="text-[0.75rem] text-[var(--maison-mist)] transition-opacity duration-500 hover:text-[var(--maison-charcoal)]"
@@ -52,12 +53,13 @@ export function AdminShell({
             ← View storefront
           </Link>
         </div>
+        <AdminSidebarFooter />
       </aside>
 
       <main className="min-w-0 flex-1 overflow-auto px-6 py-10 md:px-12 md:py-12">
         <header className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--maison-hairline)] pb-8">
           <div>
-            <h1 className="font-serif text-[1.75rem] font-normal tracking-tight text-[var(--maison-charcoal)]">
+            <h1 className="font-sans font-extralight text-[1.75rem] font-normal tracking-tight text-[var(--maison-charcoal)]">
               {title}
             </h1>
             {description && (

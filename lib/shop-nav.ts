@@ -1,53 +1,59 @@
-import { ROUTES } from "@/lib/routes";
+import type { Locale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/paths";
+import type { ShopNavCategory } from "@/lib/shop-catalog";
+import { SHOP_NAV_CATEGORIES } from "@/lib/shop-catalog";
+import type { ShopAudienceSegment } from "@/lib/shop-audience";
+import type { Messages } from "@/messages/en";
 
-export type ShopAudience = "women" | "men";
-
-export type ShopNavCategory =
-  | "necklaces"
-  | "bracelets"
-  | "earrings"
-  | "rings";
+export type ShopNavItemKey = ShopAudienceSegment;
 
 export interface ShopNavItem {
-  label: string;
-  category?: ShopNavCategory;
+  key: ShopNavItemKey;
+  segment: ShopAudienceSegment;
 }
 
-export interface ShopNavGroup {
-  label: string;
-  audience: ShopAudience;
-  items: readonly ShopNavItem[];
+export function getShopNavItems(): readonly ShopNavItem[] {
+  return [
+    { key: "women", segment: "women" },
+    { key: "men", segment: "men" },
+    { key: "all", segment: "all" },
+  ] as const;
 }
 
-export const SHOP_MEGA_MENU: readonly ShopNavGroup[] = [
-  {
-    label: "Women",
-    audience: "women",
-    items: [
-      { label: "View all" },
-      { label: "Necklaces", category: "necklaces" },
-      { label: "Bracelets", category: "bracelets" },
-      { label: "Earrings", category: "earrings" },
-      { label: "Rings", category: "rings" },
-    ],
-  },
-  {
-    label: "Men",
-    audience: "men",
-    items: [
-      { label: "View all" },
-      { label: "Necklaces", category: "necklaces" },
-      { label: "Bracelets", category: "bracelets" },
-      { label: "Rings", category: "rings" },
-    ],
-  },
-] as const;
+export function shopMenuLabel(messages: Messages, key: ShopNavItemKey): string {
+  return messages.shopMenu[key];
+}
 
-export function shopNavHref(
-  audience: ShopAudience,
-  category?: ShopNavCategory,
+export function shopNavHref(locale: Locale, segment: ShopAudienceSegment): string {
+  return localizedPath(locale, `/shop/${segment}`);
+}
+
+export function shopNavPieceHref(
+  locale: Locale,
+  audience: ShopAudienceSegment,
+  category: ShopNavCategory,
 ): string {
-  const params = new URLSearchParams({ audience });
-  if (category) params.set("category", category);
-  return `${ROUTES.shop}?${params.toString()}`;
+  return localizedPath(locale, `/shop/${audience}/${category}`);
 }
+
+export function getShopNavCategories(): readonly ShopNavCategory[] {
+  return SHOP_NAV_CATEGORIES;
+}
+
+export function shopPieceMenuLabel(
+  messages: Messages,
+  category: ShopNavCategory,
+): string {
+  return messages.shopMenu.pieces[category];
+}
+
+export function shopCatalogPageTitle(
+  messages: Messages,
+  audience: ShopAudienceSegment,
+  category: ShopNavCategory,
+): string {
+  return `${shopMenuLabel(messages, audience)} — ${shopPieceMenuLabel(messages, category)}`;
+}
+
+/** @deprecated Use getShopNavItems() */
+export const SHOP_MEGA_MENU = getShopNavItems();

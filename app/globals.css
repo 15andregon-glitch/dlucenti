@@ -197,8 +197,8 @@ button {
 .site-header[data-over-hero] {
   --navbar-nav-color: var(--hero-text-ivory);
   --navbar-nav-hover: #fdfcf9;
-  --navbar-brand-color: var(--hero-text-ivory);
-  --navbar-brand-hover: #fdfcf9;
+  --navbar-brand-color: #ffffff;
+  --navbar-brand-hover: rgba(255, 255, 255, 0.82);
   --navbar-icon-color: var(--hero-text-ivory);
   --navbar-icon-hover: #fdfcf9;
 }
@@ -239,6 +239,11 @@ button {
   color: var(--navbar-brand-hover);
 }
 
+.navbar-brand-link .brand-logo-svg,
+.navbar-brand-link:hover .brand-logo-svg {
+  color: inherit;
+}
+
 .navbar-icon-btn {
   color: var(--navbar-icon-color);
   -webkit-font-smoothing: antialiased;
@@ -251,4 +256,9 @@ button {
 
 .navbar-icon-btn:hover {
   color: var(--navbar-icon-hover);
+}
+
+/* Collections archive — ivory base; artwork via CollectionsArchiveAtmosphere */
+.collections-archive {
+  background-color: var(--maison-ivory);
 }

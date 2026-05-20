@@ -5,6 +5,8 @@ export type ProductCategory =
   | "bracelets"
   | "objects";
 
+export type ProductTargetGender = "women" | "men" | "unisex";
+
 export interface Product {
   id: string;
   slug: string;
@@ -14,6 +16,7 @@ export interface Product {
   price: number;
   currency: string;
   category: ProductCategory;
+  targetGender: ProductTargetGender;
   collectionSlug?: string;
   images: string[];
   materials?: string;

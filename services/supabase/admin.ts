@@ -2,8 +2,10 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { TablesInsert, TablesUpdate } from "@/types/database";
 import * as productMutations from "@/queries/mutations/products";
 import * as collectionMutations from "@/queries/mutations/collections";
+import * as collectionEditorialMutations from "@/queries/mutations/collection-editorial";
 import * as homepageMutations from "@/queries/mutations/homepage";
 import * as campaignMutations from "@/queries/mutations/campaigns";
+import * as footerMutations from "@/queries/mutations/footer";
 import * as storageMutations from "@/queries/mutations/storage";
 import type { StorageBucket } from "@/lib/supabase/storage";
 
@@ -31,6 +33,20 @@ export const adminCollections = {
   update: (id: string, row: TablesUpdate<"collections">) =>
     collectionMutations.updateCollection(admin(), id, row),
   remove: (id: string) => collectionMutations.deleteCollection(admin(), id),
+  reorder: (ordered: { id: string; display_order: number }[]) =>
+    collectionEditorialMutations.reorderCollections(admin(), ordered),
+  addMedia: (row: TablesInsert<"collection_media">) =>
+    collectionEditorialMutations.insertCollectionMedia(admin(), row),
+  removeMedia: (id: string) =>
+    collectionEditorialMutations.deleteCollectionMedia(admin(), id),
+  reorderMedia: (ordered: { id: string; position: number }[]) =>
+    collectionEditorialMutations.reorderCollectionMedia(admin(), ordered),
+  addBlock: (row: TablesInsert<"collection_blocks">) =>
+    collectionEditorialMutations.insertCollectionBlock(admin(), row),
+  removeBlock: (id: string) =>
+    collectionEditorialMutations.deleteCollectionBlock(admin(), id),
+  reorderBlocks: (ordered: { id: string; position: number }[]) =>
+    collectionEditorialMutations.reorderCollectionBlocks(admin(), ordered),
 };
 
 export const adminHomepage = {
@@ -49,6 +65,19 @@ export const adminCampaigns = {
   remove: (id: string) => campaignMutations.deleteCampaign(admin(), id),
   reorder: (ordered: { id: string; position: number }[]) =>
     campaignMutations.reorderCampaigns(admin(), ordered),
+};
+
+export const adminFooter = {
+  updateSettings: (
+    row: TablesInsert<"footer_settings"> | TablesUpdate<"footer_settings">,
+  ) => footerMutations.upsertFooterSettings(admin(), row),
+  createSocialLink: (row: TablesInsert<"footer_social_links">) =>
+    footerMutations.insertFooterSocialLink(admin(), row),
+  updateSocialLink: (id: string, row: TablesUpdate<"footer_social_links">) =>
+    footerMutations.updateFooterSocialLink(admin(), id, row),
+  removeSocialLink: (id: string) => footerMutations.deleteFooterSocialLink(admin(), id),
+  reorderSocialLinks: (ordered: { id: string; position: number }[]) =>
+    footerMutations.reorderFooterSocialLinks(admin(), ordered),
 };
 
 export const adminStorage = {
@@ -70,5 +99,6 @@ export const supabaseAdmin = {
   adminCollections,
   adminHomepage,
   adminCampaigns,
+  adminFooter,
   adminStorage,
 };

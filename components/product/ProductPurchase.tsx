@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useTranslations } from "@/hooks/useTranslations";
 import { useCartStore } from "@/store/cart";
 import type { Product } from "@/lib/types";
 import { cn } from "@/lib/cn";
@@ -12,6 +13,7 @@ interface ProductPurchaseProps {
 }
 
 export function ProductPurchase({ product, className }: ProductPurchaseProps) {
+  const { t } = useTranslations();
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
@@ -26,7 +28,7 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
         <div
           className="inline-flex items-center gap-6 border border-[var(--maison-hairline)] px-5 py-2.5"
-          aria-label="Quantity"
+          aria-label={t("product.quantity")}
         >
           <button
             type="button"
@@ -50,7 +52,7 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
         </div>
 
         <Button variant="solid" className="w-full sm:w-auto sm:min-w-[12rem]" onClick={handleAdd}>
-          Add to cart
+          {t("product.addToCart")}
         </Button>
       </div>
     </div>

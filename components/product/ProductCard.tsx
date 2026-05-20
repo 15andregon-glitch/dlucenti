@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { ROUTES } from "@/lib/routes";
+import { useTranslations } from "@/hooks/useTranslations";
+import { formatPrice } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 
 interface ProductCardProps {
@@ -8,17 +11,17 @@ interface ProductCardProps {
   className?: string;
 }
 
-/** Fixed meta block — keeps names, subtitles, and prices on one baseline grid */
 const META_BLOCK_CLASS =
   "mt-5 flex h-[5.625rem] flex-col justify-between md:mt-6 md:h-[5.75rem]";
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const { routes, locale } = useTranslations();
   const imageSrc = product.images[0];
 
   return (
     <article className={cn("group flex h-full min-h-0", className)}>
       <Link
-        href={ROUTES.product(product.slug)}
+        href={routes.product(product.slug)}
         className="flex h-full min-h-0 w-full flex-col"
       >
         <div className="relative aspect-[3/4] w-full shrink-0 overflow-hidden bg-[var(--maison-warm-white)]">
@@ -53,7 +56,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </p>
           </div>
           <p className="font-sans text-[0.8125rem] font-normal tabular-nums leading-none tracking-[var(--tracking-normal)] text-[var(--maison-gray)]">
-            {product.price.toLocaleString("fr-FR")} {product.currency}
+            {formatPrice(product.price, product.currency, locale)}
           </p>
         </div>
       </Link>

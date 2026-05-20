@@ -1,14 +1,22 @@
 import { SITE } from "@/lib/constants";
+import { mapEditorialCollection } from "@/lib/supabase/collection-mapper";
 import type { Collection } from "@/lib/types";
 import type { Product, ProductCategory } from "@/lib/types";
 import type {
   CampaignRow,
+  CollectionBlockRow,
+  CollectionMediaRow,
   CollectionRow,
   ProductImageRow,
   ProductRow,
   ProductWithCollection,
   ProductWithImages,
 } from "@/types/database";
+
+type CollectionWithRelations = CollectionRow & {
+  collection_media?: CollectionMediaRow[];
+  collection_blocks?: CollectionBlockRow[];
+};
 
 function sortImages(images: ProductImageRow[]): ProductImageRow[] {
   return [...images].sort((a, b) => a.position - b.position);
@@ -29,6 +37,7 @@ export function mapProductRow(
     price: Number(row.price),
     currency: SITE.currency,
     category: row.category as ProductCategory,
+    targetGender: row.target_gender ?? "unisex",
     collectionSlug: collection?.slug ?? undefined,
     images: sorted.map((img) => img.image_url),
     featured: row.featured,
@@ -44,16 +53,16 @@ export function mapProductWithCollection(row: ProductWithCollection): Product {
   return mapProductRow(row, row.product_images, row.collections);
 }
 
-export function mapCollectionRow(row: CollectionRow): Collection {
-  return {
-    id: row.id,
-    slug: row.slug,
-    name: row.name,
-    season: "",
-    description: row.description,
-    coverImage: row.cover_image,
-    featured: row.featured,
-  };
+export function mapCollectionRow(row: CollectionRow | CollectionWithRelations): Collection {
+  const media =
+    "collection_media" in row && Array.isArray(row.collection_media)
+      ? row.collection_media
+      : [];
+  const blocks =
+    "collection_blocks" in row && Array.isArray(row.collection_blocks)
+      ? row.collection_blocks
+      : [];
+  return mapEditorialCollection(row, media, blocks);
 }
 
 export interface CampaignFrame {

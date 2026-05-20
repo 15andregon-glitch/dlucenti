@@ -1,13 +1,20 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { mapProductWithCollection } from "@/lib/supabase/mappers";
 import type { Product } from "@/lib/types";
+import type { ShopNavCategory } from "@/lib/shop-catalog";
 import {
   fetchActiveProducts,
+  fetchActiveProductsByTargetGenders,
+  fetchActiveProductsByTargetGendersAndCategory,
   fetchFeaturedProducts,
   fetchNewInProducts,
   fetchProductBySlug,
   fetchProductsByCollectionSlug,
 } from "@/queries/products";
+import {
+  targetGendersForAudience,
+  type ShopAudienceSegment,
+} from "@/lib/shop-audience";
 import type { ProductWithCollection } from "@/types/database";
 
 function toProduct(row: ProductWithCollection): Product {
@@ -15,8 +22,30 @@ function toProduct(row: ProductWithCollection): Product {
 }
 
 export async function getProducts(): Promise<Product[]> {
+  return getProductsByShopAudience("all");
+}
+
+export async function getProductsByShopAudience(
+  audience: ShopAudienceSegment,
+): Promise<Product[]> {
   const client = await createSupabaseServerClient();
-  const { data, error } = await fetchActiveProducts(client);
+  const genders = targetGendersForAudience(audience);
+  const { data, error } = await fetchActiveProductsByTargetGenders(client, genders);
+  if (error) throw error;
+  return (data ?? []).map(toProduct);
+}
+
+export async function getProductsByShopAudienceAndCategory(
+  audience: ShopAudienceSegment,
+  category: ShopNavCategory,
+): Promise<Product[]> {
+  const client = await createSupabaseServerClient();
+  const genders = targetGendersForAudience(audience);
+  const { data, error } = await fetchActiveProductsByTargetGendersAndCategory(
+    client,
+    genders,
+    category,
+  );
   if (error) throw error;
   return (data ?? []).map(toProduct);
 }

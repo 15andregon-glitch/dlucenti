@@ -1,0 +1,10 @@
+-- =============================================================================
+-- DEPRECATED — Do not run for production / pre-launch setups.
+-- This file previously inserted fictional revenue and cost entries for UI demos.
+-- The CMS now operates in pre-launch mode until real orders exist.
+-- =============================================================================
+--
+-- To remove existing demo data:
+--   delete from public.financial_entries where description like 'seed:%';
+--
+-- Operational metrics before launch come from product catalog data only.

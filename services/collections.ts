@@ -1,6 +1,11 @@
-import { collections } from "@/lib/data/collections";
+import { sortCollectionsForStorefront } from "@/lib/collections-storefront";
+import { editorialCollectionsFallback } from "@/lib/data/editorial-collections";
 import type { Collection } from "@/lib/types";
 import { useSupabaseDataSource } from "./data-source";
+
+function publishedFallback(): Collection[] {
+  return sortCollectionsForStorefront(editorialCollectionsFallback);
+}
 
 async function fromSupabase<T>(
   loader: () => Promise<T>,
@@ -18,19 +23,17 @@ export async function getCollections(): Promise<Collection[]> {
       const { getCollections: get } = await import("./supabase/collections");
       return get();
     },
-    () => collections,
+    () => publishedFallback(),
   );
 }
 
 export async function getFeaturedCollections(): Promise<Collection[]> {
   return fromSupabase(
     async () => {
-      const { getFeaturedCollections: get } = await import(
-        "./supabase/collections"
-      );
+      const { getFeaturedCollections: get } = await import("./supabase/collections");
       return get();
     },
-    () => collections.filter((c) => c.featured),
+    () => publishedFallback().filter((c) => c.featured),
   );
 }
 
@@ -39,11 +42,9 @@ export async function getCollectionBySlug(
 ): Promise<Collection | null> {
   return fromSupabase(
     async () => {
-      const { getCollectionBySlug: get } = await import(
-        "./supabase/collections"
-      );
+      const { getCollectionBySlug: get } = await import("./supabase/collections");
       return get(slug);
     },
-    () => collections.find((c) => c.slug === slug) ?? null,
+    () => publishedFallback().find((c) => c.slug === slug) ?? null,
   );
 }

@@ -2,13 +2,23 @@
 
 import { useEffect, useId, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search, ShoppingBag, Menu, X } from "lucide-react";
-import { NAV_LINKS } from "@/lib/routes";
+import {
+  CollectionsMegaMenuDesktop,
+  CollectionsMobileAccordion,
+  CollectionsNavTrigger,
+} from "@/components/navbar/CollectionsMegaMenu";
 import {
   ShopMegaMenuDesktop,
   ShopMobileAccordion,
   ShopNavTrigger,
 } from "@/components/navbar/ShopMegaMenu";
+import type { EditorialCollection } from "@/lib/types/editorial-collection";
+import type { Locale } from "@/lib/i18n/locale";
+import { BrandLogo } from "@/components/brand/BrandLogo";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
 import { useCartStore } from "@/store/cart";
 
@@ -68,6 +78,7 @@ function IconButton({
 }
 
 function CartBagButton() {
+  const { t } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const setOpen = useCartStore((s) => s.setOpen);
   const totalItems = useCartStore((s) => s.totalItems);
@@ -77,7 +88,7 @@ function CartBagButton() {
   const count = mounted ? totalItems() : 0;
 
   return (
-    <IconButton label="Shopping bag" onClick={() => setOpen(true)}>
+    <IconButton label={t("nav.shoppingBag")} onClick={() => setOpen(true)}>
       <span className="relative">
         <ShoppingBag className="h-[17px] w-[17px]" strokeWidth={1.25} />
         {count > 0 && (
@@ -90,20 +101,43 @@ function CartBagButton() {
   );
 }
 
-export default function Navbar() {
+interface NavbarProps {
+  locale: Locale;
+  collectionsNav?: EditorialCollection[];
+}
+
+export default function Navbar({
+  locale,
+  collectionsNav = [],
+}: NavbarProps) {
+  const { t, routes, messages } = useTranslations();
+  const pathname = usePathname();
   const shopPanelId = useId();
+  const collectionsPanelId = useId();
+
+  const isCollectionsRoute = /\/collections(?:\/|$)/.test(pathname);
+
+  const navLinks = [
+    { key: "shop" as const, label: t("nav.shop"), href: routes.shop },
+    { key: "collections" as const, label: t("nav.collections"), href: routes.collections },
+    { key: "about" as const, label: t("nav.aboutNav"), href: routes.about },
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
+  const [collectionsOpen, setCollectionsOpen] = useState(false);
   const [shopExpanded, setShopExpanded] = useState(false);
+  const [collectionsExpanded, setCollectionsExpanded] = useState(false);
 
-  const elevated = scrolled || hovered || menuOpen || shopOpen;
+  const elevated =
+    isCollectionsRoute || scrolled || hovered || menuOpen || shopOpen || collectionsOpen;
   const overHero = !elevated;
 
   const closeMobile = () => {
     setMenuOpen(false);
     setShopExpanded(false);
+    setCollectionsExpanded(false);
   };
 
   useEffect(() => {
@@ -132,9 +166,11 @@ export default function Navbar() {
     const mq = window.matchMedia("(min-width: 768px)");
     const onChange = () => {
       setShopOpen(false);
+      setCollectionsOpen(false);
       if (mq.matches) {
         setMenuOpen(false);
         setShopExpanded(false);
+        setCollectionsExpanded(false);
       }
     };
     onChange();
@@ -149,6 +185,7 @@ export default function Navbar() {
         onMouseLeave={() => {
           setHovered(false);
           setShopOpen(false);
+          setCollectionsOpen(false);
         }}
         data-over-hero={overHero ? "" : undefined}
         className={cn(
@@ -158,25 +195,22 @@ export default function Navbar() {
         )}
       >
         <nav
-          aria-label="Main"
+          aria-label={t("nav.main")}
           className="relative mx-auto grid h-[4.25rem] max-w-[1440px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-4 px-6 md:h-[4.75rem] md:gap-x-6 md:px-12 lg:px-16"
         >
           <div className="relative z-10 flex min-w-0 items-center justify-self-start">
-            <Link
-              href="/"
-              className="navbar-brand-link truncate"
-              onClick={closeMobile}
-            >
-              Maison Aurélie
-            </Link>
+            <BrandLogo href={routes.home} priority onClick={closeMobile} />
           </div>
 
           <ul className="hidden shrink-0 items-center justify-center gap-8 whitespace-nowrap md:flex lg:gap-14 xl:gap-[5.5rem]">
-            {NAV_LINKS.map((link) =>
-              link.label === "Shop" ? (
+            {navLinks.map((link) =>
+              link.key === "shop" ? (
                 <li
                   key={link.href}
-                  onMouseEnter={() => setShopOpen(true)}
+                  onMouseEnter={() => {
+                    setShopOpen(true);
+                    setCollectionsOpen(false);
+                  }}
                 >
                   <ShopNavTrigger
                     open={shopOpen}
@@ -184,12 +218,29 @@ export default function Navbar() {
                     active={shopOpen && !overHero}
                   />
                 </li>
+              ) : link.key === "collections" ? (
+                <li
+                  key={link.href}
+                  onMouseEnter={() => {
+                    setCollectionsOpen(true);
+                    setShopOpen(false);
+                  }}
+                >
+                  <CollectionsNavTrigger
+                    open={collectionsOpen}
+                    panelId={collectionsPanelId}
+                    active={collectionsOpen && !overHero}
+                  />
+                </li>
               ) : (
                 <li key={link.href}>
                   <NavLink
                     href={link.href}
                     label={link.label}
-                    onMouseEnter={() => setShopOpen(false)}
+                    onMouseEnter={() => {
+                      setShopOpen(false);
+                      setCollectionsOpen(false);
+                    }}
                   />
                 </li>
               ),
@@ -199,23 +250,34 @@ export default function Navbar() {
           <div className="relative z-10 flex items-center justify-self-end gap-1">
             <div
               className={cn(
+                "hidden shrink-0 items-center gap-1 md:flex",
+                menuOpen && "pointer-events-none opacity-0",
+              )}
+            >
+              <LanguageSwitcher locale={locale} variant="nav" className="mr-2" />
+            </div>
+            <div
+              className={cn(
                 "flex shrink-0 items-center gap-1 transition-opacity duration-300",
                 menuOpen &&
                   "pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100",
               )}
             >
-              <IconButton label="Search">
+              <IconButton label={t("nav.search")}>
                 <Search className="h-[17px] w-[17px]" strokeWidth={1.25} />
               </IconButton>
               <CartBagButton />
             </div>
             <button
               type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
               aria-expanded={menuOpen}
               onClick={() =>
                 setMenuOpen((o) => {
-                  if (o) setShopExpanded(false);
+                  if (o) {
+                    setShopExpanded(false);
+                    setCollectionsExpanded(false);
+                  }
                   return !o;
                 })
               }
@@ -235,6 +297,13 @@ export default function Navbar() {
           panelId={shopPanelId}
           onNavigate={() => setShopOpen(false)}
         />
+        <CollectionsMegaMenuDesktop
+          collections={collectionsNav}
+          locale={locale}
+          open={collectionsOpen}
+          panelId={collectionsPanelId}
+          onNavigate={() => setCollectionsOpen(false)}
+        />
       </header>
 
       <div
@@ -246,12 +315,28 @@ export default function Navbar() {
       >
         <div className="flex h-full flex-col px-6 pt-28 pb-12 md:px-12">
           <ul className="flex flex-col">
-            {NAV_LINKS.map((link, i) =>
-              link.label === "Shop" ? (
+            {navLinks.map((link, i) =>
+              link.key === "shop" ? (
                 <ShopMobileAccordion
                   key={link.href}
                   expanded={shopExpanded}
-                  onToggle={() => setShopExpanded((o) => !o)}
+                  onToggle={() => {
+                    setShopExpanded((o) => !o);
+                    setCollectionsExpanded(false);
+                  }}
+                  onNavigate={closeMobile}
+                  index={i}
+                />
+              ) : link.key === "collections" ? (
+                <CollectionsMobileAccordion
+                  key={link.href}
+                  collections={collectionsNav}
+                  locale={locale}
+                  expanded={collectionsExpanded}
+                  onToggle={() => {
+                    setCollectionsExpanded((o) => !o);
+                    setShopExpanded(false);
+                  }}
                   onNavigate={closeMobile}
                   index={i}
                 />
@@ -276,13 +361,16 @@ export default function Navbar() {
           <div className="mt-auto flex items-center justify-between border-t border-[var(--maison-hairline)] pt-8">
             <div className="flex gap-6">
               <button type="button" className="text-maison-nav">
-                Search
+                {t("nav.search")}
               </button>
               <button type="button" className="text-maison-nav">
-                Cart
+                {t("nav.cart")}
               </button>
             </div>
-            <p className="text-maison-label">Paris · Since 1892</p>
+            <div className="flex flex-col items-end gap-3">
+              <LanguageSwitcher locale={locale} variant="nav" />
+              <p className="text-maison-label">{messages.meta.heritage}</p>
+            </div>
           </div>
         </div>
       </div>

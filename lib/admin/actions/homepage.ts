@@ -1,17 +1,22 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateStorefront } from "@/lib/i18n/revalidate";
 import { ADMIN_ROUTES } from "@/lib/admin/routes";
 import { actionError, parseOptionalUuid } from "@/lib/admin/utils";
 import { uploadAdminFile, sanitizeFilename } from "@/lib/admin/upload";
 import { heroVideoPath } from "@/lib/supabase/storage";
 import { supabaseAdmin } from "@/services/supabase/admin";
+import { guardAdminAction } from "@/lib/admin/guard-action";
 
 function revalidateAll() {
-  ["/", ADMIN_ROUTES.homepage].forEach((p) => revalidatePath(p));
+  revalidateStorefront("/");
+  revalidatePath(ADMIN_ROUTES.homepage);
 }
 
 export async function updateHomepageSettingsAction(formData: FormData) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const featured_collection_id = parseOptionalUuid(
       formData.get("featured_collection_id"),
@@ -33,6 +38,8 @@ export async function updateHomepageSettingsAction(formData: FormData) {
 }
 
 export async function uploadHeroVideoAction(formData: FormData) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const file = formData.get("file");
     if (!(file instanceof File) || file.size === 0) {
@@ -56,6 +63,8 @@ export async function uploadHeroVideoAction(formData: FormData) {
 }
 
 export async function setHomepageNewInAction(productIds: string[]) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const items = productIds.map((product_id, position) => ({
       product_id,

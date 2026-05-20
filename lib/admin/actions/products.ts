@@ -2,45 +2,51 @@
 
 import { revalidatePath } from "next/cache";
 import { ADMIN_ROUTES } from "@/lib/admin/routes";
-import {
-  actionError,
-  parseCheckbox,
-  parseNumber,
-  parseOptionalUuid,
-  slugify,
-} from "@/lib/admin/utils";
+import { revalidateStorefront } from "@/lib/i18n/revalidate";
+import { actionError, slugify } from "@/lib/admin/utils";
+import { parseProductForm, validateProductForm } from "@/lib/admin/parse-product-form";
 import { uploadAdminFile, sanitizeFilename } from "@/lib/admin/upload";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { productImagePath } from "@/lib/supabase/storage";
 import { supabaseAdmin } from "@/services/supabase/admin";
 import { deleteProductImage } from "@/queries/mutations/products";
-import type { ProductCategory } from "@/types/database/schema";
-
-const REVALIDATE = ["/", "/shop", ADMIN_ROUTES.products];
+import { guardAdminAction } from "@/lib/admin/guard-action";
 
 function revalidateAll() {
-  REVALIDATE.forEach((p) => revalidatePath(p));
+  revalidateStorefront("/", "/shop", "/shop/women", "/shop/men", "/shop/all");
+  revalidatePath(ADMIN_ROUTES.products);
+  revalidatePath(ADMIN_ROUTES.finance);
+}
+
+function productRowFromForm(formData: FormData) {
+  const row = parseProductForm(formData);
+  const validationError = validateProductForm(row);
+  if (validationError) return { error: validationError as string, row: null };
+
+  const isPublished = row.publication_status === "published";
+  return {
+    error: null,
+    row: {
+      ...row,
+      active: isPublished ? row.active : false,
+    },
+  };
 }
 
 export async function createProductAction(formData: FormData) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const name = String(formData.get("name") ?? "").trim();
     const slug =
       String(formData.get("slug") ?? "").trim() || slugify(name);
     if (!name) return actionError("Name is required");
+    formData.set("slug", slug);
 
-    const { data, error } = await supabaseAdmin.adminProducts.create({
-      name,
-      slug,
-      description: String(formData.get("description") ?? ""),
-      price: parseNumber(formData.get("price")),
-      category: String(formData.get("category") ?? "rings") as ProductCategory,
-      stock: parseNumber(formData.get("stock")),
-      featured: parseCheckbox(formData.get("featured")),
-      new_in: parseCheckbox(formData.get("new_in")),
-      active: parseCheckbox(formData.get("active")) || true,
-      collection_id: parseOptionalUuid(formData.get("collection_id")),
-    });
+    const parsed = productRowFromForm(formData);
+    if (parsed.error || !parsed.row) return actionError(parsed.error ?? "Invalid form");
+
+    const { data, error } = await supabaseAdmin.adminProducts.create(parsed.row);
 
     if (error) return actionError(error.message);
     revalidateAll();
@@ -51,23 +57,13 @@ export async function createProductAction(formData: FormData) {
 }
 
 export async function updateProductAction(id: string, formData: FormData) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
-    const name = String(formData.get("name") ?? "").trim();
-    const slug = String(formData.get("slug") ?? "").trim();
-    if (!name || !slug) return actionError("Name and slug are required");
+    const parsed = productRowFromForm(formData);
+    if (parsed.error || !parsed.row) return actionError(parsed.error ?? "Invalid form");
 
-    const { error } = await supabaseAdmin.adminProducts.update(id, {
-      name,
-      slug,
-      description: String(formData.get("description") ?? ""),
-      price: parseNumber(formData.get("price")),
-      category: String(formData.get("category") ?? "rings") as ProductCategory,
-      stock: parseNumber(formData.get("stock")),
-      featured: parseCheckbox(formData.get("featured")),
-      new_in: parseCheckbox(formData.get("new_in")),
-      active: parseCheckbox(formData.get("active")),
-      collection_id: parseOptionalUuid(formData.get("collection_id")),
-    });
+    const { error } = await supabaseAdmin.adminProducts.update(id, parsed.row);
 
     if (error) return actionError(error.message);
     revalidateAll();
@@ -79,6 +75,8 @@ export async function updateProductAction(id: string, formData: FormData) {
 }
 
 export async function deleteProductAction(id: string) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const { error } = await supabaseAdmin.adminProducts.remove(id);
     if (error) return actionError(error.message);
@@ -90,6 +88,8 @@ export async function deleteProductAction(id: string) {
 }
 
 export async function uploadProductImageAction(productId: string, formData: FormData) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const file = formData.get("file");
     if (!(file instanceof File) || file.size === 0) {
@@ -126,6 +126,8 @@ export async function reorderProductImagesAction(
   productId: string,
   ordered: { id: string; position: number }[],
 ) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const client = createSupabaseAdminClient();
     for (const { id, position } of ordered) {
@@ -145,6 +147,8 @@ export async function reorderProductImagesAction(
 }
 
 export async function deleteProductImageAction(productId: string, imageId: string) {
+  const denied = await guardAdminAction();
+  if (denied) return denied;
   try {
     const { error } = await deleteProductImage(
       createSupabaseAdminClient(),

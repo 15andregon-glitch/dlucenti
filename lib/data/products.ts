@@ -13,6 +13,7 @@ export const products: Product[] = [
     price: 4200,
     currency: "EUR",
     category: "rings",
+    targetGender: "women",
     collectionSlug: "lumiere",
     images: [
       "/products/necklace-2.jpg",
@@ -34,6 +35,7 @@ export const products: Product[] = [
     price: 6800,
     currency: "EUR",
     category: "necklaces",
+    targetGender: "unisex",
     collectionSlug: "noir",
     images: [
       "/products/necklace-1.jpg",
@@ -54,6 +56,7 @@ export const products: Product[] = [
     price: 2900,
     currency: "EUR",
     category: "earrings",
+    targetGender: "women",
     collectionSlug: "arc",
     images: [
       "/products/earrings-1.jpg",
@@ -74,6 +77,7 @@ export const products: Product[] = [
     price: 5100,
     currency: "EUR",
     category: "bracelets",
+    targetGender: "men",
     collectionSlug: "woven",
     images: [
       "/products/necklace-2.jpg",

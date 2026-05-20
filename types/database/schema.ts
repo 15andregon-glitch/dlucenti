@@ -18,7 +18,49 @@ export type ProductCategory =
   | "bracelets"
   | "objects";
 
+export type ProductTargetGender = "women" | "men" | "unisex";
+
 export type AdminRole = "owner" | "editor" | "viewer";
+
+export type ProductPublicationStatus = "draft" | "published";
+
+export type CollectionPublicationStatus = "draft" | "published";
+export type CollectionHeroAlignment = "left" | "center" | "right";
+export type CollectionTextColor = "light" | "dark";
+export type CollectionTitlePosition = "top" | "center" | "bottom";
+export type CollectionMediaKind =
+  | "hero_desktop"
+  | "hero_mobile"
+  | "editorial_cover"
+  | "thumbnail"
+  | "atmosphere"
+  | "editorial_gallery"
+  | "og_image";
+export type CollectionBlockType =
+  | "story"
+  | "quote"
+  | "cinematic_image"
+  | "gallery"
+  | "spacer";
+
+export type FinancialCategoryGroup =
+  | "revenue"
+  | "variable_cost"
+  | "fixed_cost"
+  | "depreciation"
+  | "financial"
+  | "extraordinary";
+
+export type FinancialEntrySource =
+  | "manual"
+  | "order"
+  | "inventory"
+  | "shipping"
+  | "import";
+
+export type ReportingPeriodType = "month" | "quarter" | "year";
+
+export type OrderStatus = "pending" | "paid" | "shipped" | "completed" | "cancelled";
 
 export interface Database {
   public: {
@@ -27,31 +69,170 @@ export interface Database {
         Row: {
           id: string;
           created_at: string;
+          updated_at: string;
           name: string;
           slug: string;
           description: string;
           cover_image: string;
           featured: boolean;
+          short_title: string;
+          editorial_title: string;
+          subtitle: string;
+          launch_date: string | null;
+          publication_status: CollectionPublicationStatus;
+          campaign_video_url: string | null;
+          story_body: string;
+          inspiration_text: string;
+          materials_text: string;
+          campaign_mood: string;
+          hero_alignment: CollectionHeroAlignment;
+          text_color: CollectionTextColor;
+          overlay_opacity: number;
+          title_position: CollectionTitlePosition;
+          enable_fullscreen_hero: boolean;
+          enable_dark_mode_section: boolean;
+          meta_title: string;
+          meta_description: string;
+          og_image: string;
+          display_order: number;
+          hidden_from_frontend: boolean;
         };
         Insert: {
           id?: string;
           created_at?: string;
+          updated_at?: string;
           name: string;
           slug: string;
           description?: string;
           cover_image?: string;
           featured?: boolean;
+          short_title?: string;
+          editorial_title?: string;
+          subtitle?: string;
+          launch_date?: string | null;
+          publication_status?: CollectionPublicationStatus;
+          campaign_video_url?: string | null;
+          story_body?: string;
+          inspiration_text?: string;
+          materials_text?: string;
+          campaign_mood?: string;
+          hero_alignment?: CollectionHeroAlignment;
+          text_color?: CollectionTextColor;
+          overlay_opacity?: number;
+          title_position?: CollectionTitlePosition;
+          enable_fullscreen_hero?: boolean;
+          enable_dark_mode_section?: boolean;
+          meta_title?: string;
+          meta_description?: string;
+          og_image?: string;
+          display_order?: number;
+          hidden_from_frontend?: boolean;
         };
         Update: {
           id?: string;
           created_at?: string;
+          updated_at?: string;
           name?: string;
           slug?: string;
           description?: string;
           cover_image?: string;
           featured?: boolean;
+          short_title?: string;
+          editorial_title?: string;
+          subtitle?: string;
+          launch_date?: string | null;
+          publication_status?: CollectionPublicationStatus;
+          campaign_video_url?: string | null;
+          story_body?: string;
+          inspiration_text?: string;
+          materials_text?: string;
+          campaign_mood?: string;
+          hero_alignment?: CollectionHeroAlignment;
+          text_color?: CollectionTextColor;
+          overlay_opacity?: number;
+          title_position?: CollectionTitlePosition;
+          enable_fullscreen_hero?: boolean;
+          enable_dark_mode_section?: boolean;
+          meta_title?: string;
+          meta_description?: string;
+          og_image?: string;
+          display_order?: number;
+          hidden_from_frontend?: boolean;
         };
         Relationships: [];
+      };
+      collection_media: {
+        Row: {
+          id: string;
+          collection_id: string;
+          kind: CollectionMediaKind;
+          image_url: string;
+          alt: string | null;
+          position: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          collection_id: string;
+          kind: CollectionMediaKind;
+          image_url: string;
+          alt?: string | null;
+          position?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          collection_id?: string;
+          kind?: CollectionMediaKind;
+          image_url?: string;
+          alt?: string | null;
+          position?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collection_media_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      collection_blocks: {
+        Row: {
+          id: string;
+          collection_id: string;
+          block_type: CollectionBlockType;
+          position: number;
+          content: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          collection_id: string;
+          block_type: CollectionBlockType;
+          position: number;
+          content?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          collection_id?: string;
+          block_type?: CollectionBlockType;
+          position?: number;
+          content?: Json;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collection_blocks_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       products: {
         Row: {
@@ -63,11 +244,34 @@ export interface Database {
           description: string;
           price: number;
           category: ProductCategory;
+          target_gender: ProductTargetGender;
           stock: number;
           featured: boolean;
           new_in: boolean;
           collection_id: string | null;
           active: boolean;
+          publication_status: ProductPublicationStatus;
+          materials: string;
+          dimensions: string;
+          product_cost: number;
+          packaging_cost: number;
+          pouch_cost: number;
+          shipping_cost: number;
+          payment_fee_percent: number;
+          import_cost: number;
+          vat_rate: number;
+          supplier_name: string;
+          supplier_reference: string;
+          target_margin_percent: number | null;
+          sku: string | null;
+          barcode: string | null;
+          minimum_stock: number;
+          reserved_stock: number;
+          lead_time_days: number;
+          warehouse_location: string;
+          total_cost: number;
+          gross_margin_percent: number;
+          estimated_net_profit: number;
         };
         Insert: {
           id?: string;
@@ -78,11 +282,34 @@ export interface Database {
           description?: string;
           price: number;
           category: ProductCategory;
+          target_gender?: ProductTargetGender;
           stock?: number;
           featured?: boolean;
           new_in?: boolean;
           collection_id?: string | null;
           active?: boolean;
+          publication_status?: ProductPublicationStatus;
+          materials?: string;
+          dimensions?: string;
+          product_cost?: number;
+          packaging_cost?: number;
+          pouch_cost?: number;
+          shipping_cost?: number;
+          payment_fee_percent?: number;
+          import_cost?: number;
+          vat_rate?: number;
+          supplier_name?: string;
+          supplier_reference?: string;
+          target_margin_percent?: number | null;
+          sku?: string | null;
+          barcode?: string | null;
+          minimum_stock?: number;
+          reserved_stock?: number;
+          lead_time_days?: number;
+          warehouse_location?: string;
+          total_cost?: number;
+          gross_margin_percent?: number;
+          estimated_net_profit?: number;
         };
         Update: {
           id?: string;
@@ -93,11 +320,34 @@ export interface Database {
           description?: string;
           price?: number;
           category?: ProductCategory;
+          target_gender?: ProductTargetGender;
           stock?: number;
           featured?: boolean;
           new_in?: boolean;
           collection_id?: string | null;
           active?: boolean;
+          publication_status?: ProductPublicationStatus;
+          materials?: string;
+          dimensions?: string;
+          product_cost?: number;
+          packaging_cost?: number;
+          pouch_cost?: number;
+          shipping_cost?: number;
+          payment_fee_percent?: number;
+          import_cost?: number;
+          vat_rate?: number;
+          supplier_name?: string;
+          supplier_reference?: string;
+          target_margin_percent?: number | null;
+          sku?: string | null;
+          barcode?: string | null;
+          minimum_stock?: number;
+          reserved_stock?: number;
+          lead_time_days?: number;
+          warehouse_location?: string;
+          total_cost?: number;
+          gross_margin_percent?: number;
+          estimated_net_profit?: number;
         };
         Relationships: [
           {
@@ -217,6 +467,84 @@ export interface Database {
         };
         Relationships: [];
       };
+      footer_settings: {
+        Row: {
+          id: string;
+          contact_email: string;
+          slogan_en: string;
+          slogan_pt: string;
+          location_en: string;
+          location_pt: string;
+          explore_title_en: string;
+          explore_title_pt: string;
+          maison_title_en: string;
+          maison_title_pt: string;
+          contacts_title_en: string;
+          contacts_title_pt: string;
+          socials_title_en: string;
+          socials_title_pt: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          contact_email?: string;
+          slogan_en: string;
+          slogan_pt: string;
+          location_en?: string;
+          location_pt?: string;
+          explore_title_en: string;
+          explore_title_pt: string;
+          maison_title_en: string;
+          maison_title_pt: string;
+          contacts_title_en: string;
+          contacts_title_pt: string;
+          socials_title_en: string;
+          socials_title_pt: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          contact_email?: string;
+          slogan_en?: string;
+          slogan_pt?: string;
+          location_en?: string;
+          location_pt?: string;
+          explore_title_en?: string;
+          explore_title_pt?: string;
+          maison_title_en?: string;
+          maison_title_pt?: string;
+          contacts_title_en?: string;
+          contacts_title_pt?: string;
+          socials_title_en?: string;
+          socials_title_pt?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      footer_social_links: {
+        Row: {
+          id: string;
+          label: string;
+          url: string;
+          position: number;
+          active: boolean;
+        };
+        Insert: {
+          id?: string;
+          label: string;
+          url: string;
+          position: number;
+          active?: boolean;
+        };
+        Update: {
+          id?: string;
+          label?: string;
+          url?: string;
+          position?: number;
+          active?: boolean;
+        };
+        Relationships: [];
+      };
       admins: {
         Row: {
           id: string;
@@ -238,12 +566,273 @@ export interface Database {
         };
         Relationships: [];
       };
+      reporting_periods: {
+        Row: {
+          id: string;
+          created_at: string;
+          year: number;
+          month: number | null;
+          quarter: number | null;
+          period_type: ReportingPeriodType;
+          label: string;
+          starts_at: string;
+          ends_at: string;
+          is_closed: boolean;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          year: number;
+          month?: number | null;
+          quarter?: number | null;
+          period_type?: ReportingPeriodType;
+          label: string;
+          starts_at: string;
+          ends_at: string;
+          is_closed?: boolean;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          year?: number;
+          month?: number | null;
+          quarter?: number | null;
+          period_type?: ReportingPeriodType;
+          label?: string;
+          starts_at?: string;
+          ends_at?: string;
+          is_closed?: boolean;
+        };
+        Relationships: [];
+      };
+      financial_categories: {
+        Row: {
+          id: string;
+          code: string;
+          name: string;
+          name_pt: string;
+          group_type: FinancialCategoryGroup;
+          sort_order: number;
+          is_active: boolean;
+          description: string | null;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name: string;
+          name_pt?: string;
+          group_type: FinancialCategoryGroup;
+          sort_order?: number;
+          is_active?: boolean;
+          description?: string | null;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name?: string;
+          name_pt?: string;
+          group_type?: FinancialCategoryGroup;
+          sort_order?: number;
+          is_active?: boolean;
+          description?: string | null;
+        };
+        Relationships: [];
+      };
+      financial_entries: {
+        Row: {
+          id: string;
+          created_at: string;
+          updated_at: string;
+          period_id: string;
+          category_id: string;
+          amount: number;
+          currency: string;
+          source: FinancialEntrySource;
+          source_ref: string | null;
+          description: string | null;
+          entry_date: string;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          period_id: string;
+          category_id: string;
+          amount: number;
+          currency?: string;
+          source?: FinancialEntrySource;
+          source_ref?: string | null;
+          description?: string | null;
+          entry_date?: string;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          period_id?: string;
+          category_id?: string;
+          amount?: number;
+          currency?: string;
+          source?: FinancialEntrySource;
+          source_ref?: string | null;
+          description?: string | null;
+          entry_date?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "financial_entries_period_id_fkey";
+            columns: ["period_id"];
+            isOneToOne: false;
+            referencedRelation: "reporting_periods";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "financial_entries_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "financial_categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      dr_snapshots: {
+        Row: {
+          id: string;
+          period_id: string;
+          computed_at: string;
+          snapshot: Json;
+        };
+        Insert: {
+          id?: string;
+          period_id: string;
+          computed_at?: string;
+          snapshot: Json;
+        };
+        Update: {
+          id?: string;
+          period_id?: string;
+          computed_at?: string;
+          snapshot?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "dr_snapshots_period_id_fkey";
+            columns: ["period_id"];
+            isOneToOne: true;
+            referencedRelation: "reporting_periods";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      orders: {
+        Row: {
+          id: string;
+          created_at: string;
+          updated_at: string;
+          order_number: string;
+          status: OrderStatus;
+          subtotal: number;
+          shipping_cost: number;
+          tax: number;
+          total: number;
+          currency: string;
+          period_id: string | null;
+          synced_to_finance: boolean;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          order_number: string;
+          status?: OrderStatus;
+          subtotal?: number;
+          shipping_cost?: number;
+          tax?: number;
+          total?: number;
+          currency?: string;
+          period_id?: string | null;
+          synced_to_finance?: boolean;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          order_number?: string;
+          status?: OrderStatus;
+          subtotal?: number;
+          shipping_cost?: number;
+          tax?: number;
+          total?: number;
+          currency?: string;
+          period_id?: string | null;
+          synced_to_finance?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "orders_period_id_fkey";
+            columns: ["period_id"];
+            isOneToOne: false;
+            referencedRelation: "reporting_periods";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      order_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          product_id: string | null;
+          product_name: string;
+          quantity: number;
+          unit_price: number;
+          unit_cost: number;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          product_id?: string | null;
+          product_name: string;
+          quantity: number;
+          unit_price: number;
+          unit_cost?: number;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_id?: string | null;
+          product_name?: string;
+          quantity?: number;
+          unit_price?: number;
+          unit_cost?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {
       product_category: ProductCategory;
+      product_target_gender: ProductTargetGender;
       admin_role: AdminRole;
+      financial_category_group: FinancialCategoryGroup;
+      financial_entry_source: FinancialEntrySource;
+      reporting_period_type: ReportingPeriodType;
+      order_status: OrderStatus;
     };
     CompositeTypes: Record<string, never>;
   };

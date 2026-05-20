@@ -2,10 +2,12 @@ import Link from "next/link";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { NewInProductCard } from "@/components/product/NewInProductCard";
 import { Section } from "@/sections/shared/Section";
-import { ROUTES } from "@/lib/routes";
+import { getTranslations } from "@/lib/i18n/translations";
+import type { Locale } from "@/lib/i18n/locale";
 import { getNewInProducts } from "@/services/products";
 
-export async function NewInSection() {
+export async function NewInSection({ locale }: { locale: Locale }) {
+  const { t, routes } = await getTranslations(locale);
   const products = await getNewInProducts();
 
   return (
@@ -16,12 +18,12 @@ export async function NewInSection() {
     >
       <PageContainer>
         <header className="mb-8 flex justify-end md:mb-10">
-          <h2 className="sr-only">New In</h2>
+          <h2 className="sr-only">{t("product.newIn")}</h2>
           <Link
-            href={ROUTES.shop}
+            href={routes.shop}
             className="text-maison-link transition-colors duration-500 ease-[var(--ease-maison)] hover:text-[var(--maison-charcoal)]"
           >
-            View all
+            {t("common.viewAll")}
           </Link>
         </header>
 

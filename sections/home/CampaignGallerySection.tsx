@@ -9,7 +9,7 @@ export function CampaignGallerySection() {
     <section
       id="campaign"
       aria-label="Editorial campaign gallery"
-      className="border-t border-[var(--maison-hairline)] bg-[var(--maison-ivory)]"
+      className="border-t border-[var(--maison-hairline)] bg-[var(--maison-ivory)] pt-[clamp(2.5rem,7vw,5rem)] md:pt-[clamp(3rem,9vw,6rem)]"
     >
       {/* Full-width cinematic opener */}
       <Reveal>

@@ -3,7 +3,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { cn } from "@/lib/cn";
 
 interface SectionHeaderProps {
-  label: string;
+  label?: string;
   title: React.ReactNode;
   description?: string;
   align?: "left" | "center";
@@ -25,7 +25,7 @@ export function SectionHeader({
         className,
       )}
     >
-      <SectionLabel className="mb-6">{label}</SectionLabel>
+      {label ? <SectionLabel className="mb-6">{label}</SectionLabel> : null}
       <EditorialHeading as="h2" align={align}>
         {title}
       </EditorialHeading>

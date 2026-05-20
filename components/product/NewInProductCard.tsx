@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { ROUTES } from "@/lib/routes";
+import { useTranslations } from "@/hooks/useTranslations";
+import { formatPrice } from "@/lib/cart";
 import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/cn";
 
@@ -18,6 +19,7 @@ const quickAddLabel =
   "font-sans text-[0.6875rem] font-normal tracking-[var(--tracking-label)] text-[var(--hero-text-champagne)] drop-shadow-[0_1px_14px_rgba(42,40,36,0.22)] transition-opacity duration-500 ease-[var(--ease-maison)]";
 
 export function NewInProductCard({ product, className }: NewInProductCardProps) {
+  const { t, routes, locale } = useTranslations();
   const imageSrc = product.images[0];
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
@@ -33,7 +35,7 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
     <article className={cn("group flex h-full min-h-0 flex-col", className)}>
       <div className="relative aspect-[3/4] w-full shrink-0 overflow-hidden bg-[var(--maison-warm-white)]">
         <Link
-          href={ROUTES.product(product.slug)}
+          href={routes.product(product.slug)}
           className="absolute inset-0 z-0"
           aria-label={`View ${product.name}`}
         >
@@ -41,7 +43,7 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
             className="pointer-events-none absolute right-4 top-4 z-[1] font-sans text-[0.6875rem] font-normal tracking-[var(--tracking-label)] text-[var(--hero-text-champagne)] drop-shadow-[0_1px_14px_rgba(42,40,36,0.22)]"
             aria-hidden
           >
-            New In
+            {t("product.newIn")}
           </span>
           {imageSrc ? (
             <Image
@@ -60,7 +62,7 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
         <button
           type="button"
           onClick={handleQuickAdd}
-          aria-label={`Add ${product.name} to bag`}
+          aria-label={`${t("product.addToBag")}: ${product.name}`}
           className={cn(
             "absolute inset-x-0 bottom-0 z-10 flex min-h-[3rem] items-end justify-center pb-4",
             "transition-[opacity,transform] duration-500 ease-[var(--ease-maison)] motion-reduce:transition-none",
@@ -68,12 +70,12 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
             "active:opacity-100 md:hover:[&_span]:opacity-70",
           )}
         >
-          <span className={quickAddLabel}>Add to bag</span>
+          <span className={quickAddLabel}>{t("product.addToBag")}</span>
         </button>
       </div>
 
       <Link
-        href={ROUTES.product(product.slug)}
+        href={routes.product(product.slug)}
         className="mt-5 flex flex-col justify-between md:mt-6"
       >
         <div className={cn(META_HEIGHT)}>
@@ -81,7 +83,7 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
             {product.name}
           </h3>
           <p className="font-sans text-[0.8125rem] font-normal tabular-nums leading-none tracking-[var(--tracking-normal)] text-[var(--maison-gray)]">
-            {product.price.toLocaleString("fr-FR")} {product.currency}
+            {formatPrice(product.price, product.currency, locale)}
           </p>
         </div>
       </Link>

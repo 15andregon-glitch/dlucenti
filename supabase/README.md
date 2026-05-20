@@ -17,8 +17,17 @@ Fill in keys from [Supabase Dashboard](https://supabase.com/dashboard) → Proje
 ## SQL setup (order)
 
 1. `schema.sql` — tables, indexes, RLS, triggers  
-2. `storage.sql` — buckets & storage policies  
-3. `seed.sql` — optional demo rows (local `/public` paths)
+2. `footer.sql` — footer CMS tables (if upgrading an existing DB created before footer was merged into schema)  
+3. `storage.sql` — buckets & storage policies  
+4. `seed.sql` — optional demo rows (local `/public` paths)  
+5. `footer-seed.sql` — footer defaults (if `seed.sql` was run before footer tables existed)  
+6. `products-finance.sql` — product unit economics & inventory fields  
+6b. `products-target-gender.sql` — shop navigation gender targeting (`women` / `men` / `unisex`)  
+7. `collections-editorial.sql` — editorial collections CMS (media, blocks, layout)  
+8. `publish-collections.sql` — one-time fix if `/collections` is empty but rows exist in Admin → Collections  
+9. `finance.sql` — reporting periods, entries, orders (optional until finance module is used)
+
+Do **not** run `finance-seed.sql` — it contained demo data and is deprecated.
 
 ## Enable live data
 
