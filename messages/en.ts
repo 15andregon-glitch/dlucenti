@@ -101,6 +101,8 @@ export const en = {
   },
   product: {
     newIn: "New In",
+    soldOut: "Sold out",
+    unavailable: "Temporarily unavailable",
     addToBag: "Add to bag",
     addToCart: "Add to cart",
     quantity: "Quantity",

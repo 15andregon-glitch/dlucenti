@@ -9,6 +9,7 @@ import { getTranslations } from "@/lib/i18n/translations";
 import { isValidLocale } from "@/lib/i18n/locale";
 import { localizedPageMetadata } from "@/lib/i18n/metadata";
 import { formatPrice } from "@/lib/cart";
+import { isProductSoldOut } from "@/lib/product-availability";
 import {
   getProductBySlug,
   getRelatedProducts,
@@ -44,11 +45,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <ProductGallery product={product} />
 
             <div className="lg:sticky lg:top-28 lg:pt-2">
-              {product.isNew && (
+              {isProductSoldOut(product) ? (
+                <p className="text-maison-label text-[var(--maison-mist)]">
+                  {t("product.soldOut")}
+                </p>
+              ) : product.isNew ? (
                 <p className="text-maison-label text-[var(--maison-gold)]">
                   {t("product.newIn")}
                 </p>
-              )}
+              ) : null}
 
               <h1 className="mt-3 font-serif text-[clamp(1.75rem,4vw,2.25rem)] font-normal leading-[1.12] tracking-tight text-[var(--maison-charcoal)]">
                 {product.name}

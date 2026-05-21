@@ -22,6 +22,7 @@ export const products: Product[] = [
     ],
     featured: true,
     isNew: true,
+    stock: 5,
   },
   {
     id: "2",
@@ -43,6 +44,7 @@ export const products: Product[] = [
       "/products/earrings-1.jpg",
     ],
     featured: true,
+    stock: 5,
   },
   {
     id: "3",
@@ -64,6 +66,7 @@ export const products: Product[] = [
       "/products/necklace-2.jpg",
     ],
     featured: true,
+    stock: 5,
   },
   {
     id: "4",
@@ -84,5 +87,6 @@ export const products: Product[] = [
       "/products/earrings-1.jpg",
       "/products/necklace-1.jpg",
     ],
+    stock: 5,
   },
 ];

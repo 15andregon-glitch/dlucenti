@@ -102,6 +102,8 @@ export const pt = {
   },
   product: {
     newIn: "Novidades",
+    soldOut: "Esgotado",
+    unavailable: "Temporariamente indisponível",
     addToBag: "Adicionar à sacola",
     addToCart: "Adicionar à sacola",
     quantity: "Quantidade",

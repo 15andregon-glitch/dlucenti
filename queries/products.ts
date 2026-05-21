@@ -10,66 +10,55 @@ export const PRODUCT_SELECT = `
 
 type Client = SupabaseClient<Database>;
 
-export async function fetchActiveProducts(client: Client) {
+/** CMS-only storefront visibility — inventory/stock is never filtered here. */
+function storefrontProductsQuery(client: Client) {
   return client
     .from("products")
     .select(PRODUCT_SELECT)
-    .eq("active", true)
-    .order("created_at", { ascending: false });
+    .eq("publication_status", "published")
+    .eq("hidden_from_frontend", false)
+    .eq("archived", false);
 }
 
-export async function fetchActiveProductsByTargetGenders(
+export async function fetchStorefrontProducts(client: Client) {
+  return storefrontProductsQuery(client).order("created_at", { ascending: false });
+}
+
+export async function fetchStorefrontProductsByTargetGenders(
   client: Client,
   genders: ProductTargetGender[],
 ) {
-  return client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("active", true)
+  return storefrontProductsQuery(client)
     .in("target_gender", genders)
     .order("created_at", { ascending: false });
 }
 
-export async function fetchActiveProductsByTargetGendersAndCategory(
+export async function fetchStorefrontProductsByTargetGendersAndCategory(
   client: Client,
   genders: ProductTargetGender[],
   category: ProductCategory,
 ) {
-  return client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("active", true)
+  return storefrontProductsQuery(client)
     .in("target_gender", genders)
     .eq("category", category)
     .order("created_at", { ascending: false });
 }
 
 export async function fetchFeaturedProducts(client: Client) {
-  return client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("active", true)
+  return storefrontProductsQuery(client)
     .eq("featured", true)
     .order("created_at", { ascending: false });
 }
 
 export async function fetchProductBySlug(client: Client, slug: string) {
-  return client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("slug", slug)
-    .eq("active", true)
-    .maybeSingle();
+  return storefrontProductsQuery(client).eq("slug", slug).maybeSingle();
 }
 
 export async function fetchProductsByCollectionId(
   client: Client,
   collectionId: string,
 ) {
-  return client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("active", true)
+  return storefrontProductsQuery(client)
     .eq("collection_id", collectionId)
     .order("created_at", { ascending: false });
 }
@@ -98,20 +87,13 @@ export async function fetchNewInProducts(client: Client) {
     .order("position", { ascending: true });
 
   if (slotsError || !slots?.length) {
-    return client
-      .from("products")
-      .select(PRODUCT_SELECT)
-      .eq("active", true)
+    return storefrontProductsQuery(client)
       .eq("new_in", true)
       .order("created_at", { ascending: false });
   }
 
   const productIds = slots.map((s) => s.product_id);
-  const { data, error } = await client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("active", true)
-    .in("id", productIds);
+  const { data, error } = await storefrontProductsQuery(client).in("id", productIds);
 
   if (error || !data) return { data: null, error };
 

@@ -42,6 +42,7 @@ export function mapProductRow(
     images: sorted.map((img) => img.image_url),
     featured: row.featured,
     isNew: row.new_in,
+    stock: Number(row.stock ?? 0),
   };
 }
 

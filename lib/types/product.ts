@@ -22,4 +22,6 @@ export interface Product {
   materials?: string;
   featured?: boolean;
   isNew?: boolean;
+  /** Units on hand — visibility is CMS-only; stock controls purchasability. */
+  stock: number;
 }

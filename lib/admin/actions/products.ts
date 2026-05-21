@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 import { ADMIN_ROUTES } from "@/lib/admin/routes";
 import { revalidateStorefront } from "@/lib/i18n/revalidate";
 import { actionError, slugify } from "@/lib/admin/utils";
-import { parseProductForm, validateProductForm } from "@/lib/admin/parse-product-form";
+import {
+  parseProductForm,
+  validateProductForm,
+  withStorefrontActiveFlag,
+} from "@/lib/admin/parse-product-form";
 import { uploadAdminFile, sanitizeFilename } from "@/lib/admin/upload";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { productImagePath } from "@/lib/supabase/storage";
@@ -23,13 +27,9 @@ function productRowFromForm(formData: FormData) {
   const validationError = validateProductForm(row);
   if (validationError) return { error: validationError as string, row: null };
 
-  const isPublished = row.publication_status === "published";
   return {
     error: null,
-    row: {
-      ...row,
-      active: isPublished ? row.active : false,
-    },
+    row: withStorefrontActiveFlag(row),
   };
 }
 

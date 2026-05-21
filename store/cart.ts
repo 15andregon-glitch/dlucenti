@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { isProductPurchasable } from "@/lib/product-availability";
 import type { Product } from "@/lib/types";
 
 export interface CartItem {
@@ -26,6 +27,9 @@ export const useCartStore = create<CartState>()(
       isOpen: false,
       addItem: (product, quantity = 1) =>
         set((state) => {
+          if (!isProductPurchasable(product)) {
+            return state;
+          }
           const existing = state.items.find(
             (i) => i.product.id === product.id,
           );

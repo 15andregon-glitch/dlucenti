@@ -3,9 +3,9 @@ import { mapProductWithCollection } from "@/lib/supabase/mappers";
 import type { Product } from "@/lib/types";
 import type { ShopNavCategory } from "@/lib/shop-catalog";
 import {
-  fetchActiveProducts,
-  fetchActiveProductsByTargetGenders,
-  fetchActiveProductsByTargetGendersAndCategory,
+  fetchStorefrontProducts,
+  fetchStorefrontProductsByTargetGenders,
+  fetchStorefrontProductsByTargetGendersAndCategory,
   fetchFeaturedProducts,
   fetchNewInProducts,
   fetchProductBySlug,
@@ -30,7 +30,7 @@ export async function getProductsByShopAudience(
 ): Promise<Product[]> {
   const client = await createSupabaseServerClient();
   const genders = targetGendersForAudience(audience);
-  const { data, error } = await fetchActiveProductsByTargetGenders(client, genders);
+  const { data, error } = await fetchStorefrontProductsByTargetGenders(client, genders);
   if (error) throw error;
   return (data ?? []).map(toProduct);
 }
@@ -41,7 +41,7 @@ export async function getProductsByShopAudienceAndCategory(
 ): Promise<Product[]> {
   const client = await createSupabaseServerClient();
   const genders = targetGendersForAudience(audience);
-  const { data, error } = await fetchActiveProductsByTargetGendersAndCategory(
+  const { data, error } = await fetchStorefrontProductsByTargetGendersAndCategory(
     client,
     genders,
     category,
@@ -89,7 +89,7 @@ export async function getRelatedProducts(
   limit = 3,
 ): Promise<Product[]> {
   const client = await createSupabaseServerClient();
-  const { data, error } = await fetchActiveProducts(client);
+  const { data, error } = await fetchStorefrontProducts(client);
   if (error) throw error;
 
   const related = (data ?? [])

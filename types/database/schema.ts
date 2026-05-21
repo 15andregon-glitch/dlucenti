@@ -251,6 +251,8 @@ export interface Database {
           collection_id: string | null;
           active: boolean;
           publication_status: ProductPublicationStatus;
+          hidden_from_frontend: boolean;
+          archived: boolean;
           materials: string;
           dimensions: string;
           product_cost: number;
@@ -289,6 +291,8 @@ export interface Database {
           collection_id?: string | null;
           active?: boolean;
           publication_status?: ProductPublicationStatus;
+          hidden_from_frontend?: boolean;
+          archived?: boolean;
           materials?: string;
           dimensions?: string;
           product_cost?: number;
@@ -327,6 +331,8 @@ export interface Database {
           collection_id?: string | null;
           active?: boolean;
           publication_status?: ProductPublicationStatus;
+          hidden_from_frontend?: boolean;
+          archived?: boolean;
           materials?: string;
           dimensions?: string;
           product_cost?: number;

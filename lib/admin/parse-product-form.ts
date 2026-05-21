@@ -24,6 +24,8 @@ export interface ParsedProductForm {
   new_in: boolean;
   active: boolean;
   publication_status: ProductPublicationStatus;
+  hidden_from_frontend: boolean;
+  archived: boolean;
   collection_id: string | null;
   product_cost: number;
   packaging_cost: number;
@@ -88,7 +90,9 @@ export function parseProductForm(formData: FormData): ParsedProductForm {
     stock: parseNumber(formData.get("stock")),
     featured: parseCheckbox(formData.get("featured")),
     new_in: parseCheckbox(formData.get("new_in")),
-    active: parseCheckbox(formData.get("active")),
+    hidden_from_frontend: parseCheckbox(formData.get("hidden_from_frontend")),
+    archived: parseCheckbox(formData.get("archived")),
+    active: false,
     publication_status,
     collection_id: parseOptionalUuid(formData.get("collection_id")),
     product_cost: economicsInput.productCost,
@@ -111,6 +115,17 @@ export function parseProductForm(formData: FormData): ParsedProductForm {
     gross_margin_percent: economics.grossMarginPercent,
     estimated_net_profit: economics.estimatedNetProfit,
   };
+}
+
+/** Sync legacy active flag; storefront uses publication + hidden + archived. */
+export function withStorefrontActiveFlag(
+  row: ParsedProductForm,
+): ParsedProductForm {
+  const visible =
+    row.publication_status === "published" &&
+    !row.hidden_from_frontend &&
+    !row.archived;
+  return { ...row, active: visible };
 }
 
 export function validateProductForm(row: ParsedProductForm): string | null {

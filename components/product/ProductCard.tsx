@@ -4,6 +4,8 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { useTranslations } from "@/hooks/useTranslations";
 import { formatPrice } from "@/lib/cart";
+import { isProductSoldOut } from "@/lib/product-availability";
+import { ProductEditorialBadge } from "@/components/product/ProductEditorialBadge";
 import { cn } from "@/lib/cn";
 
 interface ProductCardProps {
@@ -15,8 +17,9 @@ const META_BLOCK_CLASS =
   "mt-5 flex h-[5.625rem] flex-col justify-between md:mt-6 md:h-[5.75rem]";
 
 export function ProductCard({ product, className }: ProductCardProps) {
-  const { routes, locale } = useTranslations();
+  const { t, routes, locale } = useTranslations();
   const imageSrc = product.images[0];
+  const soldOut = isProductSoldOut(product);
 
   return (
     <article className={cn("group flex h-full min-h-0", className)}>
@@ -25,6 +28,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
         className="flex h-full min-h-0 w-full flex-col"
       >
         <div className="relative aspect-[3/4] w-full shrink-0 overflow-hidden bg-[var(--maison-warm-white)]">
+          {soldOut ? (
+            <ProductEditorialBadge
+              label={t("product.soldOut")}
+              variant="soldOut"
+            />
+          ) : null}
           {imageSrc ? (
             <img
               src={imageSrc}

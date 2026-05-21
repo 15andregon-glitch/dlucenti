@@ -178,14 +178,19 @@ export function ProductForm({ product, collections }: ProductFormProps) {
               />
               <AdminCheckbox name="new_in" label="New In" defaultChecked={product?.new_in} />
               <AdminCheckbox
-                name="active"
-                label="Visible on storefront"
-                defaultChecked={product?.active ?? false}
+                name="hidden_from_frontend"
+                label="Hidden from storefront"
+                defaultChecked={product?.hidden_from_frontend ?? false}
+              />
+              <AdminCheckbox
+                name="archived"
+                label="Archived"
+                defaultChecked={product?.archived ?? false}
               />
             </div>
             <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
-              Publishing requires selling price and product cost. Storefront visibility applies
-              when published and active.
+              Publishing requires selling price and product cost. Stock level does not hide
+              products — use hidden or archived to remove from the storefront.
             </p>
           </div>
         </AdminPanel>

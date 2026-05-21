@@ -5,7 +5,9 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { useTranslations } from "@/hooks/useTranslations";
 import { formatPrice } from "@/lib/cart";
+import { isProductPurchasable, isProductSoldOut } from "@/lib/product-availability";
 import { useCartStore } from "@/store/cart";
+import { ProductEditorialBadge } from "@/components/product/ProductEditorialBadge";
 import { cn } from "@/lib/cn";
 
 interface NewInProductCardProps {
@@ -21,12 +23,15 @@ const quickAddLabel =
 export function NewInProductCard({ product, className }: NewInProductCardProps) {
   const { t, routes, locale } = useTranslations();
   const imageSrc = product.images[0];
+  const soldOut = isProductSoldOut(product);
+  const purchasable = isProductPurchasable(product);
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
 
   const handleQuickAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!purchasable) return;
     addItem(product, 1);
     setOpen(true);
   };
@@ -39,12 +44,14 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
           className="absolute inset-0 z-0"
           aria-label={`View ${product.name}`}
         >
-          <span
-            className="pointer-events-none absolute right-4 top-4 z-[1] font-sans text-[0.6875rem] font-normal tracking-[var(--tracking-label)] text-[var(--hero-text-champagne)] drop-shadow-[0_1px_14px_rgba(42,40,36,0.22)]"
-            aria-hidden
-          >
-            {t("product.newIn")}
-          </span>
+          {soldOut ? (
+            <ProductEditorialBadge
+              label={t("product.soldOut")}
+              variant="soldOut"
+            />
+          ) : (
+            <ProductEditorialBadge label={t("product.newIn")} variant="new" />
+          )}
           {imageSrc ? (
             <Image
               src={imageSrc}
@@ -59,19 +66,21 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
           )}
         </Link>
 
-        <button
-          type="button"
-          onClick={handleQuickAdd}
-          aria-label={`${t("product.addToBag")}: ${product.name}`}
-          className={cn(
-            "absolute inset-x-0 bottom-0 z-10 flex min-h-[3rem] items-end justify-center pb-4",
-            "transition-[opacity,transform] duration-500 ease-[var(--ease-maison)] motion-reduce:transition-none",
-            "opacity-75 md:translate-y-0.5 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
-            "active:opacity-100 md:hover:[&_span]:opacity-70",
-          )}
-        >
-          <span className={quickAddLabel}>{t("product.addToBag")}</span>
-        </button>
+        {purchasable ? (
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            aria-label={`${t("product.addToBag")}: ${product.name}`}
+            className={cn(
+              "absolute inset-x-0 bottom-0 z-10 flex min-h-[3rem] items-end justify-center pb-4",
+              "transition-[opacity,transform] duration-500 ease-[var(--ease-maison)] motion-reduce:transition-none",
+              "opacity-75 md:translate-y-0.5 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+              "active:opacity-100 md:hover:[&_span]:opacity-70",
+            )}
+          >
+            <span className={quickAddLabel}>{t("product.addToBag")}</span>
+          </button>
+        ) : null}
       </div>
 
       <Link
