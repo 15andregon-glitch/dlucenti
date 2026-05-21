@@ -70,33 +70,35 @@ body {
   min-height: inherit;
 }
 
-/* Hero mobile — single editorial stack, tight to image (desktop unchanged at 768px+) */
+/* Hero mobile — anchor editorial block above bottom (desktop unchanged at 768px+) */
 @media (max-width: 767.98px) {
   .hero-campaign-section {
-    display: grid;
-    grid-template-rows: 1fr auto;
+    position: relative;
   }
 
   .hero-campaign-stage {
-    grid-row: 2;
+    position: absolute;
+    inset-inline: 0;
+    bottom: clamp(5rem, 16vw, 7.5rem);
+    z-index: 10;
     display: block;
     height: auto;
     min-height: 0;
-    padding-bottom: max(2.75rem, calc(2rem + env(safe-area-inset-bottom, 0px)));
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
   }
 
   .hero-campaign-chrome {
-    padding-bottom: 0.5rem;
+    padding-bottom: 0;
   }
 
   .hero-campaign-editorial {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 0.75rem;
     width: 100%;
-    margin-bottom: 0.75rem;
+    margin: 0;
     text-align: center;
   }
 
@@ -134,11 +136,10 @@ body {
 }
 
 @media (min-width: 768px) {
-  .hero-campaign-section {
-    display: block;
-  }
-
   .hero-campaign-stage {
+    position: relative;
+    inset: auto;
+    bottom: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
