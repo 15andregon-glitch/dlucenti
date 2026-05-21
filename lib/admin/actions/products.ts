@@ -6,8 +6,8 @@ import { revalidateStorefront } from "@/lib/i18n/revalidate";
 import { actionError, slugify } from "@/lib/admin/utils";
 import {
   parseProductForm,
+  toProductDbRow,
   validateProductForm,
-  withStorefrontActiveFlag,
 } from "@/lib/admin/parse-product-form";
 import { uploadAdminFile, sanitizeFilename } from "@/lib/admin/upload";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -29,7 +29,7 @@ function productRowFromForm(formData: FormData) {
 
   return {
     error: null,
-    row: withStorefrontActiveFlag(row),
+    row: toProductDbRow(row),
   };
 }
 

@@ -117,7 +117,7 @@ export function parseProductForm(formData: FormData): ParsedProductForm {
   };
 }
 
-/** Sync legacy active flag; storefront uses publication + hidden + archived. */
+/** Sync legacy active flag until hidden_from_frontend / archived columns exist in DB. */
 export function withStorefrontActiveFlag(
   row: ParsedProductForm,
 ): ParsedProductForm {
@@ -126,6 +126,17 @@ export function withStorefrontActiveFlag(
     !row.hidden_from_frontend &&
     !row.archived;
   return { ...row, active: visible };
+}
+
+/** Row shape sent to Supabase (omits columns not yet migrated on all environments). */
+export function toProductDbRow(row: ParsedProductForm) {
+  const synced = withStorefrontActiveFlag(row);
+  const {
+    hidden_from_frontend: _hidden,
+    archived: _archived,
+    ...dbRow
+  } = synced;
+  return dbRow;
 }
 
 export function validateProductForm(row: ParsedProductForm): string | null {

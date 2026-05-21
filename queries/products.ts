@@ -10,14 +10,12 @@ export const PRODUCT_SELECT = `
 
 type Client = SupabaseClient<Database>;
 
-/** CMS-only storefront visibility — inventory/stock is never filtered here. */
+/** CMS-only storefront visibility — stock is never filtered; uses published status only. */
 function storefrontProductsQuery(client: Client) {
   return client
     .from("products")
     .select(PRODUCT_SELECT)
-    .eq("publication_status", "published")
-    .eq("hidden_from_frontend", false)
-    .eq("archived", false);
+    .eq("publication_status", "published");
 }
 
 export async function fetchStorefrontProducts(client: Client) {

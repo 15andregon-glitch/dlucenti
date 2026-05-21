@@ -180,12 +180,16 @@ export function ProductForm({ product, collections }: ProductFormProps) {
               <AdminCheckbox
                 name="hidden_from_frontend"
                 label="Hidden from storefront"
-                defaultChecked={product?.hidden_from_frontend ?? false}
+                defaultChecked={
+                  product
+                    ? product.publication_status === "published" && !product.active
+                    : false
+                }
               />
               <AdminCheckbox
                 name="archived"
                 label="Archived"
-                defaultChecked={product?.archived ?? false}
+                defaultChecked={false}
               />
             </div>
             <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
