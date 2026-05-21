@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Navbar from "@/components/navbar/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -9,15 +10,22 @@ interface SiteShellProps {
   locale: Locale;
 }
 
-/** Public site chrome — navbar + main + footer */
-export async function SiteShell({ children, locale }: SiteShellProps) {
+async function NavbarWithCollections({ locale }: { locale: Locale }) {
   const collectionsNav = await getCollections();
+  return <Navbar locale={locale} collectionsNav={collectionsNav} />;
+}
 
+/** Public site chrome — page content streams without waiting on nav/footer data */
+export function SiteShell({ children, locale }: SiteShellProps) {
   return (
     <>
-      <Navbar locale={locale} collectionsNav={collectionsNav} />
+      <Suspense fallback={<Navbar locale={locale} collectionsNav={[]} />}>
+        <NavbarWithCollections locale={locale} />
+      </Suspense>
       <div className="flex min-h-screen flex-col">{children}</div>
-      <Footer locale={locale} />
+      <Suspense fallback={null}>
+        <Footer locale={locale} />
+      </Suspense>
       <CartDrawer />
     </>
   );

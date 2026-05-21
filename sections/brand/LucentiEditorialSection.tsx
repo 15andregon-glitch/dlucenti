@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
+import { BRAND_EDITORIAL_VIDEO } from "@/lib/data/brand-editorial";
 import { getTranslations } from "@/lib/i18n/translations";
 import type { Locale } from "@/lib/i18n/locale";
 import { cn } from "@/lib/cn";
@@ -19,7 +20,7 @@ export async function LucentiEditorialSection({
       id="lucenti"
       aria-label={t("pages.about.label")}
       className={cn(
-        "bg-[var(--maison-warm-white)] text-[var(--maison-charcoal)]",
+        "maison-editorial-section bg-[var(--maison-warm-white)] text-[var(--maison-charcoal)]",
         className,
       )}
     >
@@ -36,16 +37,25 @@ export async function LucentiEditorialSection({
             "lg:order-2 lg:min-h-0 lg:h-auto",
           )}
         >
+          <img
+            src={BRAND_EDITORIAL_VIDEO.posterSrc}
+            alt=""
+            decoding="async"
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full min-h-[inherit] object-cover object-center"
+            aria-hidden
+          />
           <video
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 h-full w-full min-h-[inherit] object-cover lg:inset-0"
+            preload="auto"
+            className="absolute inset-0 h-full w-full min-h-[inherit] object-cover object-center lg:inset-0"
             style={{ filter: "brightness(0.92) contrast(0.96)" }}
             aria-hidden
           >
-            <source src="/videos/lucenti-editorial.mp4" type="video/mp4" />
+            <source src={BRAND_EDITORIAL_VIDEO.src} type="video/mp4" />
           </video>
         </div>
 

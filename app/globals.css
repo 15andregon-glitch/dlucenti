@@ -80,10 +80,14 @@ body {
   }
 }
 
-/* Contain paint for main sections (skip homepage hero — avoids mobile overlay glitches) */
-main > section:not(.hero-campaign-section) {
+/* Contain paint for main sections (skip hero + Maison editorial — avoid deferred paint) */
+main > section:not(.hero-campaign-section):not(.maison-editorial-section) {
   content-visibility: auto;
   contain-intrinsic-size: auto 80vh;
+}
+
+.maison-editorial-section {
+  content-visibility: visible;
 }
 
 /* Prefer compositor-friendly transitions */
