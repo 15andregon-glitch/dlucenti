@@ -4,6 +4,7 @@ import { CollectionEditorialStory } from "@/components/collections/CollectionEdi
 import { CollectionProductReveal } from "@/components/collections/CollectionProductReveal";
 import { isValidLocale } from "@/lib/i18n/locale";
 import { localizedPageMetadata } from "@/lib/i18n/metadata";
+import { getTranslations } from "@/lib/i18n/translations";
 import { getCollectionBySlug } from "@/services/collections";
 import { getProductsByCollection } from "@/services/products";
 
@@ -31,6 +32,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   if (!collection) notFound();
 
   const products = await getProductsByCollection(slug);
+  const { t } = await getTranslations(localeParam);
 
   const title = collection.editorialTitle || collection.name;
 
@@ -42,6 +44,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       <CollectionProductReveal
         products={products}
         collectionTitle={collection.editorialTitle || collection.name}
+        sectionLabel={t("collections.productsSection")}
       />
     </article>
   );

@@ -31,12 +31,18 @@ export async function ShopCategoryPage({
 }) {
   if (!isValidLocale(localeParam) || !isShopNavCategory(category)) notFound();
   const locale = localeParam as Locale;
-  const { messages } = await getTranslations(locale);
+  const { t, messages } = await getTranslations(locale);
   const products = await getProductsByShopAudienceAndCategory(
     audience,
     category as ShopNavCategory,
   );
   const title = shopCatalogPageTitle(messages, audience, category as ShopNavCategory);
 
-  return <ShopProductsPage title={title} products={products} />;
+  return (
+    <ShopProductsPage
+      title={title}
+      products={products}
+      emptyLabel={t("pages.shop.empty")}
+    />
+  );
 }

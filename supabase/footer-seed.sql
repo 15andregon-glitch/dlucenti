@@ -28,7 +28,7 @@ values (
   'Contacts',
   'Contactos',
   'Socials',
-  'Redes Sociais'
+  'Redes sociais'
 );
 
 insert into public.footer_social_links (label, url, position, active)

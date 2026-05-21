@@ -5,7 +5,7 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   contactEmail: "hello@dlucenti.com",
   slogan: {
     en: "Contemporary minimalism shaped by tradition.",
-    pt: "Minimalismo contemporâneo moldado pela tradição.",
+    pt: "Minimalismo contemporâneo, moldado pela tradição.",
   },
   location: {
     en: "Portugal",
@@ -25,7 +25,7 @@ export const DEFAULT_FOOTER_CONTENT: FooterContent = {
   },
   socialsTitle: {
     en: "Socials",
-    pt: "Redes Sociais",
+    pt: "Redes sociais",
   },
   socialLinks: [
     { id: "instagram", label: "Instagram", url: "https://instagram.com/" },

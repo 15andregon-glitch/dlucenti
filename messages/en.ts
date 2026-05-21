@@ -121,6 +121,7 @@ export const en = {
       womenTitle: "Women",
       menTitle: "Men",
       allTitle: "All pieces",
+      empty: "—",
     },
     collections: {
       title: "Seasonal chapters",
@@ -165,6 +166,7 @@ export const en = {
     description: "A sequence of selected pieces with clarity and brilliance.",
     viewCollection: "View collection",
     viewAll: "View all collections",
+    productsSection: "The collection",
     emptyTitle: "No collections published yet",
     emptyDescription:
       "Published collections from the CMS will appear here in the editorial archive.",

@@ -7,16 +7,21 @@ import type { Product } from "@/lib/types";
 interface ShopProductsPageProps {
   title: string;
   products: Product[];
+  emptyLabel?: string;
 }
 
-export function ShopProductsPage({ title, products }: ShopProductsPageProps) {
+export function ShopProductsPage({
+  title,
+  products,
+  emptyLabel = "—",
+}: ShopProductsPageProps) {
   return (
     <>
       <PageHero title={title} />
       <PageContainer className="pt-[clamp(2.5rem,5vw,4.5rem)] pb-[var(--section-py)] md:pt-[clamp(3rem,6vw,5rem)]">
         {products.length === 0 ? (
           <p className="text-center text-maison-body-sm text-[var(--maison-mist)]">
-            —
+            {emptyLabel}
           </p>
         ) : (
           <ul className="grid list-none grid-cols-2 items-stretch gap-6 p-0 md:grid-cols-3 md:gap-8 lg:grid-cols-4 lg:gap-10">

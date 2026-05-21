@@ -1,8 +1,8 @@
-/** Storefront copy — European Portuguese, Maison editorial tone */
+/** Storefront copy — português europeu (PT-PT), tom editorial Maison */
 export const pt = {
   meta: {
     siteName: "D'LUCENTI",
-    tagline: "Alta Joalharia",
+    tagline: "Alta joalharia",
     description: "Minimalismo contemporâneo moldado pela tradição.",
     heritage: "Paris · Desde 1892",
   },
@@ -15,16 +15,16 @@ export const pt = {
     shop: "Loja",
     collections: "Coleções",
     about: "A Maison",
-    aboutNav: "A Lucenti",
+    aboutNav: "A Maison",
     journal: "Journal",
     contact: "Contacto",
     main: "Principal",
     search: "Pesquisar",
-    cart: "Sacola",
-    shoppingBag: "Sacola de compras",
+    cart: "Carrinho",
+    shoppingBag: "Carrinho",
     openMenu: "Abrir menu",
     closeMenu: "Fechar menu",
-    closeBag: "Fechar sacola",
+    closeBag: "Fechar carrinho",
     close: "Fechar",
   },
   shopMenu: {
@@ -48,37 +48,37 @@ export const pt = {
     copyright: "Todos os direitos reservados",
   },
   cart: {
-    bag: "Sacola",
-    emptyTitle: "A sua sacola está vazia",
-    emptyDescription: "Descubra a coleção quando estiver pronta.",
-    continueShopping: "Continuar a comprar",
+    bag: "Carrinho",
+    emptyTitle: "O carrinho está vazio",
+    emptyDescription: "Explore a coleção quando desejar.",
+    continueShopping: "Continuar",
     subtotal: "Subtotal",
     shippingNote: "Portes e taxas calculados no pagamento.",
-    checkout: "Finalizar compra",
+    checkout: "Concluir compra",
     quantity: "Quantidade",
     remove: "Remover",
   },
   checkout: {
     pageTitle: "Pagamento",
     pageDescription: "Conclua a sua encomenda",
-    emptyTitle: "A sua sacola está vazia",
+    emptyTitle: "O carrinho está vazio",
     returnToShop: "Voltar à loja",
     thankYou: "Obrigado",
     confirmation:
-      "A sua encomenda foi recebida. Receberá uma confirmação em breve.",
+      "A sua encomenda foi recebida. Receberá a confirmação em breve.",
     contact: "Contacto",
     delivery: "Entrega",
     payment: "Pagamento",
     paymentNote: "Pagamento seguro — ambiente de demonstração.",
     placeOrder: "Confirmar encomenda",
-    email: "Email",
+    email: "E-mail",
     firstName: "Nome",
     lastName: "Apelido",
     address: "Morada",
-    city: "Cidade",
+    city: "Localidade",
     postalCode: "Código postal",
     country: "País",
-    selectCountry: "Seleccionar",
+    selectCountry: "Selecionar",
     cardName: "Nome no cartão",
     cardNumber: "Número do cartão",
     expiry: "Validade",
@@ -90,7 +90,7 @@ export const pt = {
     total: "Total",
     dispatchNote: "As peças são expedidas em cinco dias úteis.",
     orderDispatchNote:
-      "Todas as encomendas são preparadas com cuidado e expedidas em 3–5 dias úteis.",
+      "Cada encomenda é preparada com cuidado e expedida em 3–5 dias úteis.",
   },
   countries: {
     FR: "França",
@@ -104,13 +104,13 @@ export const pt = {
     newIn: "Novidade",
     newInSection: "Novidades",
     soldOut: "Esgotado",
-    unavailable: "Temporariamente indisponível",
-    addToBag: "Adicionar à sacola",
-    addToCart: "Adicionar à sacola",
+    unavailable: "Indisponível",
+    addToBag: "Adicionar ao carrinho",
+    addToCart: "Adicionar ao carrinho",
     quantity: "Quantidade",
     materials: "Materiais e artesanato",
     materialsNote:
-      "Cada peça é composta à mão no nosso atelier parisiense. Pequenas variações de tom e forma são marca do trabalho artesanal — nunca um defeito.",
+      "Cada peça é composta à mão no nosso atelier parisiense. Pequenas variações de tom e de forma pertencem ao ofício — nunca a um defeito.",
     related: "Peças relacionadas",
   },
   pages: {
@@ -121,12 +121,13 @@ export const pt = {
       title: "Todas as peças",
       label: "Loja",
       description:
-        "Joalharia fina composta com contenção couture — anéis, colares, brincos e objectos.",
+        "Joalharia fina de contenção couture — anéis, colares, brincos e objectos.",
+      empty: "Nenhuma peça nesta seleção.",
     },
     collections: {
       title: "Capítulos sazonais",
       label: "Coleções",
-      description: "Edições curadas definidas pela luz, silhueta e material.",
+      description: "Edições curadas definidas pela luz, pela silhueta e pelo material.",
     },
     about: {
       quote: "A beleza existe na forma como a luz toca o mundo",
@@ -135,9 +136,9 @@ export const pt = {
       titleEmphasis: "luz",
       label: "A Maison",
       description:
-        "Fundada em Portugal, a D'LUCENTI inspira-se na relação entre a luz e a forma. Cada peça é selecionada pela sua simplicidade, brilho e elegância.",
+        "Fundada em Portugal, a D'LUCENTI inspira-se na relação entre a luz e a forma. Cada peça é escolhida pela simplicidade, pelo brilho e pela elegância.",
       body:
-        "Acreditamos que a beleza vive na simplicidade através da luz, nos detalhes subtis, nas formas delicadas e naquilo que permanece para além do tempo. Criada em terras de ourives e tradição, a D'LUCENTI nasce da sofisticação.",
+        "Acreditamos que a beleza vive na simplicidade através da luz — nos detalhes subtis, nas formas delicadas e no que permanece para além do tempo. Criada em terras de ourivesaria e tradição, a D'LUCENTI nasce da sofisticação.",
     },
     contact: {
       title: "Mediante marcação",
@@ -148,7 +149,7 @@ export const pt = {
       cities: "Paris · Nova Iorque · Tóquio",
       name: "Nome",
       message: "Mensagem",
-      send: "Enviar pedido",
+      send: "Enviar mensagem",
     },
     journal: {
       title: "Histórias de luz",
@@ -169,9 +170,10 @@ export const pt = {
       "Uma sequência de peças selecionadas com clareza e brilho.",
     viewCollection: "Ver coleção",
     viewAll: "Ver todas as coleções",
+    productsSection: "A coleção",
     emptyTitle: "Ainda sem coleções publicadas",
     emptyDescription:
-      "As coleções publicadas no CMS aparecerão aqui no arquivo editorial.",
+      "As coleções publicadas no CMS surgirão aqui no arquivo editorial.",
   },
   home: {
     heroLabel: "Novidades",
@@ -180,10 +182,10 @@ export const pt = {
     featuredCollections: "Coleções em destaque",
     journalPreview: "Do journal",
     readStory: "Ler artigo",
-    newsletterLabel: "A Lista",
+    newsletterLabel: "A lista",
     newsletterTitle: "Correspondência discreta",
     newsletterDescription:
-      "Dispatches sazonais — nunca mais de duas vezes por ano.",
+      "Notas sazonais — nunca mais de duas vezes por ano.",
     subscribe: "Subscrever",
   },
   common: {

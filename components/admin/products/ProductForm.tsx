@@ -200,7 +200,7 @@ export function ProductForm({ product, collections }: ProductFormProps) {
               defaultChecked={product?.archived ?? false}
             />
             <p className="font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
-              Produtos esgotados continuam visíveis automaticamente e apresentam a etiqueta
+              Produtos esgotados permanecem visíveis e exibem a etiqueta
               &lsquo;Esgotado&rsquo;. A publicação exige preço de venda e custo do produto.
             </p>
           </div>

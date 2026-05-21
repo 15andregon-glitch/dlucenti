@@ -31,5 +31,11 @@ export default async function ShopAllPage({
   const { t } = await getTranslations(localeParam);
   const products = await getProductsByShopAudience("all");
 
-  return <ShopProductsPage title={t("pages.shop.allTitle")} products={products} />;
+  return (
+    <ShopProductsPage
+      title={t("pages.shop.allTitle")}
+      products={products}
+      emptyLabel={t("pages.shop.empty")}
+    />
+  );
 }

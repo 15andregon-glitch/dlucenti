@@ -5,18 +5,20 @@ import type { Product } from "@/lib/types";
 interface CollectionProductRevealProps {
   products: Product[];
   collectionTitle: string;
+  sectionLabel: string;
 }
 
 export function CollectionProductReveal({
   products,
   collectionTitle,
+  sectionLabel,
 }: CollectionProductRevealProps) {
   if (!products.length) return null;
 
   return (
     <section className="bg-[var(--maison-warm-white)]">
       <PageContainer>
-        <p className="text-maison-label">The collection</p>
+        <p className="text-maison-label">{sectionLabel}</p>
         <h2 className="mt-2 max-w-xl text-maison-headline text-2xl md:text-3xl">
           {collectionTitle}
         </h2>

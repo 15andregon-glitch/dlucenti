@@ -113,7 +113,7 @@ export function HomepageEditor({
 
       <AdminPanel title="New In — homepage row">
         <p className="mb-6 text-[0.8125rem] text-[var(--maison-gray)]">
-          Arraste para definir a ordem. Só aparecem na homepage produtos com
+          Arraste para definir a ordem. Na homepage só surgem produtos com
           &lsquo;Mostrar na homepage&rsquo; ativo no formulário do produto.
         </p>
 
@@ -121,7 +121,7 @@ export function HomepageEditor({
           <p className="mb-4 text-[0.8125rem] text-amber-800">
             {dormantSlots.length} produto(s) nesta ordem não aparecem na loja
             (falta publicar, &lsquo;Mostrar na homepage&rsquo;, ou está
-            arquivado/oculto).
+            arquivado ou oculto).
           </p>
         ) : null}
 
@@ -142,7 +142,7 @@ export function HomepageEditor({
           <p className="admin-label mb-4">Adicionar à homepage</p>
           {addableProducts.length === 0 ? (
             <p className="text-[0.8125rem] text-[var(--maison-mist)]">
-              Ative &lsquo;Mostrar na homepage&rsquo; num produto publicado e
+              Active &lsquo;Mostrar na homepage&rsquo; num produto publicado e
               visível na loja para o adicionar aqui.
             </p>
           ) : (
@@ -173,7 +173,7 @@ export function HomepageEditor({
           {needsHomepageFlag.length > 0 ? (
             <div className="mt-8">
               <p className="admin-label mb-2 text-[var(--maison-mist)]">
-                Visíveis na loja — ative &lsquo;Mostrar na homepage&rsquo; no
+                Visíveis na loja — active &lsquo;Mostrar na homepage&rsquo; no
                 produto
               </p>
               <ul className="space-y-1 text-[0.75rem] text-[var(--maison-mist)]">
