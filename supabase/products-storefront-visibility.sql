@@ -20,6 +20,8 @@ using (
   and archived = false
 );
 
+-- After this migration, app auto-uses hidden_from_frontend + archived filters.
+
 drop policy if exists "product_images_public_read" on public.product_images;
 create policy "product_images_public_read"
 on public.product_images for select

@@ -110,57 +110,59 @@ button {
   text-align: center;
 }
 
-/* Mobile hero CTA — single centered column */
-.hero-campaign-mobile {
+/* Hero CTA — one DOM tree; mobile stack, desktop symmetric grid */
+.hero-campaign-cta {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  text-align: center;
 }
 
-.hero-campaign-mobile .hero-campaign-label {
-  width: 100%;
-  text-align: center;
-}
-
-.hero-campaign-mobile .hero-campaign-link {
+.hero-campaign-cta .hero-campaign-link--start,
+.hero-campaign-cta .hero-campaign-link--end {
   display: block;
   width: 100%;
   text-align: center;
+  padding-inline: 0;
+  white-space: nowrap;
 }
 
-/* Desktop symmetric CTA row — divider locked to the center axis */
+.hero-campaign-cta .hero-campaign-divider {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .hero-campaign-cta {
     display: grid;
-    width: 100%;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
+    gap: 0;
   }
 
-  .hero-campaign-link--start {
+  .hero-campaign-cta .hero-campaign-link--start {
+    display: inline-flex;
+    width: auto;
     grid-column: 1;
     justify-self: end;
     padding-inline-end: 1.5rem;
     text-align: right;
-    white-space: nowrap;
   }
 
-  .hero-campaign-link--end {
+  .hero-campaign-cta .hero-campaign-link--end {
+    display: inline-flex;
+    width: auto;
     grid-column: 3;
     justify-self: start;
     padding-inline-start: 1.5rem;
     text-align: left;
-    white-space: nowrap;
   }
 
-  .hero-campaign-divider {
+  .hero-campaign-cta .hero-campaign-divider {
+    display: block;
     grid-column: 2;
     justify-self: center;
     align-self: center;
-    display: block;
     width: 1px;
     height: var(--maison-chrome-size);
     background-color: var(--hero-text-champagne);
