@@ -70,6 +70,87 @@ body {
   min-height: inherit;
 }
 
+/* Hero mobile — single editorial stack, tight to image (desktop unchanged at 768px+) */
+@media (max-width: 767.98px) {
+  .hero-campaign-section {
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  .hero-campaign-stage {
+    grid-row: 2;
+    display: block;
+    height: auto;
+    min-height: 0;
+    padding-bottom: max(1.25rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)));
+  }
+
+  .hero-campaign-editorial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-campaign-label {
+    font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(1.625rem, 7vw, 2.125rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    text-rendering: optimizeLegibility;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .hero-campaign-cta-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero-campaign-cta-nav .hero-campaign-link {
+    display: inline-block;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-campaign-section {
+    display: block;
+  }
+
+  .hero-campaign-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: inherit;
+    height: auto;
+    padding-bottom: 0;
+  }
+
+  .hero-campaign-editorial {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.25rem;
+    text-align: center;
+  }
+}
+
 /* Contain paint for main sections (skip hero + Maison editorial — avoid deferred paint) */
 main > section:not(.hero-campaign-section):not(.maison-editorial-section) {
   content-visibility: auto;
@@ -178,28 +259,7 @@ button {
   color: #fdfcf9;
 }
 
-/* Hero CTA layout — mobile-first column (desktop grid at 768px+ only) */
-.hero-campaign-cta-nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 100%;
-  margin-inline: auto;
-  text-align: center;
-}
-
-.hero-campaign-cta-nav .hero-campaign-link {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  margin-inline: auto;
-  padding-inline: 0;
-  text-align: center;
-}
-
+/* Hero CTA layout — base (mobile overrides above; desktop grid below) */
 .hero-campaign-cta-nav .hero-campaign-cta-divider {
   display: none;
 }
