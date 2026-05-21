@@ -22,7 +22,7 @@ export async function HeroSection({ locale }: { locale: Locale }) {
           aria-hidden
         />
 
-        <div className="hero-campaign-stage z-10 max-lg:absolute max-lg:inset-x-0 max-lg:bottom-[clamp(6.5rem,24vw,10rem)] max-lg:h-auto max-lg:pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] lg:relative lg:flex lg:h-full lg:flex-col lg:justify-end lg:pb-[5.5rem] xl:pb-28">
+        <div className="hero-campaign-stage z-10 max-lg:absolute max-lg:inset-x-0 max-lg:bottom-[clamp(5.25rem,20vw,8.5rem)] max-lg:h-auto max-lg:pb-[max(0.5rem,env(safe-area-inset-bottom,0px))] lg:relative lg:flex lg:h-full lg:flex-col lg:justify-end lg:pb-[5.5rem] xl:pb-28">
           <div className="hero-campaign-chrome pointer-events-auto w-full px-6 md:px-12 lg:px-16">
             <div className="hero-campaign-editorial mx-auto w-full max-w-[1440px]">
               <h1 className="hero-campaign-label m-0 text-center">
