@@ -19,7 +19,7 @@ export function HeroSection() {
         aria-hidden
       />
 
-      <div className="relative z-10 flex min-h-[100dvh] min-h-[100svh] flex-col items-center justify-end pb-[4.5rem] md:pb-[5.5rem] lg:pb-28">
+      <div className="relative z-10 flex min-h-[100dvh] min-h-[100svh] flex-col items-center justify-end pb-[max(4.5rem,calc(3rem+env(safe-area-inset-bottom,0px)))] md:pb-[5.5rem] lg:pb-28">
         <div className="hero-reveal pointer-events-auto w-full px-6 md:px-12 lg:px-16">
           <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-8 md:gap-9 lg:gap-10">
             <h1 className="hero-campaign-label m-0">{t("home.heroLabel")}</h1>

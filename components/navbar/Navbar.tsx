@@ -359,10 +359,7 @@ export default function Navbar({
             <button type="button" className="text-maison-nav">
               {t("nav.cart")}
             </button>
-            <div className="flex flex-col items-end gap-3">
-              <LanguageSwitcher locale={locale} variant="nav" />
-              <p className="text-maison-label">{messages.meta.heritage}</p>
-            </div>
+            <LanguageSwitcher locale={locale} variant="nav" />
           </div>
         </div>
       </div>
