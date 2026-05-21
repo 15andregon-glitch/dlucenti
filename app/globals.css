@@ -82,7 +82,11 @@ body {
     display: block;
     height: auto;
     min-height: 0;
-    padding-bottom: max(1.25rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)));
+    padding-bottom: max(2.75rem, calc(2rem + env(safe-area-inset-bottom, 0px)));
+  }
+
+  .hero-campaign-chrome {
+    padding-bottom: 0.5rem;
   }
 
   .hero-campaign-editorial {
@@ -92,6 +96,7 @@ body {
     justify-content: flex-end;
     gap: 0.75rem;
     width: 100%;
+    margin-bottom: 0.75rem;
     text-align: center;
   }
 
