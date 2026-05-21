@@ -138,7 +138,7 @@ export const pt = {
       description:
         "Fundada em Portugal, a D'LUCENTI inspira-se na relação entre a luz e a forma. Cada peça é escolhida pela simplicidade, pelo brilho e pela elegância.",
       body:
-        "Acreditamos que a beleza vive na simplicidade através da luz — nos detalhes subtis, nas formas delicadas e no que permanece para além do tempo. Criada em terras de ourivesaria e tradição, a D'LUCENTI nasce da sofisticação.",
+        "Acreditamos que a beleza vive na simplicidade através da luz — nos detalhes subtis, nas formas delicadas e no que permanece para além do tempo. Criada em terras de ourives e tradição, a D'LUCENTI nasce da sofisticação.",
     },
     contact: {
       title: "Mediante marcação",
