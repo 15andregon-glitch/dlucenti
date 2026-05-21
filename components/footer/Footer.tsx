@@ -25,6 +25,12 @@ export async function Footer({ locale }: FooterProps) {
     about: t("nav.aboutNav"),
   };
 
+  const legalLinks = [
+    { key: "privacy", label: messages.footer.privacy, href: "#" },
+    { key: "terms", label: messages.footer.terms, href: "#" },
+    { key: "admin", label: messages.footer.admin, href: "/admin/login" },
+  ];
+
   return (
     <footer className="border-t border-[var(--maison-hairline)] bg-[var(--maison-beige)]">
       <PageContainer className="py-20 md:py-24">
@@ -92,12 +98,11 @@ export async function Footer({ locale }: FooterProps) {
             © {new Date().getFullYear()} {messages.meta.siteName}
           </p>
           <div className="flex gap-6">
-            <Link href="#" className="text-maison-link">
-              {t("footer.privacy")}
-            </Link>
-            <Link href="#" className="text-maison-link">
-              {t("footer.terms")}
-            </Link>
+            {legalLinks.map((link) => (
+              <Link key={link.key} href={link.href} className="text-maison-link">
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </PageContainer>

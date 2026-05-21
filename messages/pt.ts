@@ -44,6 +44,7 @@ export const pt = {
     location: "Portugal",
     privacy: "Privacidade",
     terms: "Termos",
+    admin: "Admin",
     copyright: "Todos os direitos reservados",
   },
   cart: {

@@ -43,6 +43,7 @@ export const en = {
     location: "Portugal",
     privacy: "Privacy",
     terms: "Terms",
+    admin: "Admin",
     copyright: "All rights reserved",
   },
   cart: {
