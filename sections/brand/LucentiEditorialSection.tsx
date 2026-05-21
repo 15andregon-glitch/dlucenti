@@ -78,7 +78,7 @@ export async function LucentiEditorialSection({
                     {t("pages.about.quote")}
                   </h1>
                 </blockquote>
-                <figcaption className="mt-7 font-serif text-[0.8125rem] font-normal leading-[1.5] tracking-[0.01em] text-[var(--maison-mist)] sm:mt-8">
+                <figcaption className="mt-7 text-maison-body-sm leading-[1.5] tracking-[0.01em] text-[var(--maison-mist)] sm:mt-8">
                   {t("pages.about.quoteAttribution")}
                 </figcaption>
               </figure>

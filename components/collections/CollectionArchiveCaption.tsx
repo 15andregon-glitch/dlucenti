@@ -14,7 +14,7 @@ export function CollectionArchiveCaption({
 }: CollectionArchiveCaptionProps) {
   return (
     <div className={cn("pt-5 text-center md:pt-6", className)}>
-      <p className="font-serif text-[1.125rem] font-normal leading-[1.25] tracking-[-0.01em] text-[var(--maison-charcoal)] transition-colors duration-500 ease-[var(--ease-maison)] group-hover:text-[var(--maison-gold)] md:text-[1.1875rem]">
+      <p className="font-editorial text-maison-title text-[1.125rem] leading-[1.25] transition-colors duration-500 ease-[var(--ease-maison)] group-hover:text-[var(--maison-gold)] md:text-[1.1875rem]">
         {name}
       </p>
       {subtitle ? (

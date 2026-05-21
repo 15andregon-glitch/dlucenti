@@ -75,7 +75,7 @@ export function CartDrawer() {
         )}
       >
         <header className="flex shrink-0 items-center justify-between px-6 pt-7 pb-6 sm:px-8">
-          <h2 className="font-serif text-[1.25rem] font-normal tracking-tight text-[var(--maison-charcoal)]">
+          <h2 className="font-sans text-[1.25rem] font-normal tracking-tight text-[var(--maison-charcoal)]">
             {t("cart.bag")}
           </h2>
           <button
@@ -91,7 +91,7 @@ export function CartDrawer() {
         <div className="flex min-h-0 flex-1 flex-col">
           {isEmpty ? (
             <div className="flex flex-1 flex-col items-start justify-center px-6 sm:px-8">
-              <p className="font-serif text-[1.125rem] text-[var(--maison-charcoal)]">
+              <p className="font-sans text-[1.125rem] text-[var(--maison-charcoal)]">
                 {t("cart.emptyTitle")}
               </p>
               <p className="mt-3 max-w-[14rem] font-sans text-[0.8125rem] leading-relaxed text-[var(--maison-mist)]">

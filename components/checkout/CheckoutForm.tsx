@@ -23,7 +23,7 @@ export function CheckoutForm() {
   if (items.length === 0 && !submitted) {
     return (
       <div className="py-16">
-        <p className="font-serif text-[1.25rem] text-[var(--maison-charcoal)]">
+        <p className="font-sans text-[1.25rem] text-[var(--maison-charcoal)]">
           {t("checkout.emptyTitle")}
         </p>
         <Link
@@ -39,7 +39,7 @@ export function CheckoutForm() {
   if (submitted) {
     return (
       <div className="py-8">
-        <p className="font-serif text-[clamp(1.5rem,3vw,1.875rem)] font-normal leading-snug tracking-tight text-[var(--maison-charcoal)]">
+        <p className="font-editorial text-maison-headline text-[length:clamp(1.5rem,3vw,1.875rem)] leading-snug">
           {t("checkout.thankYou")}
         </p>
         <p className="mt-5 max-w-md font-sans text-[0.875rem] leading-[1.7] text-[var(--maison-gray)]">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useLayoutEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShoppingBag, Menu, X } from "lucide-react";
@@ -140,6 +140,10 @@ export default function Navbar({
     setCollectionsExpanded(false);
   };
 
+  useLayoutEffect(() => {
+    setScrolled(window.scrollY > 32);
+  }, []);
+
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
@@ -150,7 +154,6 @@ export default function Navbar({
         ticking = false;
       });
     };
-    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -344,7 +347,7 @@ export default function Navbar({
                     onClick={closeMobile}
                     className="flex items-baseline justify-between border-b border-[var(--maison-hairline)] py-6 transition-colors hover:text-[var(--maison-gold)]"
                   >
-                    <span className="font-serif text-[clamp(1.75rem,7vw,2.25rem)] font-normal leading-none tracking-tight text-[var(--maison-charcoal)]">
+                    <span className="font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-normal leading-none tracking-tight text-[var(--maison-charcoal)]">
                       {link.label}
                     </span>
                     <span className="font-sans text-xs tabular-nums text-[var(--maison-mist)]">

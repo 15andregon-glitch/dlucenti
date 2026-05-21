@@ -40,7 +40,7 @@ export function OrderSummary() {
               )}
             </div>
             <div className="min-w-0 flex-1 pt-0.5">
-              <p className="font-serif text-[1rem] leading-snug text-[var(--maison-charcoal)]">
+              <p className="font-sans text-[1rem] leading-snug text-[var(--maison-charcoal)]">
                 {product.name}
               </p>
               <p className="mt-1 font-sans text-[0.75rem] text-[var(--maison-mist)]">

@@ -164,8 +164,8 @@ export const pt = {
   },
   collections: {
     label: "Coleções",
-    title: "Editorial de coleções",
-    titleEmphasis: "coleções",
+    title: "Coleções",
+    titleEmphasis: "",
     description:
       "Uma sequência de peças selecionadas com clareza e brilho.",
     viewCollection: "Ver coleção",

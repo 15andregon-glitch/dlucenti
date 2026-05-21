@@ -18,7 +18,7 @@ export default async function HomePage({
 
   return (
     <main>
-      <HeroSection />
+      <HeroSection locale={locale} />
       <NewInSection locale={locale} />
       <FeaturedCollectionsSection locale={locale} />
       <CampaignGallerySection />

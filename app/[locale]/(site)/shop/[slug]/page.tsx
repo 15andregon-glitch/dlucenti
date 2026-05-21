@@ -61,7 +61,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </p>
               ) : null}
 
-              <h1 className="mt-3 font-serif text-[clamp(1.75rem,4vw,2.25rem)] font-normal leading-[1.12] tracking-tight text-[var(--maison-charcoal)]">
+              <h1 className="mt-3 font-editorial text-[clamp(1.75rem,4vw,2.25rem)] font-normal leading-[1.12] tracking-[var(--tracking-editorial)] text-[var(--maison-charcoal)]">
                 {product.name}
               </h1>
 

@@ -1,14 +1,19 @@
 "use client";
 
+import { useLayoutEffect, useState } from "react";
 import { ReactLenis } from "lenis/react";
 import { LENIS_OPTIONS } from "@/lib/constants";
-import { usePerformanceMode } from "@/hooks/usePerformanceMode";
 
 export function LenisProvider({ children }: { children: React.ReactNode }) {
-  const { lightMotion } = usePerformanceMode();
+  const [enableLenis, setEnableLenis] = useState(false);
 
-  // Native scroll on mobile — smoother touch, less main-thread work
-  if (lightMotion) {
+  useLayoutEffect(() => {
+    const desktop = window.matchMedia("(min-width: 768px)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setEnableLenis(desktop && !reduced);
+  }, []);
+
+  if (!enableLenis) {
     return <>{children}</>;
   }
 

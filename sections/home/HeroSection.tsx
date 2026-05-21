@@ -1,15 +1,14 @@
-"use client";
-
 import Link from "next/link";
 import { CinematicHeroVideo } from "@/components/media/CinematicHeroVideo";
-import { useTranslations } from "@/hooks/useTranslations";
+import { getTranslations } from "@/lib/i18n/translations";
+import type { Locale } from "@/lib/i18n/locale";
 
-export function HeroSection() {
-  const { t, routes, messages } = useTranslations();
+export async function HeroSection({ locale }: { locale: Locale }) {
+  const { t, routes, messages } = await getTranslations(locale);
 
   return (
     <section
-      className="hero-campaign-section relative min-h-[100dvh] min-h-[100svh] overflow-hidden bg-[var(--maison-warm-white)]"
+      className="hero-campaign-section relative overflow-hidden bg-[var(--maison-warm-white)]"
       aria-label={`${messages.meta.siteName} campaign`}
     >
       <CinematicHeroVideo />
@@ -19,8 +18,8 @@ export function HeroSection() {
         aria-hidden
       />
 
-      <div className="relative z-10 flex min-h-[100dvh] min-h-[100svh] flex-col items-center justify-end pb-[max(4.5rem,calc(3rem+env(safe-area-inset-bottom,0px)))] md:pb-[5.5rem] lg:pb-28">
-        <div className="hero-reveal pointer-events-auto w-full px-6 md:px-12 lg:px-16">
+      <div className="hero-campaign-stage relative z-10 flex h-full flex-col items-center justify-end pb-[max(4.5rem,calc(3rem+env(safe-area-inset-bottom,0px)))] md:pb-[5.5rem] lg:pb-28">
+        <div className="hero-campaign-chrome pointer-events-auto w-full px-6 md:px-12 lg:px-16">
           <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-3 text-center md:gap-9 lg:gap-10">
             <h1 className="hero-campaign-label m-0 w-full text-center">
               {t("home.heroLabel")}

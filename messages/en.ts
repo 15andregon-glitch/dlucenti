@@ -161,8 +161,8 @@ export const en = {
   },
   collections: {
     label: "Collections",
-    title: "Collection editorial",
-    titleEmphasis: "editorial",
+    title: "Collections",
+    titleEmphasis: "",
     description: "A sequence of selected pieces with clarity and brilliance.",
     viewCollection: "View collection",
     viewAll: "View all collections",

@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
+import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 
 export const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,16 +11,18 @@ export const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-/** Restrained editorial serif — modern quiet luxury */
-export const sourceSerif = Source_Serif_4({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+/** Cormorant Garamond — editorial headings (Google Fonts) */
+export const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  display: "swap",
+  preload: true,
 });
 
 export const fontVariables = [
   geistSans.variable,
   geistMono.variable,
-  sourceSerif.variable,
+  cormorantGaramond.variable,
 ].join(" ");

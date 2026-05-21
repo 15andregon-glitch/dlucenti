@@ -18,7 +18,13 @@ export function EditorialHeading({
   size = "default",
 }: EditorialHeadingProps) {
   return (
-    <header className={cn(align === "center" && "text-center", className)}>
+    <header
+      className={cn(
+        "font-editorial",
+        align === "center" && "text-center",
+        className,
+      )}
+    >
       {subtitle && <p className="mb-3 text-maison-label">{subtitle}</p>}
       <Tag
         className={cn(

@@ -45,7 +45,7 @@ export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
           <Link
             href={ROUTES.product(product.slug)}
             onClick={onNavigate}
-            className="block font-serif text-[1.0625rem] font-normal leading-snug tracking-tight text-[var(--maison-charcoal)] transition-opacity duration-500 ease-[var(--ease-maison)] hover:opacity-65"
+            className="block font-editorial text-maison-title text-[1.0625rem] leading-snug transition-opacity duration-500 ease-[var(--ease-maison)] hover:opacity-65"
           >
             {product.name}
           </Link>

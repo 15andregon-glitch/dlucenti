@@ -37,7 +37,7 @@ export default async function CheckoutPage({
           <p className="text-maison-label text-[var(--maison-gold)]">
             {t("pages.checkout.label")}
           </p>
-          <h1 className="mt-3 font-serif text-[clamp(1.75rem,4vw,2.25rem)] font-normal leading-[1.12] tracking-tight text-[var(--maison-charcoal)]">
+          <h1 className="mt-3 font-editorial text-maison-headline text-[length:clamp(1.75rem,4vw,2.25rem)]">
             {t("pages.checkout.title")}
           </h1>
         </header>

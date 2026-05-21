@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ASSETS } from "@/lib/assets";
 import { cn } from "@/lib/cn";
-import { usePerformanceMode } from "@/hooks/usePerformanceMode";
 
 interface CinematicHeroVideoProps {
   className?: string;
@@ -14,9 +13,7 @@ const objectPosition = "object-cover object-[center_42%]";
 export function CinematicHeroVideo({ className }: CinematicHeroVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
-  const { lightMotion } = usePerformanceMode();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -25,11 +22,7 @@ export function CinematicHeroVideo({ className }: CinematicHeroVideoProps) {
 
     const play = () => video.play().catch(() => {});
 
-    const onLoaded = () => {
-      setVideoReady(true);
-      play();
-    };
-
+    const onLoaded = () => play();
     const onError = () => setVideoFailed(true);
 
     if (video.readyState >= 2) onLoaded();
@@ -58,11 +51,10 @@ export function CinematicHeroVideo({ className }: CinematicHeroVideoProps) {
       ref={containerRef}
       className={cn("absolute inset-0 overflow-hidden", className)}
     >
-      {/* Always-visible poster — existing campaign asset, no broken /campaigns paths */}
       <img
         src={ASSETS.images.hero}
         alt=""
-        decoding="async"
+        decoding="sync"
         fetchPriority="high"
         className={cn("absolute inset-0 h-full w-full", objectPosition)}
         aria-hidden
@@ -75,12 +67,8 @@ export function CinematicHeroVideo({ className }: CinematicHeroVideoProps) {
           muted
           loop
           playsInline
-          preload={lightMotion ? "metadata" : "auto"}
-          className={cn(
-            "absolute inset-0 h-full w-full transition-opacity duration-700 ease-out",
-            objectPosition,
-            videoReady ? "opacity-100" : "opacity-0",
-          )}
+          preload="auto"
+          className={cn("absolute inset-0 h-full w-full", objectPosition)}
           aria-hidden
         >
           <source src={ASSETS.videos.hero} type="video/mp4" />

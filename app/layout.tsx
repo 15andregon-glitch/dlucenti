@@ -11,7 +11,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fontVariables} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${fontVariables} h-full antialiased`}
+      style={{ fontFamily: "var(--font-geist-sans), system-ui, sans-serif" }}
+    >
       <body className="min-h-full flex flex-col bg-[var(--maison-ivory)] text-[var(--maison-charcoal)]">
         <AppProviders>{children}</AppProviders>
       </body>
