@@ -62,7 +62,7 @@ on conflict (slug) do update set
   cover_image = excluded.cover_image;
 
 insert into public.products (
-  id, name, slug, description, price, category, target_gender, stock, featured, new_in, collection_id, active
+  id, name, slug, description, price, category, target_gender, stock, featured, new_in, collection_id, active, publication_status, hidden_from_frontend, archived
 )
 values
   (
@@ -77,7 +77,10 @@ values
     true,
     true,
     'a0000001-0000-4000-8000-000000000001',
-    true
+    true,
+    'published',
+    false,
+    false
   ),
   (
     'b0000001-0000-4000-8000-000000000002',
@@ -91,7 +94,10 @@ values
     true,
     false,
     'a0000001-0000-4000-8000-000000000002',
-    true
+    true,
+    'published',
+    false,
+    false
   ),
   (
     'b0000001-0000-4000-8000-000000000003',
@@ -105,7 +111,10 @@ values
     true,
     false,
     'a0000001-0000-4000-8000-000000000003',
-    true
+    true,
+    'published',
+    false,
+    false
   ),
   (
     'b0000001-0000-4000-8000-000000000004',
@@ -119,9 +128,16 @@ values
     true,
     false,
     null,
-    true
+    true,
+    'published',
+    false,
+    false
   )
-on conflict (slug) do nothing;
+on conflict (slug) do update set
+  publication_status = excluded.publication_status,
+  active = excluded.active,
+  hidden_from_frontend = excluded.hidden_from_frontend,
+  archived = excluded.archived;
 
 insert into public.product_images (product_id, image_url, alt, position)
 values

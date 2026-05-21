@@ -52,3 +52,12 @@ update public.products
 set active = true
 where publication_status = 'published'
   and active = false;
+
+-- Catalog was left as draft (storefront query returns 0 rows). Publish non-archived products.
+update public.products
+set publication_status = 'published',
+    active = true,
+    hidden_from_frontend = false
+where coalesce(archived, false) = false
+  and coalesce(hidden_from_frontend, false) = false
+  and publication_status is distinct from 'published';

@@ -29,6 +29,13 @@ async function fromSupabase<T>(
   try {
     return await loader();
   } catch (error) {
+    const digest =
+      error && typeof error === "object" && "digest" in error
+        ? String((error as { digest?: string }).digest)
+        : "";
+    if (digest.includes("DYNAMIC_SERVER_USAGE")) {
+      throw error;
+    }
     console.error("[storefront] Supabase product load failed", error);
     return fallback();
   }

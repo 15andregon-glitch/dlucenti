@@ -1,6 +1,7 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { mapProductWithCollection } from "@/lib/supabase/mappers";
 import { filterStorefrontProducts } from "@/lib/storefront-product-visibility";
+import { logStorefrontProductPipeline } from "@/lib/storefront-product-pipeline-debug";
 import type { Product } from "@/lib/types";
 import type { ShopNavCategory } from "@/lib/shop-catalog";
 import {
@@ -18,15 +19,29 @@ import {
 } from "@/lib/shop-audience";
 import type { ProductWithCollection } from "@/types/database";
 
-function toProducts(rows: ProductWithCollection[] | null): Product[] {
-  return filterStorefrontProducts(rows ?? []).map((row) =>
-    mapProductWithCollection(row),
-  );
+function toProducts(
+  rows: ProductWithCollection[] | null,
+  label: string,
+): Product[] {
+  const fromSupabase = rows?.length ?? 0;
+  const visible = filterStorefrontProducts(rows ?? []);
+  const afterVisibility = visible.length;
+  const mapped = visible.map((row) => mapProductWithCollection(row));
+  logStorefrontProductPipeline(label, {
+    fromSupabase,
+    afterVisibility,
+    afterMap: mapped.length,
+  });
+  return mapped;
 }
 
-function toProduct(row: ProductWithCollection | null): Product | null {
-  if (!row || !filterStorefrontProducts([row]).length) return null;
-  return mapProductWithCollection(row);
+function toProduct(
+  row: ProductWithCollection | null,
+  label: string,
+): Product | null {
+  if (!row) return null;
+  const products = toProducts([row], label);
+  return products[0] ?? null;
 }
 
 export async function getProducts(): Promise<Product[]> {
@@ -36,70 +51,95 @@ export async function getProducts(): Promise<Product[]> {
 export async function getProductsByShopAudience(
   audience: ShopAudienceSegment,
 ): Promise<Product[]> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const genders = targetGendersForAudience(audience);
   const { data, error } = await fetchStorefrontProductsByTargetGenders(client, genders);
-  if (error) throw error;
-  return toProducts(data);
+  if (error) {
+    logStorefrontProductPipeline(`shop:${audience}`, { error: error.message });
+    throw error;
+  }
+  return toProducts(data, `shop:${audience}`);
 }
 
 export async function getProductsByShopAudienceAndCategory(
   audience: ShopAudienceSegment,
   category: ShopNavCategory,
 ): Promise<Product[]> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const genders = targetGendersForAudience(audience);
   const { data, error } = await fetchStorefrontProductsByTargetGendersAndCategory(
     client,
     genders,
     category,
   );
-  if (error) throw error;
-  return toProducts(data);
+  if (error) {
+    logStorefrontProductPipeline(`shop:${audience}:${category}`, {
+      error: error.message,
+    });
+    throw error;
+  }
+  return toProducts(data, `shop:${audience}:${category}`);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const { data, error } = await fetchFeaturedProducts(client);
-  if (error) throw error;
-  return toProducts(data);
+  if (error) {
+    logStorefrontProductPipeline("featured", { error: error.message });
+    throw error;
+  }
+  return toProducts(data, "featured");
 }
 
 export async function getNewInProducts(): Promise<Product[]> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const { data, error } = await fetchNewInProducts(client);
-  if (error) throw error;
-  return toProducts(data);
+  if (error) {
+    logStorefrontProductPipeline("new-in", { error: error.message });
+    throw error;
+  }
+  return toProducts(data, "new-in");
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const { data, error } = await fetchProductBySlug(client, slug);
-  if (error) throw error;
-  return toProduct(data as ProductWithCollection | null);
+  if (error) {
+    logStorefrontProductPipeline(`product:${slug}`, { error: error.message });
+    throw error;
+  }
+  return toProduct(data as ProductWithCollection | null, `product:${slug}`);
 }
 
 export async function getProductsByCollection(
   collectionSlug: string,
 ): Promise<Product[]> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const { data, error } = await fetchProductsByCollectionSlug(
     client,
     collectionSlug,
   );
-  if (error) throw error;
-  return toProducts(data);
+  if (error) {
+    logStorefrontProductPipeline(`collection:${collectionSlug}`, {
+      error: error.message,
+    });
+    throw error;
+  }
+  return toProducts(data, `collection:${collectionSlug}`);
 }
 
 export async function getRelatedProducts(
   product: Product,
   limit = 3,
 ): Promise<Product[]> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
   const { data, error } = await fetchStorefrontProducts(client);
-  if (error) throw error;
+  if (error) {
+    logStorefrontProductPipeline("related", { error: error.message });
+    throw error;
+  }
 
-  const related = toProducts(data)
+  return toProducts(data, "related")
     .filter(
       (p) =>
         p.id !== product.id &&
@@ -107,8 +147,6 @@ export async function getRelatedProducts(
           p.collectionSlug === product.collectionSlug),
     )
     .slice(0, limit);
-
-  return related;
 }
 
 /** Dashboard: all products including inactive */
