@@ -146,7 +146,7 @@ function handleStorefrontLocale(request: NextRequest): NextResponse {
   return redirectToLocalized(request, preferred, pathname);
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (

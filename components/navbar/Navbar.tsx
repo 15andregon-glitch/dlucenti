@@ -3,7 +3,7 @@
 import { useEffect, useId, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X } from "lucide-react";
 import {
   CollectionsMegaMenuDesktop,
   CollectionsMobileAccordion,
@@ -254,7 +254,7 @@ export default function Navbar({
                 menuOpen && "pointer-events-none opacity-0",
               )}
             >
-              <LanguageSwitcher locale={locale} variant="nav" className="mr-2" />
+              <LanguageSwitcher locale={locale} variant="nav" />
             </div>
             <div
               className={cn(
@@ -263,9 +263,6 @@ export default function Navbar({
                   "pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100",
               )}
             >
-              <IconButton label={t("nav.search")}>
-                <Search className="h-[17px] w-[17px]" strokeWidth={1.25} />
-              </IconButton>
               <CartBagButton />
             </div>
             <button
@@ -359,14 +356,9 @@ export default function Navbar({
             )}
           </ul>
           <div className="mt-auto flex items-center justify-between border-t border-[var(--maison-hairline)] pt-8">
-            <div className="flex gap-6">
-              <button type="button" className="text-maison-nav">
-                {t("nav.search")}
-              </button>
-              <button type="button" className="text-maison-nav">
-                {t("nav.cart")}
-              </button>
-            </div>
+            <button type="button" className="text-maison-nav">
+              {t("nav.cart")}
+            </button>
             <div className="flex flex-col items-end gap-3">
               <LanguageSwitcher locale={locale} variant="nav" />
               <p className="text-maison-label">{messages.meta.heritage}</p>
