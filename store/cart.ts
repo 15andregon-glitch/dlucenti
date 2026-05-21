@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { isProductPurchasable } from "@/lib/product-availability";
+import {
+  getProductStock,
+  isProductPurchasable,
+} from "@/lib/product-availability";
 import type { Product } from "@/lib/types";
 
 export interface CartItem {
@@ -30,33 +33,49 @@ export const useCartStore = create<CartState>()(
           if (!isProductPurchasable(product)) {
             return state;
           }
+          const maxQty = getProductStock(product);
           const existing = state.items.find(
             (i) => i.product.id === product.id,
           );
           if (existing) {
+            const nextQty = Math.min(existing.quantity + quantity, maxQty);
             return {
               items: state.items.map((i) =>
                 i.product.id === product.id
-                  ? { ...i, quantity: i.quantity + quantity }
+                  ? { ...i, quantity: nextQty }
                   : i,
               ),
             };
           }
-          return { items: [...state.items, { product, quantity }] };
+          return {
+            items: [
+              ...state.items,
+              { product, quantity: Math.min(quantity, maxQty) },
+            ],
+          };
         }),
       removeItem: (productId) =>
         set((state) => ({
           items: state.items.filter((i) => i.product.id !== productId),
         })),
       updateQuantity: (productId, quantity) =>
-        set((state) => ({
-          items:
-            quantity <= 0
-              ? state.items.filter((i) => i.product.id !== productId)
-              : state.items.map((i) =>
-                  i.product.id === productId ? { ...i, quantity } : i,
-                ),
-        })),
+        set((state) => {
+          const item = state.items.find((i) => i.product.id === productId);
+          if (!item) return state;
+          if (quantity <= 0) {
+            return {
+              items: state.items.filter((i) => i.product.id !== productId),
+            };
+          }
+          const maxQty = getProductStock(item.product);
+          return {
+            items: state.items.map((i) =>
+              i.product.id === productId
+                ? { ...i, quantity: Math.min(quantity, maxQty) }
+                : i,
+            ),
+          };
+        }),
       clearCart: () => set({ items: [] }),
       setOpen: (isOpen) => set({ isOpen }),
       totalItems: () =>

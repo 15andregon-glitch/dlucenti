@@ -21,6 +21,8 @@ export function getRoutes(locale: Locale) {
     journalPost: (slug: string) => localizedPath(locale, `/journal/${slug}`),
     contact: localizedPath(locale, "/contact"),
     checkout: localizedPath(locale, "/checkout"),
+    checkoutSuccess: localizedPath(locale, "/checkout/success"),
+    checkoutCancel: localizedPath(locale, "/checkout/cancel"),
     /** Admin / legacy — never locale-prefixed */
     dashboard: "/dashboard",
     dashboardProducts: "/dashboard/products",

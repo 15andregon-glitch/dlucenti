@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/cart";
+import { useTranslations } from "@/hooks/useTranslations";
 
 export function OrderSummary() {
+  const { t } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.subtotal);
@@ -21,7 +23,9 @@ export function OrderSummary() {
 
   return (
     <aside className="lg:sticky lg:top-28">
-      <p className="text-maison-label text-[var(--maison-mist)]">Order summary</p>
+      <p className="text-maison-label text-[var(--maison-mist)]">
+        {t("checkout.orderSummary")}
+      </p>
 
       <ul className="mt-8 space-y-6">
         {items.map(({ product, quantity }) => (
@@ -44,7 +48,7 @@ export function OrderSummary() {
                 {product.name}
               </p>
               <p className="mt-1 font-sans text-[0.75rem] text-[var(--maison-mist)]">
-                Qty {quantity}
+                {t("checkout.qty")} {quantity}
               </p>
               <p className="mt-2 font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
                 {formatPrice(product.price * quantity, product.currency)}
@@ -57,7 +61,7 @@ export function OrderSummary() {
       <div className="mt-10 space-y-3 border-t border-[var(--maison-hairline)] pt-8">
         <div className="flex items-baseline justify-between gap-4">
           <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
-            Subtotal
+            {t("cart.subtotal")}
           </span>
           <span className="font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
             {formatPrice(total, currency)}
@@ -65,15 +69,15 @@ export function OrderSummary() {
         </div>
         <div className="flex items-baseline justify-between gap-4">
           <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
-            Shipping
+            {t("checkout.shipping")}
           </span>
           <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
-            Complimentary
+            {t("checkout.complimentary")}
           </span>
         </div>
         <div className="flex items-baseline justify-between gap-4 pt-3">
           <span className="font-sans text-[0.875rem] text-[var(--maison-charcoal)]">
-            Total
+            {t("checkout.total")}
           </span>
           <span className="font-sans text-[0.9375rem] tabular-nums text-[var(--maison-charcoal)]">
             {formatPrice(total, currency)}
@@ -82,7 +86,7 @@ export function OrderSummary() {
       </div>
 
       <p className="mt-8 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
-        All orders are carefully prepared and dispatched within 3–5 business days.
+        {t("checkout.orderDispatchNote")}
       </p>
     </aside>
   );

@@ -744,6 +744,10 @@ export interface Database {
           currency: string;
           period_id: string | null;
           synced_to_finance: boolean;
+          stripe_session_id: string | null;
+          stripe_payment_intent: string | null;
+          customer_email: string | null;
+          customer_name: string | null;
         };
         Insert: {
           id?: string;
@@ -758,6 +762,10 @@ export interface Database {
           currency?: string;
           period_id?: string | null;
           synced_to_finance?: boolean;
+          stripe_session_id?: string | null;
+          stripe_payment_intent?: string | null;
+          customer_email?: string | null;
+          customer_name?: string | null;
         };
         Update: {
           id?: string;
@@ -772,6 +780,10 @@ export interface Database {
           currency?: string;
           period_id?: string | null;
           synced_to_finance?: boolean;
+          stripe_session_id?: string | null;
+          stripe_payment_intent?: string | null;
+          customer_email?: string | null;
+          customer_name?: string | null;
         };
         Relationships: [
           {
@@ -830,7 +842,12 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      decrement_product_stock: {
+        Args: { p_product_id: string; p_quantity: number };
+        Returns: number;
+      };
+    };
     Enums: {
       product_category: ProductCategory;
       product_target_gender: ProductTargetGender;

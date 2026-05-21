@@ -26,8 +26,17 @@ Fill in keys from [Supabase Dashboard](https://supabase.com/dashboard) → Proje
 7. `collections-editorial.sql` — editorial collections CMS (media, blocks, layout)  
 8. `publish-collections.sql` — one-time fix if `/collections` is empty but rows exist in Admin → Collections  
 9. `finance.sql` — reporting periods, entries, orders (optional until finance module is used)
+10. `stripe-checkout.sql` — Stripe session columns on `orders`, idempotent indexes, `decrement_product_stock()` RPC (run before enabling live Checkout)
 
 Do **not** run `finance-seed.sql` — it contained demo data and is deprecated.
+
+### Stripe webhook (production)
+
+After deploy, register in [Stripe Dashboard → Webhooks](https://dashboard.stripe.com/webhooks):
+
+- URL: `https://dlucenti.com/api/stripe/webhook`
+- Event: `checkout.session.completed`
+- Signing secret → `STRIPE_WEBHOOK_SECRET` on Vercel
 
 ## Enable live data
 
