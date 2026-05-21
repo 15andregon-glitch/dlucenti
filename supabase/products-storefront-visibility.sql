@@ -1,14 +1,11 @@
 -- Storefront visibility: CMS state only (not inventory).
--- Run in Supabase SQL editor after schema.sql.
+-- Run in Supabase SQL editor after schema.sql, then products-rls-hotfix.sql if RLS was already tightened.
 
 alter table public.products
   add column if not exists hidden_from_frontend boolean not null default false,
   add column if not exists archived boolean not null default false;
 
--- Legacy "active" mapped to visible when published (optional backfill).
-update public.products
-set hidden_from_frontend = true
-where publication_status = 'published' and active = false and hidden_from_frontend = false;
+-- Do NOT map active=false → hidden_from_frontend (breaks sold-out / legacy rows).
 
 drop policy if exists "products_public_read" on public.products;
 create policy "products_public_read"
@@ -16,11 +13,9 @@ on public.products for select
 to anon, authenticated
 using (
   publication_status = 'published'
-  and hidden_from_frontend = false
-  and archived = false
+  and coalesce(hidden_from_frontend, false) = false
+  and coalesce(archived, false) = false
 );
-
--- After this migration, app auto-uses hidden_from_frontend + archived filters.
 
 drop policy if exists "product_images_public_read" on public.product_images;
 create policy "product_images_public_read"
@@ -31,8 +26,8 @@ using (
     select 1 from public.products p
     where p.id = product_id
       and p.publication_status = 'published'
-      and p.hidden_from_frontend = false
-      and p.archived = false
+      and coalesce(p.hidden_from_frontend, false) = false
+      and coalesce(p.archived, false) = false
   )
 );
 
@@ -45,7 +40,7 @@ using (
     select 1 from public.products p
     where p.id = product_id
       and p.publication_status = 'published'
-      and p.hidden_from_frontend = false
-      and p.archived = false
+      and coalesce(p.hidden_from_frontend, false) = false
+      and coalesce(p.archived, false) = false
   )
 );

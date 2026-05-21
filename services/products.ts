@@ -26,7 +26,12 @@ async function fromSupabase<T>(
   if (!useSupabaseDataSource()) {
     return fallback();
   }
-  return loader();
+  try {
+    return await loader();
+  } catch (error) {
+    console.error("[storefront] Supabase product load failed", error);
+    return fallback();
+  }
 }
 
 export async function getProducts(): Promise<Product[]> {

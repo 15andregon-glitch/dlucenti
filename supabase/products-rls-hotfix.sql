@@ -1,11 +1,14 @@
--- Storefront RLS: CMS visibility only (not inventory).
--- Run in Supabase SQL Editor. Aligns with app queries in queries/products.ts.
+-- Storefront RLS: CMS publication only (not inventory, not legacy active alone).
+-- Run in Supabase SQL Editor. Safe if columns hidden_from_frontend / archived are missing.
 
 drop policy if exists "products_public_read" on public.products;
 create policy "products_public_read"
 on public.products for select
 to anon, authenticated
-using (publication_status = 'published' and active = true);
+using (
+  publication_status = 'published'
+  or (publication_status is null and active is true)
+);
 
 drop policy if exists "product_images_public_read" on public.product_images;
 create policy "product_images_public_read"
@@ -15,8 +18,10 @@ using (
   exists (
     select 1 from public.products p
     where p.id = product_id
-      and p.publication_status = 'published'
-      and p.active = true
+      and (
+        p.publication_status = 'published'
+        or (p.publication_status is null and p.active is true)
+      )
   )
 );
 
@@ -28,12 +33,21 @@ using (
   exists (
     select 1 from public.products p
     where p.id = product_id
-      and p.publication_status = 'published'
-      and p.active = true
+      and (
+        p.publication_status = 'published'
+        or (p.publication_status is null and p.active is true)
+      )
   )
 );
 
--- Restore visibility for published products (stock = 0 must stay visible).
+-- Undo mistaken hide backfill (products-storefront-visibility.sql set hidden_from_frontend from active=false).
+update public.products
+set hidden_from_frontend = false,
+    active = true
+where publication_status = 'published'
+  and hidden_from_frontend = true;
+
+-- Ensure published catalog is visible (stock = 0 included).
 update public.products
 set active = true
 where publication_status = 'published'

@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { mapProductWithCollection } from "@/lib/supabase/mappers";
+import { filterStorefrontProducts } from "@/lib/storefront-product-visibility";
 import type { Product } from "@/lib/types";
 import type { ShopNavCategory } from "@/lib/shop-catalog";
 import {
@@ -17,7 +18,14 @@ import {
 } from "@/lib/shop-audience";
 import type { ProductWithCollection } from "@/types/database";
 
-function toProduct(row: ProductWithCollection): Product {
+function toProducts(rows: ProductWithCollection[] | null): Product[] {
+  return filterStorefrontProducts(rows ?? []).map((row) =>
+    mapProductWithCollection(row),
+  );
+}
+
+function toProduct(row: ProductWithCollection | null): Product | null {
+  if (!row || !filterStorefrontProducts([row]).length) return null;
   return mapProductWithCollection(row);
 }
 
@@ -32,7 +40,7 @@ export async function getProductsByShopAudience(
   const genders = targetGendersForAudience(audience);
   const { data, error } = await fetchStorefrontProductsByTargetGenders(client, genders);
   if (error) throw error;
-  return (data ?? []).map(toProduct);
+  return toProducts(data);
 }
 
 export async function getProductsByShopAudienceAndCategory(
@@ -47,29 +55,28 @@ export async function getProductsByShopAudienceAndCategory(
     category,
   );
   if (error) throw error;
-  return (data ?? []).map(toProduct);
+  return toProducts(data);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
   const client = await createSupabaseServerClient();
   const { data, error } = await fetchFeaturedProducts(client);
   if (error) throw error;
-  return (data ?? []).map(toProduct);
+  return toProducts(data);
 }
 
 export async function getNewInProducts(): Promise<Product[]> {
   const client = await createSupabaseServerClient();
   const { data, error } = await fetchNewInProducts(client);
   if (error) throw error;
-  return (data ?? []).map(toProduct);
+  return toProducts(data);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const client = await createSupabaseServerClient();
   const { data, error } = await fetchProductBySlug(client, slug);
   if (error) throw error;
-  if (!data) return null;
-  return toProduct(data as ProductWithCollection);
+  return toProduct(data as ProductWithCollection | null);
 }
 
 export async function getProductsByCollection(
@@ -81,7 +88,7 @@ export async function getProductsByCollection(
     collectionSlug,
   );
   if (error) throw error;
-  return (data ?? []).map(toProduct);
+  return toProducts(data);
 }
 
 export async function getRelatedProducts(
@@ -92,8 +99,7 @@ export async function getRelatedProducts(
   const { data, error } = await fetchStorefrontProducts(client);
   if (error) throw error;
 
-  const related = (data ?? [])
-    .map(toProduct)
+  const related = toProducts(data)
     .filter(
       (p) =>
         p.id !== product.id &&
