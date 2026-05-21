@@ -90,11 +90,14 @@ export async function getNewInProducts(): Promise<Product[]> {
       const { getNewInProducts: get } = await import("./supabase/products");
       return get();
     },
-    () =>
-      NEW_IN_CATEGORY_ORDER.flatMap((category) => {
+    () => {
+      const homepage = products.filter((p) => p.featured);
+      if (homepage.length > 0) return homepage;
+      return NEW_IN_CATEGORY_ORDER.flatMap((category) => {
         const product = products.find((p) => p.category === category);
         return product ? [product] : [];
-      }),
+      });
+    },
   );
 }
 

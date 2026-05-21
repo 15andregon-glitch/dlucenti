@@ -114,12 +114,24 @@ export async function listCampaignsAdmin(): Promise<CampaignRow[]> {
   return data ?? [];
 }
 
-export async function listProductsForSelectAdmin(): Promise<
-  Pick<ProductRow, "id" | "name" | "slug">[]
-> {
+export type ProductSelectAdminRow = Pick<
+  ProductRow,
+  | "id"
+  | "name"
+  | "slug"
+  | "publication_status"
+  | "active"
+  | "hidden_from_frontend"
+  | "archived"
+  | "featured"
+>;
+
+export async function listProductsForSelectAdmin(): Promise<ProductSelectAdminRow[]> {
   const { data, error } = await (await adminRead())
     .from("products")
-    .select("id, name, slug")
+    .select(
+      "id, name, slug, publication_status, active, hidden_from_frontend, archived, featured",
+    )
     .order("name", { ascending: true });
   if (error) throw error;
   return data ?? [];

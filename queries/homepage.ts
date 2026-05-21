@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
-import { PRODUCT_SELECT } from "./products";
+import { storefrontProductsQuery } from "./products";
 
 type Client = SupabaseClient<Database>;
 
@@ -22,11 +22,7 @@ export async function fetchHomepageNewIn(client: Client) {
   if (!slots?.length) return { data: [], error: null };
 
   const ids = slots.map((s) => s.product_id);
-  const { data, error } = await client
-    .from("products")
-    .select(PRODUCT_SELECT)
-    .eq("active", true)
-    .in("id", ids);
+  const { data, error } = await storefrontProductsQuery(client).in("id", ids);
 
   if (error || !data) return { data: null, error };
 

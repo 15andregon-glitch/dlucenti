@@ -14,7 +14,7 @@ type Client = SupabaseClient<Database>;
  * Broad DB fetch: published rows + legacy rows (null publication_status, active).
  * Stock is never filtered. CMS hide/archive applied in services via filterStorefrontProducts.
  */
-function storefrontProductsQuery(client: Client) {
+export function storefrontProductsQuery(client: Client) {
   return client
     .from("products")
     .select(PRODUCT_SELECT)
@@ -45,11 +45,15 @@ export async function fetchStorefrontProductsByTargetGendersAndCategory(
     .order("created_at", { ascending: false });
 }
 
-export async function fetchFeaturedProducts(client: Client) {
+/** Homepage-flagged products (DB: featured). Filtered again in services. */
+export async function fetchHomepageFlaggedProducts(client: Client) {
   return storefrontProductsQuery(client)
     .eq("featured", true)
     .order("created_at", { ascending: false });
 }
+
+/** @deprecated Use fetchHomepageFlaggedProducts */
+export const fetchFeaturedProducts = fetchHomepageFlaggedProducts;
 
 export async function fetchProductBySlug(client: Client, slug: string) {
   return storefrontProductsQuery(client).eq("slug", slug).maybeSingle();
@@ -89,7 +93,7 @@ export async function fetchNewInProducts(client: Client) {
 
   if (slotsError || !slots?.length) {
     return storefrontProductsQuery(client)
-      .eq("new_in", true)
+      .eq("featured", true)
       .order("created_at", { ascending: false });
   }
 

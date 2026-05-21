@@ -7,6 +7,7 @@ import { useCartStore } from "@/store/cart";
 import {
   getProductStock,
   isProductPurchasable,
+  isProductSoldOut,
 } from "@/lib/product-availability";
 import type { Product } from "@/lib/types";
 import { cn } from "@/lib/cn";
@@ -22,6 +23,7 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
   const purchasable = isProductPurchasable(product);
+  const soldOut = isProductSoldOut(product);
   const maxStock = getProductStock(product);
 
   const handleAdd = () => {
@@ -37,7 +39,7 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
           className="inline-flex w-full cursor-default items-center justify-center border border-[var(--maison-charcoal)] bg-[var(--maison-charcoal)] px-7 py-2.5 font-sans text-[13px] font-normal tracking-normal text-[var(--maison-warm-white)] opacity-60 sm:w-auto sm:min-w-[12rem]"
           aria-disabled
         >
-          {t("product.unavailable")}
+          {soldOut ? t("product.soldOut") : t("product.unavailable")}
         </span>
       </div>
     );

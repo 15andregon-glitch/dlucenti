@@ -1,4 +1,5 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
+import { filterHomepageProducts } from "@/lib/product-editorial-visibility";
 import {
   mapCampaignRow,
   mapCollectionRow,
@@ -28,7 +29,7 @@ type SettingsWithCollection = HomepageSettingsRow & {
 };
 
 export async function getHomepageContent(): Promise<HomepageContent> {
-  const client = await createSupabaseServerClient();
+  const client = createSupabasePublicClient();
 
   const [settingsRes, newInRes, campaignsRes] = await Promise.all([
     fetchHomepageSettings(client),
@@ -54,7 +55,7 @@ export async function getHomepageContent(): Promise<HomepageContent> {
           updated_at: settingsRow.updated_at,
         }
       : null,
-    newIn: (newInRes.data ?? []).map((row) =>
+    newIn: filterHomepageProducts(newInRes.data ?? []).map((row) =>
       mapProductWithCollection(row as ProductWithCollection),
     ),
     campaigns: (campaignsRes.data ?? []).map((row, i) =>

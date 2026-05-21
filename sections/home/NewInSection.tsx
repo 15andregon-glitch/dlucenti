@@ -18,7 +18,7 @@ export async function NewInSection({ locale }: { locale: Locale }) {
     >
       <PageContainer>
         <header className="mb-8 flex justify-end md:mb-10">
-          <h2 className="sr-only">{t("product.newIn")}</h2>
+          <h2 className="sr-only">{t("product.newInSection")}</h2>
           <Link
             href={routes.shop}
             className="text-maison-link transition-colors duration-500 ease-[var(--ease-maison)] hover:text-[var(--maison-charcoal)]"

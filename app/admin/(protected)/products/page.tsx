@@ -2,6 +2,10 @@ import Link from "next/link";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { AdminButton } from "@/components/admin/ui/AdminButton";
 import { ADMIN_ROUTES } from "@/lib/admin/routes";
+import {
+  isHomepageProductVisible,
+  isStorefrontProductVisible,
+} from "@/lib/product-editorial-visibility";
 import { listProductsAdmin } from "@/services/supabase/admin-read";
 
 export default async function AdminProductsPage() {
@@ -37,8 +41,12 @@ export default async function AdminProductsPage() {
                   {Number(p.price).toLocaleString("fr-FR")} EUR
                 </td>
                 <td className="text-[var(--maison-mist)]">
-                  {p.active ? "Active" : "Hidden"}
-                  {p.featured ? " · Featured" : ""}
+                  {p.publication_status === "published" ? "Publicado" : "Rascunho"}
+                  {p.archived
+                    ? " · Arquivado"
+                    : !isStorefrontProductVisible(p)
+                      ? " · Oculto"
+                      : ` · Loja${isHomepageProductVisible(p) ? " · Homepage" : ""}${p.new_in ? " · Novidade" : ""}`}
                 </td>
                 <td className="text-right">
                   <Link

@@ -1,6 +1,9 @@
 import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { mapProductWithCollection } from "@/lib/supabase/mappers";
-import { filterStorefrontProducts } from "@/lib/storefront-product-visibility";
+import {
+  filterHomepageProducts,
+  filterStorefrontProducts,
+} from "@/lib/product-editorial-visibility";
 import { logStorefrontProductPipeline } from "@/lib/storefront-product-pipeline-debug";
 import type { Product } from "@/lib/types";
 import type { ShopNavCategory } from "@/lib/shop-catalog";
@@ -98,7 +101,12 @@ export async function getNewInProducts(): Promise<Product[]> {
     logStorefrontProductPipeline("new-in", { error: error.message });
     throw error;
   }
-  return toProducts(data, "new-in");
+  const rows = filterHomepageProducts(data ?? []);
+  logStorefrontProductPipeline("new-in", {
+    fromSupabase: data?.length ?? 0,
+    afterVisibility: rows.length,
+  });
+  return rows.map((row) => mapProductWithCollection(row));
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {

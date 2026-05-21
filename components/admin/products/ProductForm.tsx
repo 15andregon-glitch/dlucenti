@@ -18,6 +18,7 @@ import { ProductFinanceSummary } from "@/components/admin/products/ProductFinanc
 import { AdminTargetGenderField } from "@/components/admin/products/AdminTargetGenderField";
 import type { ProductTargetGender } from "@/types/database/schema";
 import type { ProductCategory } from "@/types/database/schema";
+import { showOnStorefrontFromRow } from "@/lib/product-editorial-visibility";
 import type { CollectionRow, ProductRow } from "@/types/database";
 import type { ProductEconomicsInput } from "@/lib/finance/product-economics";
 
@@ -160,41 +161,47 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                 </AdminSelect>
               </AdminField>
             </div>
-            <AdminField label="Status" htmlFor="publication_status">
-              <AdminSelect
-                id="publication_status"
-                name="publication_status"
-                defaultValue={product?.publication_status ?? "draft"}
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </AdminSelect>
-            </AdminField>
-            <div className="flex flex-wrap gap-6">
-              <AdminCheckbox
-                name="featured"
-                label="Featured"
-                defaultChecked={product?.featured}
-              />
-              <AdminCheckbox name="new_in" label="New In" defaultChecked={product?.new_in} />
-              <AdminCheckbox
-                name="hidden_from_frontend"
-                label="Hidden from storefront"
-                defaultChecked={
-                  product
-                    ? product.publication_status === "published" && !product.active
-                    : false
-                }
-              />
-              <AdminCheckbox
-                name="archived"
-                label="Archived"
-                defaultChecked={false}
-              />
-            </div>
-            <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
-              Publishing requires selling price and product cost. Stock level does not hide
-              products — use hidden or archived to remove from the storefront.
+          </div>
+        </AdminPanel>
+
+        <AdminPanel title="Status">
+          <AdminField label="Estado de publicação" htmlFor="publication_status">
+            <AdminSelect
+              id="publication_status"
+              name="publication_status"
+              defaultValue={product?.publication_status ?? "draft"}
+            >
+              <option value="draft">Rascunho</option>
+              <option value="published">Publicado</option>
+            </AdminSelect>
+          </AdminField>
+        </AdminPanel>
+
+        <AdminPanel title="Visibilidade">
+          <div className="grid max-w-2xl gap-6">
+            <AdminCheckbox
+              name="show_on_storefront"
+              label="Mostrar na loja"
+              defaultChecked={product ? showOnStorefrontFromRow(product) : true}
+            />
+            <AdminCheckbox
+              name="show_on_homepage"
+              label="Mostrar na homepage"
+              defaultChecked={product?.featured ?? false}
+            />
+            <AdminCheckbox
+              name="show_new_badge"
+              label="Mostrar etiqueta Novidade"
+              defaultChecked={product?.new_in ?? false}
+            />
+            <AdminCheckbox
+              name="archived"
+              label="Arquivado"
+              defaultChecked={product?.archived ?? false}
+            />
+            <p className="font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+              Produtos esgotados continuam visíveis automaticamente e apresentam a etiqueta
+              &lsquo;Esgotado&rsquo;. A publicação exige preço de venda e custo do produto.
             </p>
           </div>
         </AdminPanel>

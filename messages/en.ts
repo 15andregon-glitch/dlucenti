@@ -100,7 +100,8 @@ export const en = {
     PT: "Portugal",
   },
   product: {
-    newIn: "New In",
+    newIn: "New",
+    newInSection: "New In",
     soldOut: "Sold out",
     unavailable: "Temporarily unavailable",
     addToBag: "Add to bag",

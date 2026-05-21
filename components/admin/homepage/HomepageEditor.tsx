@@ -7,6 +7,10 @@ import {
   updateHomepageSettingsAction,
   uploadHeroVideoAction,
 } from "@/lib/admin/actions/homepage";
+import {
+  isHomepageProductVisible,
+  isStorefrontProductVisible,
+} from "@/lib/product-editorial-visibility";
 import { AdminPanel } from "@/components/admin/ui/AdminPanel";
 import { AdminField } from "@/components/admin/ui/AdminField";
 import { AdminInput } from "@/components/admin/ui/AdminInput";
@@ -14,13 +18,14 @@ import { AdminSelect } from "@/components/admin/ui/AdminSelect";
 import { AdminButton } from "@/components/admin/ui/AdminButton";
 import { AdminUpload } from "@/components/admin/ui/AdminUpload";
 import { AdminSortableList } from "@/components/admin/ui/AdminSortableList";
-import type { CollectionRow, HomepageSettingsRow, ProductRow } from "@/types/database";
+import type { CollectionRow, HomepageSettingsRow } from "@/types/database";
+import type { ProductSelectAdminRow } from "@/services/supabase/admin-read";
 
 interface HomepageEditorProps {
   settings: HomepageSettingsRow | null;
   collections: CollectionRow[];
   newInProductIds: string[];
-  allProducts: Pick<ProductRow, "id" | "name" | "slug">[];
+  allProducts: ProductSelectAdminRow[];
 }
 
 export function HomepageEditor({
@@ -34,7 +39,25 @@ export function HomepageEditor({
 
   const newInItems = newInProductIds
     .map((id) => allProducts.find((p) => p.id === id))
-    .filter(Boolean) as Pick<ProductRow, "id" | "name" | "slug">[];
+    .filter(Boolean) as ProductSelectAdminRow[];
+
+  const liveNewInItems = newInItems.filter((p) => isHomepageProductVisible(p));
+  const dormantSlots = newInItems.filter((p) => !isHomepageProductVisible(p));
+
+  const addableProducts = allProducts.filter(
+    (p) =>
+      isHomepageProductVisible(p) &&
+      !newInProductIds.includes(p.id) &&
+      !p.archived,
+  );
+
+  const needsHomepageFlag = allProducts.filter(
+    (p) =>
+      isStorefrontProductVisible(p) &&
+      !p.featured &&
+      !newInProductIds.includes(p.id) &&
+      !p.archived,
+  );
 
   return (
     <div className="space-y-10">
@@ -90,24 +113,41 @@ export function HomepageEditor({
 
       <AdminPanel title="New In — homepage row">
         <p className="mb-6 text-[0.8125rem] text-[var(--maison-gray)]">
-          Drag to set display order. Add products from the list below.
+          Arraste para definir a ordem. Só aparecem na homepage produtos com
+          &lsquo;Mostrar na homepage&rsquo; ativo no formulário do produto.
         </p>
-        {newInItems.length > 0 && (
+
+        {dormantSlots.length > 0 ? (
+          <p className="mb-4 text-[0.8125rem] text-amber-800">
+            {dormantSlots.length} produto(s) nesta ordem não aparecem na loja
+            (falta publicar, &lsquo;Mostrar na homepage&rsquo;, ou está
+            arquivado/oculto).
+          </p>
+        ) : null}
+
+        {liveNewInItems.length > 0 && (
           <AdminSortableList
             items={newInItems.map((p) => ({
               id: p.id,
               label: p.name,
-              meta: p.slug,
+              meta: isHomepageProductVisible(p)
+                ? p.slug
+                : `${p.slug} · não visível`,
             }))}
             onReorder={async (ids) => setHomepageNewInAction(ids)}
           />
         )}
+
         <div className="mt-8 border-t border-[var(--maison-hairline)] pt-8">
-          <p className="admin-label mb-4">Add product to New In</p>
-          <ul className="space-y-2">
-            {allProducts
-              .filter((p) => !newInProductIds.includes(p.id))
-              .map((p) => (
+          <p className="admin-label mb-4">Adicionar à homepage</p>
+          {addableProducts.length === 0 ? (
+            <p className="text-[0.8125rem] text-[var(--maison-mist)]">
+              Ative &lsquo;Mostrar na homepage&rsquo; num produto publicado e
+              visível na loja para o adicionar aqui.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {addableProducts.map((p) => (
                 <li key={p.id} className="flex items-center justify-between gap-4">
                   <span className="text-[0.8125rem]">{p.name}</span>
                   <AdminButton
@@ -127,7 +167,22 @@ export function HomepageEditor({
                   </AdminButton>
                 </li>
               ))}
-          </ul>
+            </ul>
+          )}
+
+          {needsHomepageFlag.length > 0 ? (
+            <div className="mt-8">
+              <p className="admin-label mb-2 text-[var(--maison-mist)]">
+                Visíveis na loja — ative &lsquo;Mostrar na homepage&rsquo; no
+                produto
+              </p>
+              <ul className="space-y-1 text-[0.75rem] text-[var(--maison-mist)]">
+                {needsHomepageFlag.slice(0, 8).map((p) => (
+                  <li key={p.id}>{p.name}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
       </AdminPanel>
     </div>

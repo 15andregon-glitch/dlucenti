@@ -8,6 +8,7 @@ import {
   validateProductForPublish,
   type ProductEconomicsInput,
 } from "@/lib/finance/product-economics";
+import { hiddenFromFrontendFromShowOnStorefront } from "@/lib/product-editorial-visibility";
 import { parseCheckbox, parseNumber, parseOptionalUuid } from "@/lib/admin/utils";
 
 export interface ParsedProductForm {
@@ -20,7 +21,9 @@ export interface ParsedProductForm {
   category: ProductCategory;
   target_gender: ProductTargetGender;
   stock: number;
+  /** DB: featured — "Mostrar na homepage" */
   featured: boolean;
+  /** DB: new_in — "Mostrar etiqueta Novidade" (visual only) */
   new_in: boolean;
   active: boolean;
   publication_status: ProductPublicationStatus;
@@ -74,6 +77,10 @@ export function parseProductForm(formData: FormData): ParsedProductForm {
       : "draft"
   ) as ProductPublicationStatus;
 
+  const showOnStorefront = parseCheckbox(formData.get("show_on_storefront"));
+  const archived = parseCheckbox(formData.get("archived"));
+  const showOnHomepage = parseCheckbox(formData.get("show_on_homepage"));
+
   return {
     name: String(formData.get("name") ?? "").trim(),
     slug: String(formData.get("slug") ?? "").trim(),
@@ -88,10 +95,12 @@ export function parseProductForm(formData: FormData): ParsedProductForm {
       return "unisex";
     })() as ProductTargetGender,
     stock: parseNumber(formData.get("stock")),
-    featured: parseCheckbox(formData.get("featured")),
-    new_in: parseCheckbox(formData.get("new_in")),
-    hidden_from_frontend: parseCheckbox(formData.get("hidden_from_frontend")),
-    archived: parseCheckbox(formData.get("archived")),
+    featured: archived ? false : showOnHomepage,
+    new_in: parseCheckbox(formData.get("show_new_badge")),
+    hidden_from_frontend: archived
+      ? true
+      : hiddenFromFrontendFromShowOnStorefront(showOnStorefront),
+    archived,
     active: false,
     publication_status,
     collection_id: parseOptionalUuid(formData.get("collection_id")),
@@ -117,7 +126,7 @@ export function parseProductForm(formData: FormData): ParsedProductForm {
   };
 }
 
-/** Sync legacy active flag until hidden_from_frontend / archived columns exist in DB. */
+/** Legacy `active` flag kept in sync for RLS/backward compatibility. */
 export function withStorefrontActiveFlag(
   row: ParsedProductForm,
 ): ParsedProductForm {
@@ -128,15 +137,9 @@ export function withStorefrontActiveFlag(
   return { ...row, active: visible };
 }
 
-/** Row shape sent to Supabase (omits columns not yet migrated on all environments). */
+/** Persist all visibility columns to Supabase. */
 export function toProductDbRow(row: ParsedProductForm) {
-  const synced = withStorefrontActiveFlag(row);
-  const {
-    hidden_from_frontend: _hidden,
-    archived: _archived,
-    ...dbRow
-  } = synced;
-  return dbRow;
+  return withStorefrontActiveFlag(row);
 }
 
 export function validateProductForm(row: ParsedProductForm): string | null {

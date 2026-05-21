@@ -5,7 +5,8 @@ import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { useTranslations } from "@/hooks/useTranslations";
 import { formatPrice } from "@/lib/cart";
-import { isProductPurchasable, isProductSoldOut } from "@/lib/product-availability";
+import { isProductPurchasable } from "@/lib/product-availability";
+import { resolveProductEditorialBadge } from "@/lib/product-editorial-visibility";
 import { useCartStore } from "@/store/cart";
 import { ProductEditorialBadge } from "@/components/product/ProductEditorialBadge";
 import { cn } from "@/lib/cn";
@@ -23,7 +24,10 @@ const quickAddLabel =
 export function NewInProductCard({ product, className }: NewInProductCardProps) {
   const { t, routes, locale } = useTranslations();
   const imageSrc = product.images[0];
-  const soldOut = isProductSoldOut(product);
+  const badge = resolveProductEditorialBadge(product, {
+    soldOut: t("product.soldOut"),
+    newIn: t("product.newIn"),
+  });
   const purchasable = isProductPurchasable(product);
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
@@ -44,14 +48,9 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
           className="absolute inset-0 z-0"
           aria-label={`View ${product.name}`}
         >
-          {soldOut ? (
-            <ProductEditorialBadge
-              label={t("product.soldOut")}
-              variant="soldOut"
-            />
-          ) : (
-            <ProductEditorialBadge label={t("product.newIn")} variant="new" />
-          )}
+          {badge ? (
+            <ProductEditorialBadge label={badge.label} variant={badge.variant} />
+          ) : null}
           {imageSrc ? (
             <Image
               src={imageSrc}
