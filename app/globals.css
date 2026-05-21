@@ -80,8 +80,8 @@ body {
   }
 }
 
-/* Contain paint for main sections */
-main > section {
+/* Contain paint for main sections (skip homepage hero — avoids mobile overlay glitches) */
+main > section:not(.hero-campaign-section) {
   content-visibility: auto;
   contain-intrinsic-size: auto 80vh;
 }
@@ -110,10 +110,8 @@ button {
   text-align: center;
 }
 
-/* Hero CTA layout lives in HeroSection (Tailwind); typography only here */
+/* Hero CTA — typography only; layout via HeroSection (Tailwind), inline-flex desktop-only */
 .hero-campaign-link {
-  display: inline-flex;
-  align-items: center;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-size: var(--maison-chrome-size);
   font-weight: 400;
@@ -125,6 +123,13 @@ button {
   text-rendering: geometricPrecision;
   color: var(--hero-text-ivory);
   transition: color 0.4s var(--ease-maison);
+}
+
+@media (min-width: 768px) {
+  .hero-campaign-link {
+    display: inline-flex;
+    align-items: center;
+  }
 }
 
 .hero-campaign-link:hover {
