@@ -158,39 +158,11 @@ button {
   grid-column: 2;
   justify-self: center;
   align-self: center;
+  display: block;
   width: 1px;
   height: var(--maison-chrome-size);
   background-color: var(--hero-text-champagne);
   opacity: 0.42;
-}
-
-/* Mobile hero CTAs — flex stack, centered (below Tailwind `md`) */
-@media (max-width: 767px) {
-  .hero-campaign-cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .hero-campaign-link--start,
-  .hero-campaign-link--end {
-    grid-column: unset;
-    justify-self: unset;
-    padding-inline: 0;
-    text-align: center;
-    justify-content: center;
-  }
-
-  .hero-campaign-divider {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .hero-campaign-divider {
-    display: block;
-  }
 }
 
 /* Navbar — locked typography; only CSS variables change between states */
