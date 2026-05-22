@@ -36,7 +36,7 @@
   --maison-white: var(--maison-charcoal);
 
   --header-height: 4.75rem;
-  --header-height-mobile: 3.25rem;
+  --header-height-mobile: 3rem;
   --container-max: 1440px;
   /* Premium rhythm — tighter on phone, expansive on desktop */
   --section-py: clamp(2.75rem, 7vw, 9rem);

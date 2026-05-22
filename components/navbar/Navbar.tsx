@@ -70,7 +70,7 @@ function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="navbar-icon-btn flex h-9 w-9 items-center justify-center md:h-10 md:w-10"
+      className="navbar-icon-btn flex h-8 w-8 items-center justify-center md:h-10 md:w-10"
     >
       {children}
     </button>
@@ -199,13 +199,13 @@ export default function Navbar({
       >
         <nav
           aria-label={t("nav.main")}
-          className="relative mx-auto grid h-[var(--header-height-mobile)] max-w-[1440px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-3 px-[var(--section-px)] md:h-[var(--header-height)] md:gap-x-6 md:px-12 lg:px-16"
+          className="navbar-shell relative mx-auto flex h-[var(--header-height-mobile)] w-full max-w-[1440px] items-center justify-between px-[var(--section-px)] md:grid md:h-[var(--header-height)] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-center md:gap-x-6 md:px-12 lg:px-16"
         >
-          <div className="relative z-10 flex min-w-0 items-center justify-self-start">
+          <div className="navbar-brand-slot relative z-10 flex min-w-0 shrink-0 items-center md:justify-self-start">
             <BrandLogo href={routes.home} priority onClick={closeMobile} />
           </div>
 
-          <ul className="hidden shrink-0 items-center justify-center gap-8 whitespace-nowrap md:flex lg:gap-14 xl:gap-[5.5rem]">
+          <ul className="navbar-center hidden shrink-0 items-center justify-center gap-8 whitespace-nowrap md:flex lg:gap-14 xl:gap-[5.5rem]">
             {navLinks.map((link) =>
               link.key === "shop" ? (
                 <li
@@ -250,10 +250,10 @@ export default function Navbar({
             )}
           </ul>
 
-          <div className="relative z-10 flex items-center justify-self-end gap-1">
+          <div className="navbar-actions relative z-10 flex shrink-0 items-center justify-end md:col-start-3 md:justify-self-end">
             <div
               className={cn(
-                "hidden shrink-0 items-center gap-1 md:flex",
+                "hidden shrink-0 items-center md:flex",
                 menuOpen && "pointer-events-none opacity-0",
               )}
             >
@@ -261,34 +261,34 @@ export default function Navbar({
             </div>
             <div
               className={cn(
-                "flex shrink-0 items-center gap-1 transition-opacity duration-300",
+                "navbar-icon-cluster flex shrink-0 items-center md:gap-1 transition-opacity duration-300",
                 menuOpen &&
                   "pointer-events-none opacity-0 md:pointer-events-auto md:opacity-100",
               )}
             >
               <CartBagButton />
+              <button
+                type="button"
+                aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+                aria-expanded={menuOpen}
+                onClick={() =>
+                  setMenuOpen((o) => {
+                    if (o) {
+                      setShopExpanded(false);
+                      setCollectionsExpanded(false);
+                    }
+                    return !o;
+                  })
+                }
+                className="navbar-icon-btn flex h-8 w-8 items-center justify-center md:hidden"
+              >
+                {menuOpen ? (
+                  <X className="h-4 w-4" strokeWidth={1.25} />
+                ) : (
+                  <Menu className="h-4 w-4" strokeWidth={1.25} />
+                )}
+              </button>
             </div>
-            <button
-              type="button"
-              aria-label={menuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
-              aria-expanded={menuOpen}
-              onClick={() =>
-                setMenuOpen((o) => {
-                  if (o) {
-                    setShopExpanded(false);
-                    setCollectionsExpanded(false);
-                  }
-                  return !o;
-                })
-              }
-              className="navbar-icon-btn flex h-9 w-9 items-center justify-center md:hidden"
-            >
-              {menuOpen ? (
-                <X className="h-[18px] w-[18px]" strokeWidth={1.25} />
-              ) : (
-                <Menu className="h-[18px] w-[18px]" strokeWidth={1.25} />
-              )}
-            </button>
           </div>
         </nav>
 

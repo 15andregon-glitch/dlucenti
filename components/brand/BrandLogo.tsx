@@ -61,7 +61,7 @@ export function BrandLogo({
 
   const linkClass =
     variant === "nav"
-      ? "navbar-brand-link inline-flex items-center py-1 text-[var(--navbar-brand-color)]"
+      ? "navbar-brand-link inline-flex items-center py-0 text-[var(--navbar-brand-color)] md:py-1"
       : "inline-flex items-center py-1";
 
   return (

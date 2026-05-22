@@ -378,6 +378,39 @@ button {
   color: var(--navbar-icon-hover);
 }
 
+/* Mobile navbar — anchored logo left, icon cluster right */
+@media (max-width: 767.98px) {
+  .navbar-shell {
+    column-gap: 0;
+  }
+
+  .navbar-brand-slot {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .navbar-actions {
+    flex: 0 0 auto;
+    margin-inline-end: -0.125rem;
+  }
+
+  .navbar-icon-cluster {
+    gap: 0;
+    align-items: center;
+  }
+
+  .navbar-icon-cluster .navbar-icon-btn {
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar-icon-cluster .navbar-icon-btn + .navbar-icon-btn {
+    margin-inline-start: -0.125rem;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Mobile storefront — premium density & vertical rhythm (< 768px)
    --------------------------------------------------------------------------- */
