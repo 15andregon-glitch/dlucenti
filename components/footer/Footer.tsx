@@ -32,23 +32,30 @@ export async function Footer({ locale }: FooterProps) {
   ];
 
   return (
-    <footer className="border-t border-[var(--maison-hairline)] bg-[var(--maison-beige)]">
-      <PageContainer className="py-20 md:py-24">
-        <div className="grid gap-14 md:grid-cols-12 md:gap-10">
+    <footer className="storefront-footer border-t border-[var(--maison-hairline)] bg-[var(--maison-beige)]">
+      <PageContainer className="py-14 md:py-24">
+        <div className="storefront-footer__grid grid gap-10 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-4">
             <BrandLogo
               href={routes.home}
               variant="footer"
               className="text-[var(--maison-charcoal)]"
             />
-            <p className="mt-6 max-w-xs text-maison-body-sm">{footer.slogan}</p>
-            <div className="mt-8">
+            <p className="storefront-footer__brand-slogan mt-5 max-w-xs text-maison-body-sm md:mt-6">
+              {footer.slogan}
+            </p>
+            <p className="mt-3 text-maison-body-sm text-[var(--maison-charcoal)] md:hidden">
+              {footer.location}
+            </p>
+            <div className="storefront-footer__brand-lang mt-6 md:mt-8">
               <LanguageSwitcher locale={locale} />
             </div>
           </div>
 
           <div className="md:col-span-2">
-            <p className="mb-5 text-maison-label">{footer.exploreTitle}</p>
+            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+              {footer.exploreTitle}
+            </p>
             <ul className="space-y-2.5">
               {navLinks.map((link) => (
                 <li key={link.href}>
@@ -60,22 +67,28 @@ export async function Footer({ locale }: FooterProps) {
             </ul>
           </div>
 
-          <div className="md:col-span-2">
-            <p className="mb-5 text-maison-label">{footer.maisonTitle}</p>
+          <div className="hidden md:col-span-2 md:block">
+            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+              {footer.maisonTitle}
+            </p>
             <p className="text-maison-body-sm text-[var(--maison-charcoal)]">
               {footer.location}
             </p>
           </div>
 
           <div className="md:col-span-2">
-            <p className="mb-5 text-maison-label">{footer.contactsTitle}</p>
+            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+              {footer.contactsTitle}
+            </p>
             <a href={`mailto:${footer.contactEmail}`} className="text-maison-link">
               {footer.contactEmail}
             </a>
           </div>
 
           <div className="md:col-span-2">
-            <p className="mb-5 text-maison-label">{footer.socialsTitle}</p>
+            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+              {footer.socialsTitle}
+            </p>
             <ul className="space-y-2.5">
               {footer.socialLinks.map((link) => (
                 <li key={link.id}>
@@ -93,7 +106,7 @@ export async function Footer({ locale }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-[var(--maison-hairline)] pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="storefront-footer__legal mt-12 flex flex-col gap-3 border-t border-[var(--maison-hairline)] pt-6 md:mt-16 md:pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-maison-label">
             © {new Date().getFullYear()} {messages.meta.siteName}
           </p>

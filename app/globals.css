@@ -81,12 +81,16 @@ body {
     min-height: 0;
   }
 
+  .hero-campaign-chrome {
+    padding-inline: var(--section-px);
+  }
+
   .hero-campaign-editorial {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.625rem;
+    gap: 0.5rem;
     width: 100%;
     margin: 0;
     text-align: center;
@@ -141,6 +145,12 @@ main > section:not(.hero-campaign-section):not(.maison-editorial-section) {
   contain-intrinsic-size: auto 80vh;
 }
 
+@media (max-width: 767.98px) {
+  main > section:not(.hero-campaign-section):not(.maison-editorial-section) {
+    contain-intrinsic-size: auto 52vh;
+  }
+}
+
 .maison-editorial-section {
   content-visibility: visible;
 }
@@ -160,7 +170,7 @@ main > section:not(.hero-campaign-section):not(.maison-editorial-section) {
 .collections-editorial-intro__title {
   display: block;
   width: 100%;
-  margin: 0 0 clamp(2rem, 4.5vw, 3rem);
+  margin: 0 0 clamp(1.25rem, 3vw, 3rem);
   padding: 0;
   font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   font-size: clamp(2.375rem, 4.75vw, 4rem);
@@ -188,6 +198,10 @@ main > section:not(.hero-campaign-section):not(.maison-editorial-section) {
 }
 
 @media (min-width: 768px) {
+  .collections-featured-section {
+    padding-block: clamp(2.5rem, 6.5vw, 4.5rem);
+  }
+
   .collections-editorial-intro__title {
     margin-bottom: clamp(2.25rem, 3.5vw, 3.25rem);
   }
@@ -362,6 +376,71 @@ button {
 
 .navbar-icon-btn:hover {
   color: var(--navbar-icon-hover);
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile storefront — premium density & vertical rhythm (< 768px)
+   --------------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .collections-featured-section {
+    padding-block: var(--section-py-tight);
+  }
+
+  .collections-editorial-intro__title {
+    margin-bottom: clamp(1rem, 2.75vw, 1.5rem);
+    font-size: clamp(2rem, 8.5vw, 2.75rem);
+  }
+
+  .collections-editorial-grid .group {
+    min-height: 22.5rem;
+  }
+
+  .storefront-footer {
+    padding-block: 3.5rem;
+  }
+
+  .storefront-footer__grid {
+    gap: 2rem;
+  }
+
+  .storefront-footer__label {
+    margin-bottom: 0.75rem;
+  }
+
+  .storefront-footer__brand-slogan {
+    margin-top: 1.25rem;
+  }
+
+  .storefront-footer__brand-lang {
+    margin-top: 1.5rem;
+  }
+
+  .storefront-footer__legal {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .mobile-menu-drawer {
+    padding-inline: var(--section-px);
+    padding-top: calc(var(--header-height-mobile) + 1.25rem);
+    padding-bottom: 2.5rem;
+  }
+
+  .mobile-menu-item {
+    padding-block: 1.125rem;
+  }
+
+  .mobile-menu-footer {
+    padding-top: 1.5rem;
+  }
+
+  .section-header-editorial {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-header-editorial .text-maison-label {
+    margin-bottom: 1rem;
+  }
 }
 
 /* Collections archive — ivory base; artwork via CollectionsArchiveAtmosphere */

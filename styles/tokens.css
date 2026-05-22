@@ -35,11 +35,16 @@
   --maison-stone: var(--maison-champagne);
   --maison-white: var(--maison-charcoal);
 
-  --header-height: 80px;
-  --header-height-mobile: 72px;
+  --header-height: 4.75rem;
+  --header-height-mobile: 3.25rem;
   --container-max: 1440px;
-  --section-py: clamp(5rem, 12vw, 9rem);
-  --section-px: clamp(1.5rem, 4vw, 3.5rem);
+  /* Premium rhythm — tighter on phone, expansive on desktop */
+  --section-py: clamp(2.75rem, 7vw, 9rem);
+  --section-py-tight: clamp(2rem, 5.5vw, 3.5rem);
+  --section-px: clamp(1.25rem, 4vw, 3.5rem);
+  --spacing-stack-sm: 0.5rem;
+  --spacing-stack: clamp(0.75rem, 2vw, 1.25rem);
+  --spacing-stack-lg: clamp(1.25rem, 3vw, 2rem);
 
   --ease-maison: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-cinematic: cubic-bezier(0.76, 0, 0.24, 1);

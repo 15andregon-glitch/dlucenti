@@ -204,7 +204,7 @@ export function CollectionsMobileAccordion({
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={onToggle}
-        className="flex w-full items-baseline justify-between py-6 text-left"
+        className="mobile-menu-item flex w-full items-baseline justify-between text-left"
       >
         <span className="font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-normal leading-none tracking-tight text-[var(--maison-charcoal)]">
           {t("nav.collections")}
@@ -232,7 +232,7 @@ export function CollectionsMobileAccordion({
         )}
       >
         <div className="overflow-hidden">
-          <div className="pb-8 pt-2">
+          <div className="pb-6 pt-1">
             <CollectionsMenuPanel
               collections={collections}
               locale={locale}

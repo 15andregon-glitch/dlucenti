@@ -33,7 +33,7 @@ export async function LucentiEditorialSection({
         {/* Cinematic atmosphere — first on mobile, right on desktop */}
         <div
           className={cn(
-            "relative order-1 min-h-[52vh] sm:min-h-[58vh]",
+            "relative order-1 min-h-[48vh] sm:min-h-[54vh]",
             "lg:order-2 lg:min-h-0 lg:h-auto",
           )}
         >
@@ -63,11 +63,11 @@ export async function LucentiEditorialSection({
         <div
           className={cn(
             "order-2 flex flex-col justify-center",
-            "px-[var(--section-px)] py-14 sm:py-16",
+            "px-[var(--section-px)] py-10 sm:py-14",
             "lg:order-1 lg:py-20 xl:py-24",
             "lg:pl-[max(var(--section-px),calc((100vw_-_var(--container-max))_/_2_+_var(--section-px)))]",
             "lg:pr-12 xl:pr-16",
-            "pt-[calc(var(--header-height-mobile)+2.5rem)] lg:pt-20",
+            "pt-[calc(var(--header-height-mobile)+1.5rem)] lg:pt-20",
           )}
         >
           <div className="mx-auto w-full lg:mx-0">
@@ -78,20 +78,20 @@ export async function LucentiEditorialSection({
                     {t("pages.about.quote")}
                   </h1>
                 </blockquote>
-                <figcaption className="mt-7 text-maison-body-sm leading-[1.5] tracking-[0.01em] text-[var(--maison-mist)] sm:mt-8">
+                <figcaption className="mt-5 text-maison-body-sm leading-[1.5] tracking-[0.01em] text-[var(--maison-mist)] sm:mt-8">
                   {t("pages.about.quoteAttribution")}
                 </figcaption>
               </figure>
             </Reveal>
 
             <Reveal delay={0.08}>
-              <p className="mt-9 max-w-[20rem] text-maison-body-sm leading-[1.7] text-[var(--maison-gray)] sm:mt-10 sm:max-w-none">
+              <p className="mt-7 max-w-[20rem] text-maison-body-sm leading-[1.7] text-[var(--maison-gray)] sm:mt-10 sm:max-w-none">
                 {t("pages.about.description")}
               </p>
             </Reveal>
 
             <Reveal delay={0.14}>
-              <p className="mt-10 text-maison-body-sm leading-[1.75] text-[var(--maison-gray)]">
+              <p className="mt-8 text-maison-body-sm leading-[1.75] text-[var(--maison-gray)] md:mt-10">
                 {t("pages.about.body")}
               </p>
             </Reveal>

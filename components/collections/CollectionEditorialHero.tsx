@@ -18,7 +18,7 @@ const alignClass: Record<string, string> = {
 };
 
 const positionClass: Record<string, string> = {
-  top: "justify-start pt-28 md:pt-36",
+  top: "justify-start pt-[calc(var(--header-height-mobile)+1.25rem)] md:pt-36",
   center: "justify-center",
   bottom: "justify-end pb-20 md:pb-28",
 };

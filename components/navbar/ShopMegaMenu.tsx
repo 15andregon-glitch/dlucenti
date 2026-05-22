@@ -197,7 +197,7 @@ export function ShopMobileAccordion({
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={onToggle}
-        className="flex w-full items-baseline justify-between py-6 text-left"
+        className="mobile-menu-item flex w-full items-baseline justify-between text-left"
       >
         <span className="font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-normal leading-none tracking-tight text-[var(--maison-charcoal)]">
           {t("nav.shop")}
@@ -225,7 +225,7 @@ export function ShopMobileAccordion({
         )}
       >
         <div className="overflow-hidden">
-          <div className="flex justify-center pb-8 pt-2">
+          <div className="flex justify-center pb-6 pt-1">
             <ShopMenuColumns
               onNavigate={onNavigate}
               className="items-start gap-10 px-2 sm:gap-12"

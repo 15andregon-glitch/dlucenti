@@ -10,7 +10,7 @@ interface BrandLogoProps {
 }
 
 const SIZE = {
-  nav: "h-[1.0625rem] max-w-[12.75rem] md:h-[1.125rem] md:max-w-[13.75rem]",
+  nav: "h-[0.9375rem] max-w-[11.25rem] md:h-[1.125rem] md:max-w-[13.75rem]",
   footer: "h-[1.1875rem] max-w-[14.25rem] md:h-[1.25rem] md:max-w-[15.5rem]",
 } as const;
 

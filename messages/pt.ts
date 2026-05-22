@@ -14,8 +14,8 @@ export const pt = {
   nav: {
     shop: "Loja",
     collections: "Coleções",
-    about: "A Maison",
-    aboutNav: "A Maison",
+    about: "A Lucenti",
+    aboutNav: "A Lucenti",
     journal: "Journal",
     contact: "Contacto",
     main: "Principal",
@@ -148,7 +148,7 @@ export const pt = {
       quoteAttribution: "— Eugénio de Andrade",
       title: "Um legado de ",
       titleEmphasis: "luz",
-      label: "A Maison",
+      label: "A Lucenti",
       description:
         "Fundada em Portugal, a D'LUCENTI inspira-se na relação entre a luz e a forma. Cada peça é escolhida pela simplicidade, pelo brilho e pela elegância.",
       body:

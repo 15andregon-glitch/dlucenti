@@ -23,17 +23,19 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "mb-16 max-w-2xl",
+        "section-header-editorial mb-10 max-w-2xl md:mb-16",
         align === "center" && "mx-auto text-center",
         className,
       )}
     >
-      {label ? <SectionLabel className="mb-6">{label}</SectionLabel> : null}
+      {label ? (
+        <SectionLabel className="mb-4 md:mb-6">{label}</SectionLabel>
+      ) : null}
       <EditorialHeading as="h2" align={align} size={size}>
         {title}
       </EditorialHeading>
       {description && (
-        <p className="mt-6 text-maison-body text-sm">{description}</p>
+        <p className="mt-4 text-maison-body text-sm md:mt-6">{description}</p>
       )}
     </div>
   );

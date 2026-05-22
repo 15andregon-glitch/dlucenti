@@ -11,13 +11,13 @@ export function EditorialCampaignSection() {
     >
       <PageContainer className="max-w-none !px-0">
         <div className="grid lg:grid-cols-2">
-          <Reveal className="flex flex-col justify-center px-[var(--section-px)] py-12 lg:py-0">
+          <Reveal className="flex flex-col justify-center px-[var(--section-px)] py-10 md:py-12 lg:py-0">
             <p className="text-maison-label">Campaign</p>
-            <h2 className="mt-4 text-maison-headline">
+            <h2 className="mt-3 text-maison-headline md:mt-4">
               Lumière —{" "}
               <span className="text-maison-italic-soft">a study</span> in light
             </h2>
-            <p className="mt-6 max-w-md text-maison-body-sm">
+            <p className="mt-4 max-w-md text-maison-body-sm md:mt-6">
               Shot at dawn in Provence. Warm ivory, champagne gold, and quiet
               editorial restraint.
             </p>

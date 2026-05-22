@@ -18,7 +18,7 @@ export async function JournalPreviewSection() {
           description="Campaigns, craft, and the quiet architecture of desire."
         />
 
-        <div className="grid gap-10 md:grid-cols-3 md:gap-8">
+        <div className="grid gap-8 md:grid-cols-3 md:gap-8">
           {posts.map((post) => (
             <Reveal key={post.id}>
               <Link href={ROUTES.journalPost(post.slug)} className="group block">

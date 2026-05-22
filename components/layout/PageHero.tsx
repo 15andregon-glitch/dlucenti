@@ -9,7 +9,7 @@ interface PageHeroProps {
 
 export function PageHero({ label, title, description }: PageHeroProps) {
   return (
-    <div className="border-b border-[var(--maison-hairline)] bg-[var(--maison-warm-white)] pt-28 pb-16 md:pt-36 md:pb-24">
+    <div className="border-b border-[var(--maison-hairline)] bg-[var(--maison-warm-white)] pt-[calc(var(--header-height-mobile)+1.25rem)] pb-12 md:pt-36 md:pb-24">
       <PageContainer>
         {label ? <SectionLabel className="mb-4">{label}</SectionLabel> : null}
         <h1 className="max-w-3xl text-maison-display">{title}</h1>

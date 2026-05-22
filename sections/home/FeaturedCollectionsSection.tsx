@@ -16,7 +16,7 @@ export async function FeaturedCollectionsSection({ locale }: { locale: Locale })
     <Section
       id="collections"
       tone="beige"
-      className="collections-featured-section py-[clamp(2.75rem,6.5vw,4.5rem)]"
+      className="collections-featured-section py-[var(--section-py-tight)] md:py-[clamp(2.5rem,6.5vw,4.5rem)]"
     >
       <PageContainer className="collections-featured-container">
         <div className="collections-featured-inner">
@@ -32,7 +32,7 @@ export async function FeaturedCollectionsSection({ locale }: { locale: Locale })
                 <Reveal key={collection.id}>
                   <Link
                     href={routes.collection(collection.slug)}
-                    className="group relative flex min-h-[400px] flex-col justify-end overflow-hidden bg-[var(--maison-champagne)] p-7 transition-colors duration-600 hover:bg-[var(--maison-surface)] md:min-h-[480px] md:p-8"
+                    className="group relative flex min-h-[360px] flex-col justify-end overflow-hidden bg-[var(--maison-champagne)] p-6 transition-colors duration-600 hover:bg-[var(--maison-surface)] md:min-h-[480px] md:p-8"
                   >
                     {poster ? (
                       <Image

@@ -9,7 +9,7 @@ export function CampaignGallerySection() {
     <section
       id="campaign"
       aria-label="Editorial campaign gallery"
-      className="border-t border-[var(--maison-hairline)] bg-[var(--maison-ivory)] pt-[clamp(2.5rem,7vw,5rem)] md:pt-[clamp(3rem,9vw,6rem)]"
+      className="border-t border-[var(--maison-hairline)] bg-[var(--maison-ivory)] pt-[clamp(1.75rem,5vw,5rem)] md:pt-[clamp(3rem,9vw,6rem)]"
     >
       {/* Full-width cinematic opener */}
       <Reveal>
@@ -22,7 +22,7 @@ export function CampaignGallerySection() {
         />
       </Reveal>
 
-      <div className="mx-auto w-full max-w-[1440px] px-[var(--section-px)] py-8 md:py-12 lg:py-14">
+      <div className="mx-auto w-full max-w-[1440px] px-[var(--section-px)] py-6 md:py-12 lg:py-14">
         {/* Asymmetric pair — portrait + landscape */}
         <div className="grid grid-cols-12 gap-4 md:gap-6 lg:gap-8">
           <Reveal className="col-span-12 md:col-span-5">

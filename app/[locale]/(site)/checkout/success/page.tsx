@@ -20,7 +20,7 @@ export default async function CheckoutSuccessPage({
   const { t, routes } = await getTranslations(localeParam);
 
   return (
-    <main className="bg-[var(--maison-ivory)] pt-28 pb-[clamp(4rem,10vw,7rem)] md:pt-32">
+    <main className="bg-[var(--maison-ivory)] pt-[calc(var(--header-height-mobile)+1.25rem)] pb-[clamp(3rem,8vw,7rem)] md:pt-32">
       <ClearCartOnSuccess sessionId={sessionId} />
       <PageContainer>
         <div className="mx-auto max-w-xl text-center md:text-left">

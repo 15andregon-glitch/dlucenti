@@ -43,7 +43,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <article className="bg-[var(--maison-ivory)]">
-      <section className="pt-28 pb-[clamp(3rem,8vw,5rem)] md:pt-32">
+      <section className="pt-[calc(var(--header-height-mobile)+1.25rem)] pb-[clamp(2.5rem,7vw,5rem)] md:pt-32">
         <PageContainer>
           <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16 xl:gap-20">
             <ProductGallery product={product} />

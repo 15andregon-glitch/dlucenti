@@ -31,7 +31,7 @@ export default async function CheckoutPage({
   const { t } = await getTranslations(localeParam);
 
   return (
-    <main className="bg-[var(--maison-ivory)] pt-28 pb-[clamp(4rem,10vw,7rem)] md:pt-32">
+    <main className="bg-[var(--maison-ivory)] pt-[calc(var(--header-height-mobile)+1.25rem)] pb-[clamp(3rem,8vw,7rem)] md:pt-32">
       <PageContainer>
         <header className="max-w-xl">
           <p className="text-maison-label text-[var(--maison-gold)]">

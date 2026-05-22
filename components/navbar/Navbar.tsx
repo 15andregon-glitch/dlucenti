@@ -70,7 +70,7 @@ function IconButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="navbar-icon-btn flex h-10 w-10 items-center justify-center"
+      className="navbar-icon-btn flex h-9 w-9 items-center justify-center md:h-10 md:w-10"
     >
       {children}
     </button>
@@ -90,7 +90,7 @@ function CartBagButton() {
   return (
     <IconButton label={t("nav.shoppingBag")} onClick={() => setOpen(true)}>
       <span className="relative">
-        <ShoppingBag className="h-[17px] w-[17px]" strokeWidth={1.25} />
+        <ShoppingBag className="h-4 w-4 md:h-[17px] md:w-[17px]" strokeWidth={1.25} />
         {count > 0 && (
           <span className="absolute -right-2 -top-1.5 min-w-[0.875rem] text-center font-sans text-[0.625rem] tabular-nums leading-none text-[var(--navbar-icon-color)]">
             {count}
@@ -199,7 +199,7 @@ export default function Navbar({
       >
         <nav
           aria-label={t("nav.main")}
-          className="relative mx-auto grid h-[4.25rem] max-w-[1440px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-4 px-6 md:h-[4.75rem] md:gap-x-6 md:px-12 lg:px-16"
+          className="relative mx-auto grid h-[var(--header-height-mobile)] max-w-[1440px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-3 px-[var(--section-px)] md:h-[var(--header-height)] md:gap-x-6 md:px-12 lg:px-16"
         >
           <div className="relative z-10 flex min-w-0 items-center justify-self-start">
             <BrandLogo href={routes.home} priority onClick={closeMobile} />
@@ -281,7 +281,7 @@ export default function Navbar({
                   return !o;
                 })
               }
-              className="navbar-icon-btn flex h-10 w-10 items-center justify-center md:hidden"
+              className="navbar-icon-btn flex h-9 w-9 items-center justify-center md:hidden"
             >
               {menuOpen ? (
                 <X className="h-[18px] w-[18px]" strokeWidth={1.25} />
@@ -313,7 +313,7 @@ export default function Navbar({
         )}
         aria-hidden={!menuOpen}
       >
-        <div className="flex h-full flex-col px-6 pt-28 pb-12 md:px-12">
+        <div className="mobile-menu-drawer flex h-full flex-col">
           <ul className="flex flex-col">
             {navLinks.map((link, i) =>
               link.key === "shop" ? (
@@ -345,7 +345,7 @@ export default function Navbar({
                   <Link
                     href={link.href}
                     onClick={closeMobile}
-                    className="flex items-baseline justify-between border-b border-[var(--maison-hairline)] py-6 transition-colors hover:text-[var(--maison-gold)]"
+                    className="mobile-menu-item flex items-baseline justify-between border-b border-[var(--maison-hairline)] transition-colors hover:text-[var(--maison-gold)]"
                   >
                     <span className="font-sans text-[clamp(1.75rem,7vw,2.25rem)] font-normal leading-none tracking-tight text-[var(--maison-charcoal)]">
                       {link.label}
@@ -358,7 +358,7 @@ export default function Navbar({
               ),
             )}
           </ul>
-          <div className="mt-auto flex items-center justify-between border-t border-[var(--maison-hairline)] pt-8">
+          <div className="mobile-menu-footer mt-auto flex items-center justify-between border-t border-[var(--maison-hairline)]">
             <button type="button" className="text-maison-nav">
               {t("nav.cart")}
             </button>
