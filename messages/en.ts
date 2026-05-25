@@ -39,6 +39,10 @@ export const en = {
   },
   footer: {
     explore: "Explore",
+    service: "Information",
+    shippingReturns: "Shipping & Returns",
+    faq: "FAQ",
+    contact: "Contact",
     maison: "House",
     location: "Portugal",
     privacy: "Privacy",
@@ -171,6 +175,89 @@ export const en = {
     checkout: {
       title: "Complete your order",
       label: "Checkout",
+    },
+    shipping: {
+      label: "Shipping",
+      title: "Delivery",
+      description:
+        "Each piece leaves our studio with the same care with which it was made.",
+      intro:
+        "Orders are prepared individually. You will receive confirmation when your order is on its way.",
+      processingTitle: "Preparation",
+      processing:
+        "Orders are prepared within 1–3 business days before dispatch.",
+      shippingTitle: "Delivery times",
+      shippingPortugal: "Portugal — 1–3 business days after dispatch.",
+      shippingEurope: "Europe — 3–7 business days after dispatch.",
+      trackingTitle: "Tracking",
+      tracking:
+        "When tracking is available, details will be sent to you by email.",
+      internationalTitle: "International",
+      international:
+        "We ship within Europe. Delivery times may vary by destination.",
+      costTitle: "Shipping cost",
+      cost: "Shipping is calculated at checkout.",
+      contactTitle: "Assistance",
+      contact:
+        "For any question regarding your order, our team is at your disposal.",
+      contactCta: "Contact",
+      returnsNote: "For returns, please see our",
+      returnsLink: "Returns",
+    },
+    returns: {
+      label: "Returns",
+      title: "Returns & refunds",
+      description: "A considered process, in keeping with the nature of fine jewelry.",
+      windowTitle: "Return window",
+      window:
+        "We accept returns within 15 days of delivery.",
+      conditionsTitle: "Conditions",
+      conditions:
+        "Pieces must be returned unworn, in their original condition, and with original packaging.",
+      refundTitle: "Refunds",
+      refund:
+        "Once your piece has been received and verified, your refund will be processed to the original payment method.",
+      contactTitle: "Assistance",
+      contact:
+        "To begin a return or for guidance, please reach our team.",
+      contactCta: "Contact",
+      shippingNote: "For delivery information, please see",
+      shippingLink: "Shipping",
+    },
+    faq: {
+      label: "FAQ",
+      title: "Questions",
+      description: "Essential information, presented with clarity.",
+      items: {
+        shipping: {
+          q: "How long does delivery take?",
+          a: "Orders are prepared within 1–3 business days. Portugal: 1–3 business days after dispatch. Europe: 3–7 business days.",
+        },
+        tracking: {
+          q: "Will I receive tracking?",
+          a: "When tracking is available, we will share the details by email.",
+        },
+        returns: {
+          q: "What is your return policy?",
+          a: "Returns are accepted within 15 days of delivery. Pieces must be unworn, in original condition, with original packaging. Refunds are processed to the original payment method after verification.",
+        },
+        materials: {
+          q: "What materials do you use?",
+          a: "Each piece is described in detail on its product page — materials, finish, and composition are stated with full transparency.",
+        },
+        care: {
+          q: "How should I care for my jewelry?",
+          a: "Store pieces separately, avoid contact with water and fragrance, and clean gently with a soft cloth. Fine jewelry benefits from quiet, consistent care.",
+        },
+        payment: {
+          q: "Which payment methods do you accept?",
+          a: "We accept secure card payment via Stripe at checkout, including Apple Pay and Google Pay where available.",
+        },
+        support: {
+          q: "How can I reach you?",
+          a: "Our team is available by email. Visit Contact for private enquiries and order assistance.",
+        },
+      },
     },
   },
   collections: {

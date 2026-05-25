@@ -40,6 +40,10 @@ export const pt = {
   },
   footer: {
     explore: "Explorar",
+    service: "Informação",
+    shippingReturns: "Envio e devoluções",
+    faq: "FAQ",
+    contact: "Contacto",
     maison: "A Casa",
     location: "Portugal",
     privacy: "Privacidade",
@@ -174,6 +178,90 @@ export const pt = {
     checkout: {
       title: "Conclua a sua encomenda",
       label: "Pagamento",
+    },
+    shipping: {
+      label: "Envio",
+      title: "Entrega",
+      description:
+        "Cada peça sai do nosso atelier com o mesmo cuidado com que foi criada.",
+      intro:
+        "As encomendas são preparadas de forma individual. Receberá confirmação quando a sua peça estiver a caminho.",
+      processingTitle: "Preparação",
+      processing:
+        "As encomendas são preparadas em 1–3 dias úteis antes da expedição.",
+      shippingTitle: "Prazos de entrega",
+      shippingPortugal: "Portugal — 1–3 dias úteis após expedição.",
+      shippingEurope: "Europa — 3–7 dias úteis após expedição.",
+      trackingTitle: "Rastreio",
+      tracking:
+        "Quando disponível, o rastreio será enviado por e-mail.",
+      internationalTitle: "Internacional",
+      international:
+        "Enviamos para a Europa. Os prazos podem variar consoante o destino.",
+      costTitle: "Custos de envio",
+      cost: "O envio é calculado no pagamento.",
+      contactTitle: "Assistência",
+      contact:
+        "Para qualquer questão sobre a sua encomenda, a nossa equipa está disponível.",
+      contactCta: "Contacto",
+      returnsNote: "Para devoluções, consulte",
+      returnsLink: "Devoluções",
+    },
+    returns: {
+      label: "Devoluções",
+      title: "Devoluções e reembolsos",
+      description:
+        "Um processo ponderado, à altura da natureza da alta joalharia.",
+      windowTitle: "Prazo de devolução",
+      window:
+        "Aceitamos devoluções até 15 dias após a entrega.",
+      conditionsTitle: "Condições",
+      conditions:
+        "As peças devem ser devolvidas sem sinais de uso, no estado original e com a embalagem original.",
+      refundTitle: "Reembolso",
+      refund:
+        "Após receção e verificação da peça, o reembolso será processado através do método de pagamento original.",
+      contactTitle: "Assistência",
+      contact:
+        "Para iniciar uma devolução ou pedir orientação, contacte a nossa equipa.",
+      contactCta: "Contacto",
+      shippingNote: "Para informação de entrega, consulte",
+      shippingLink: "Envio",
+    },
+    faq: {
+      label: "FAQ",
+      title: "Perguntas",
+      description: "Informação essencial, com clareza e discrição.",
+      items: {
+        shipping: {
+          q: "Quais são os prazos de entrega?",
+          a: "As encomendas são preparadas em 1–3 dias úteis. Portugal: 1–3 dias úteis após expedição. Europa: 3–7 dias úteis.",
+        },
+        tracking: {
+          q: "Receberei rastreio?",
+          a: "Quando disponível, enviamos os dados de rastreio por e-mail.",
+        },
+        returns: {
+          q: "Qual é a política de devoluções?",
+          a: "Aceitamos devoluções até 15 dias após a entrega. As peças devem estar sem sinais de uso, no estado original e com embalagem original. O reembolso é processado pelo método de pagamento original após verificação.",
+        },
+        materials: {
+          q: "Que materiais utilizam?",
+          a: "Cada peça é descrita na respetiva página — materiais, acabamento e composição são indicados com total transparência.",
+        },
+        care: {
+          q: "Como devo cuidar das minhas joias?",
+          a: "Guarde as peças separadamente, evite contacto com água e perfume, e limpe suavemente com um pano macio. A alta joalharia pede cuidado discreto e constante.",
+        },
+        payment: {
+          q: "Que métodos de pagamento aceitam?",
+          a: "Aceitamos pagamento seguro por cartão via Stripe no checkout, incluindo Apple Pay e Google Pay quando disponíveis.",
+        },
+        support: {
+          q: "Como posso contactar-vos?",
+          a: "A nossa equipa está disponível por e-mail. Visite Contacto para pedidos e assistência.",
+        },
+      },
     },
   },
   collections: {

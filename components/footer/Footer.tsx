@@ -25,6 +25,12 @@ export async function Footer({ locale }: FooterProps) {
     about: t("nav.aboutNav"),
   };
 
+  const serviceLinks = [
+    { key: "shipping", label: t("footer.shippingReturns"), href: routes.shipping },
+    { key: "faq", label: t("footer.faq"), href: routes.faq },
+    { key: "contact", label: t("footer.contact"), href: routes.contact },
+  ];
+
   const legalLinks = [
     { key: "privacy", label: messages.footer.privacy, href: "#" },
     { key: "terms", label: messages.footer.terms, href: "#" },
@@ -44,7 +50,7 @@ export async function Footer({ locale }: FooterProps) {
             <p className="storefront-footer__brand-slogan mt-5 max-w-xs text-maison-body-sm md:mt-6">
               {footer.slogan}
             </p>
-            <p className="mt-3 text-maison-body-sm text-[var(--maison-charcoal)] md:hidden">
+            <p className="mt-3 text-maison-body-sm text-[var(--maison-charcoal)]">
               {footer.location}
             </p>
             <div className="storefront-footer__brand-lang mt-6 md:mt-8">
@@ -67,13 +73,19 @@ export async function Footer({ locale }: FooterProps) {
             </ul>
           </div>
 
-          <div className="hidden md:col-span-2 md:block">
+          <div className="md:col-span-2">
             <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
-              {footer.maisonTitle}
+              {t("footer.service")}
             </p>
-            <p className="text-maison-body-sm text-[var(--maison-charcoal)]">
-              {footer.location}
-            </p>
+            <ul className="space-y-2.5">
+              {serviceLinks.map((link) => (
+                <li key={link.key}>
+                  <Link href={link.href} className="text-maison-link">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="md:col-span-2">
