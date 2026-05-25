@@ -38,6 +38,14 @@ After deploy, register in [Stripe Dashboard → Webhooks](https://dashboard.stri
 - Event: `checkout.session.completed`
 - Signing secret → `STRIPE_WEBHOOK_SECRET` on Vercel
 
+### Resend (order emails)
+
+After `checkout.session.completed`, the webhook sends customer confirmation + admin notification when configured:
+
+- `RESEND_API_KEY` — if missing, emails are skipped (checkout unaffected)
+- `RESEND_FROM_EMAIL` — e.g. `D'LUCENTI <hello@dlucenti.com>` (domain must be verified in Resend)
+- `ADMIN_ORDER_EMAIL` — internal new-order inbox
+
 ## Enable live data
 
 Set in `.env.local`:

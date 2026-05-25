@@ -1,8 +1,12 @@
 import "server-only";
 
 import type Stripe from "stripe";
+import { formatShippingAddressFromSession } from "@/lib/emails/format-shipping-address";
+import type { OrderEmailPayload } from "@/lib/emails/order-email-types";
+import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locale";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { ValidatedCheckoutLine } from "@/lib/checkout/types";
+import { sendOrderEmails } from "@/services/emails/send-order-emails";
 
 interface CartMetadataLine {
   productId: string;
@@ -33,6 +37,42 @@ function generateOrderNumber(): string {
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   const suffix = Math.random().toString(36).slice(2, 8).toUpperCase();
   return `DLU-${stamp}-${suffix}`;
+}
+
+function localeFromSession(session: Stripe.Checkout.Session): Locale {
+  const raw = session.metadata?.locale;
+  return isValidLocale(raw) ? raw : DEFAULT_LOCALE;
+}
+
+function buildEmailPayload(
+  session: Stripe.Checkout.Session,
+  order: { id: string },
+  orderNumber: string,
+  metadataLines: CartMetadataLine[],
+  subtotal: number,
+  amountTotal: number,
+  currency: string,
+  customerEmail: string | null,
+  customerName: string | null,
+): OrderEmailPayload {
+  return {
+    locale: localeFromSession(session),
+    orderId: order.id,
+    orderNumber,
+    customerEmail,
+    customerName,
+    shippingAddress: formatShippingAddressFromSession(session),
+    currency,
+    subtotal,
+    shippingCost: Math.max(0, amountTotal - subtotal),
+    total: amountTotal,
+    items: metadataLines.map((line) => ({
+      name: line.name,
+      quantity: line.quantity,
+      unitPrice: line.unitPrice,
+      lineTotal: line.unitPrice * line.quantity,
+    })),
+  };
 }
 
 export async function fulfillStripeCheckoutSession(
@@ -142,6 +182,20 @@ export async function fulfillStripeCheckoutSession(
     sessionId,
     orderNumber,
   });
+
+  const emailPayload = buildEmailPayload(
+    session,
+    order,
+    orderNumber,
+    metadataLines,
+    subtotal,
+    amountTotal,
+    currency,
+    customerEmail,
+    customerName,
+  );
+
+  await sendOrderEmails(emailPayload);
 
   return { orderId: order.id, created: true };
 }
