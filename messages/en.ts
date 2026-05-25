@@ -56,8 +56,8 @@ export const en = {
     emptyDescription: "Discover the collection when you are ready.",
     continueShopping: "Continue shopping",
     subtotal: "Subtotal",
-    shippingNote: "Shipping and duties calculated at checkout.",
-    shippingPortugalEstimate: "Delivery estimate for Portugal.",
+    shippingAtCheckout:
+      "Shipping is calculated at checkout after entering the delivery address.",
     checkout: "Checkout",
     quantity: "Quantity",
     remove: "Remove",
@@ -106,15 +106,10 @@ export const en = {
     orderSummary: "Order summary",
     qty: "Qty",
     shipping: "Shipping",
-    shippingIncluded: "Included",
-    complimentary: "Complimentary",
-    deliveryCountry: "Delivery country",
-    deliveryCountryNote:
-      "Select the country where your order will be delivered. It must match the address at Stripe checkout.",
-    freeShippingNote: "Free shipping within Portugal on orders above €50.",
-    europeShippingNote: "Shipping to the rest of Europe: €80.",
-    freeShippingRemaining: "{{amount}} until complimentary shipping",
-    freeShippingUnlocked: "Complimentary shipping on this order",
+    shippingAtCheckout:
+      "Shipping is calculated at checkout after entering the delivery address.",
+    freeShippingNotePortugal: "Free shipping within Portugal from €50.",
+    freeShippingNoteEurope: "Free shipping within Europe from €80.",
     total: "Total",
     dispatchNote: "Pieces dispatch within five business days.",
     orderDispatchNote:

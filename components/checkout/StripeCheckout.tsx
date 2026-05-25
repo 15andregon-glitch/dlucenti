@@ -8,11 +8,7 @@ import { isProductPurchasable } from "@/lib/product-availability";
 import { cn } from "@/lib/cn";
 import { useRefreshCartPrices } from "@/hooks/useRefreshCartPrices";
 
-interface StripeCheckoutProps {
-  shippingCountry: string;
-}
-
-export function StripeCheckout({ shippingCountry }: StripeCheckoutProps) {
+export function StripeCheckout() {
   const { t, routes, locale } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,7 +52,6 @@ export function StripeCheckout({ shippingCountry }: StripeCheckoutProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           locale,
-          shippingCountry,
           items: purchasableItems.map((item) => ({
             productId: item.product.id,
             quantity: item.quantity,

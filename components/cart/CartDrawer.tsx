@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useCartStore } from "@/store/cart";
+import { formatPrice } from "@/lib/cart";
 import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { CartLineItem } from "./CartLineItem";
-import { ShippingSummary } from "@/components/checkout/ShippingSummary";
 import { useRefreshCartPrices } from "@/hooks/useRefreshCartPrices";
 
 export function CartDrawer() {
-  const { t, routes } = useTranslations();
+  const { t, routes, locale } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const isOpen = useCartStore((s) => s.isOpen);
   const setOpen = useCartStore((s) => s.setOpen);
@@ -117,11 +117,17 @@ export function CartDrawer() {
               </ul>
 
               <footer className="shrink-0 border-t border-[var(--maison-hairline)] px-6 py-8 sm:px-8">
-                <ShippingSummary
-                  subtotal={itemsSubtotal}
-                  currency={currency}
-                  showPortugalHint
-                />
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="text-maison-label text-[var(--maison-mist)]">
+                    {t("cart.subtotal")}
+                  </span>
+                  <span className="font-sans text-[0.9375rem] tabular-nums text-[var(--maison-charcoal)]">
+                    {formatPrice(itemsSubtotal, currency, locale)}
+                  </span>
+                </div>
+                <p className="mt-3 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+                  {t("cart.shippingAtCheckout")}
+                </p>
                 <Button
                   href={routes.checkout}
                   variant="solid"

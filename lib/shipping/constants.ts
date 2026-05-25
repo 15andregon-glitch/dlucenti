@@ -4,8 +4,11 @@ export const PORTUGAL_FREE_SHIPPING_THRESHOLD_EUR = 50;
 /** Portugal paid shipping below threshold (EUR) */
 export const PORTUGAL_SHIPPING_COST_EUR = 4.9;
 
-/** Flat rate for non-Portugal checkout countries (EUR) — replace via carrier API */
-export const EUROPE_FLAT_SHIPPING_EUR = 80;
+/** Europe free-shipping threshold (EUR) */
+export const EUROPE_FREE_SHIPPING_THRESHOLD_EUR = 80;
+
+/** Europe paid shipping below threshold (EUR) */
+export const EUROPE_SHIPPING_COST_EUR = 80;
 
 export const DEFAULT_SHIPPING_COUNTRY = "PT";
 

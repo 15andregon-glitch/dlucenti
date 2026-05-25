@@ -85,7 +85,6 @@ function resolveOrderAmounts(
       shippingCountry,
       paidShipping,
       expectedShipping: quote.shippingCost,
-      metaShipping,
     });
   }
 

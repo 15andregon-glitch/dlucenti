@@ -5,7 +5,6 @@ import { isValidStripeUnitPrice, roundMoney } from "@/lib/prices";
 import { isStorefrontProductVisible } from "@/lib/product-editorial-visibility";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { PRODUCT_SELECT } from "@/queries/products";
-import { calculateShipping, normalizeShippingCountry } from "@/lib/shipping";
 import type { CheckoutCartLineInput, ValidatedCheckoutCart } from "./types";
 import type { ProductWithCollection } from "@/types/database";
 
@@ -47,7 +46,6 @@ function normalizeLines(
 
 export async function validateCheckoutCart(
   items: CheckoutCartLineInput[],
-  shippingCountry?: string,
 ): Promise<ValidatedCheckoutCart> {
   const lines = normalizeLines(items);
   if (lines.length === 0) {
@@ -156,14 +154,9 @@ export async function validateCheckoutCart(
     subtotal = roundMoney(subtotal + unitPrice * line.quantity);
   }
 
-  const roundedSubtotal = roundMoney(subtotal);
-  const country = normalizeShippingCountry(shippingCountry);
-  const shipping = calculateShipping(country, roundedSubtotal, "EUR");
-
   return {
     lines: validated,
-    subtotal: roundedSubtotal,
-    shipping,
+    subtotal: roundMoney(subtotal),
     currency: "EUR",
   };
 }

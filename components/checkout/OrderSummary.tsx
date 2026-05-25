@@ -5,20 +5,9 @@ import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/cart";
 import { roundMoney } from "@/lib/prices";
-import { DEFAULT_SHIPPING_COUNTRY } from "@/lib/shipping";
 import { useTranslations } from "@/hooks/useTranslations";
-import { ShippingSummary } from "@/components/checkout/ShippingSummary";
-import { ShippingCountrySelect } from "@/components/checkout/ShippingCountrySelect";
 
-interface OrderSummaryProps {
-  shippingCountry: string;
-  onShippingCountryChange: (country: string) => void;
-}
-
-export function OrderSummary({
-  shippingCountry,
-  onShippingCountryChange,
-}: OrderSummaryProps) {
+export function OrderSummary() {
   const { t, locale } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const items = useCartStore((s) => s.items);
@@ -74,17 +63,22 @@ export function OrderSummary({
         ))}
       </ul>
 
-      <div className="mt-10 border-t border-[var(--maison-hairline)] pt-8">
-        <ShippingCountrySelect
-          value={shippingCountry}
-          onChange={onShippingCountryChange}
-          className="mb-8"
-        />
-        <ShippingSummary
-          subtotal={itemsSubtotal}
-          currency={currency}
-          shippingCountry={shippingCountry || DEFAULT_SHIPPING_COUNTRY}
-        />
+      <div className="mt-10 space-y-3 border-t border-[var(--maison-hairline)] pt-8">
+        <div className="flex items-baseline justify-between gap-4">
+          <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
+            {t("cart.subtotal")}
+          </span>
+          <span className="font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
+            {formatPrice(itemsSubtotal, currency, locale)}
+          </span>
+        </div>
+        <p className="font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+          {t("checkout.shippingAtCheckout")}
+        </p>
+        <ul className="space-y-1.5 pt-1 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+          <li>{t("checkout.freeShippingNotePortugal")}</li>
+          <li>{t("checkout.freeShippingNoteEurope")}</li>
+        </ul>
       </div>
 
       <p className="mt-8 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">

@@ -57,8 +57,8 @@ export const pt = {
     emptyDescription: "Explore a coleção quando desejar.",
     continueShopping: "Continuar",
     subtotal: "Subtotal",
-    shippingNote: "Portes e taxas calculados no pagamento.",
-    shippingPortugalEstimate: "Estimativa de envio para Portugal.",
+    shippingAtCheckout:
+      "Os portes são calculados no checkout após introduzir a morada.",
     checkout: "Concluir compra",
     quantity: "Quantidade",
     remove: "Remover",
@@ -107,15 +107,10 @@ export const pt = {
     orderSummary: "Resumo da encomenda",
     qty: "Qtd.",
     shipping: "Portes",
-    shippingIncluded: "Incluídos",
-    complimentary: "Oferta",
-    deliveryCountry: "País de entrega",
-    deliveryCountryNote:
-      "Selecione o país de entrega. Deve coincidir com a morada indicada no pagamento Stripe.",
-    freeShippingNote: "Envio gratuito em encomendas para Portugal a partir de 50 EUR.",
-    europeShippingNote: "Envios para o resto da Europa: 80 EUR.",
-    freeShippingRemaining: "Faltam {{amount}} para envio gratuito",
-    freeShippingUnlocked: "Envio gratuito nesta encomenda",
+    shippingAtCheckout:
+      "Os portes são calculados no checkout após introduzir a morada.",
+    freeShippingNotePortugal: "Envio gratuito para Portugal a partir de 50 EUR.",
+    freeShippingNoteEurope: "Envio gratuito para a Europa a partir de 80 EUR.",
     total: "Total",
     dispatchNote: "As peças são expedidas em cinco dias úteis.",
     orderDispatchNote:
