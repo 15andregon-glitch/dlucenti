@@ -27,6 +27,7 @@ Fill in keys from [Supabase Dashboard](https://supabase.com/dashboard) → Proje
 8. `publish-collections.sql` — one-time fix if `/collections` is empty but rows exist in Admin → Collections  
 9. `finance.sql` — reporting periods, entries, orders (optional until finance module is used)
 10. `stripe-checkout.sql` — Stripe session columns on `orders`, idempotent indexes, `decrement_product_stock()` RPC (run before enabling live Checkout)
+11. `orders-fulfillment.sql` — fulfillment status, tracking, shipping address, shipping email guard (required for `/admin/orders`)
 
 Do **not** run `finance-seed.sql` — it contained demo data and is deprecated.
 

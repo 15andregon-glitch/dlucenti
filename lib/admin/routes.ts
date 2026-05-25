@@ -17,6 +17,8 @@ export const ADMIN_ROUTES = {
   homepage: "/admin/homepage",
   campaigns: "/admin/campaigns",
   footer: "/admin/footer",
+  orders: "/admin/orders",
+  order: (id: string) => `/admin/orders/${id}`,
   finance: "/admin/finance",
   financeDr: "/admin/finance/dr",
   financeCosts: "/admin/finance/costs",
@@ -25,9 +27,10 @@ export const ADMIN_ROUTES = {
 } as const;
 
 export type AdminRoutePath =
-  | (typeof ADMIN_ROUTES)[Exclude<keyof typeof ADMIN_ROUTES, "product" | "collection">]
+  | (typeof ADMIN_ROUTES)[Exclude<keyof typeof ADMIN_ROUTES, "product" | "collection" | "order">]
   | ReturnType<(typeof ADMIN_ROUTES)["product"]>
-  | ReturnType<(typeof ADMIN_ROUTES)["collection"]>;
+  | ReturnType<(typeof ADMIN_ROUTES)["collection"]>
+  | ReturnType<(typeof ADMIN_ROUTES)["order"]>;
 
 export const FINANCE_NAV = [
   { label: "Overview", href: ADMIN_ROUTES.finance },
@@ -40,6 +43,7 @@ export const FINANCE_NAV = [
 export const ADMIN_NAV = [
   { label: "Overview", href: ADMIN_ROUTES.home },
   { label: "Products", href: ADMIN_ROUTES.products },
+  { label: "Orders", href: ADMIN_ROUTES.orders },
   { label: "Collections", href: ADMIN_ROUTES.collections },
   { label: "Homepage", href: ADMIN_ROUTES.homepage },
   { label: "Campaigns", href: ADMIN_ROUTES.campaigns },

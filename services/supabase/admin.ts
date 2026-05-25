@@ -6,6 +6,7 @@ import * as collectionEditorialMutations from "@/queries/mutations/collection-ed
 import * as homepageMutations from "@/queries/mutations/homepage";
 import * as campaignMutations from "@/queries/mutations/campaigns";
 import * as footerMutations from "@/queries/mutations/footer";
+import * as orderMutations from "@/queries/orders";
 import * as storageMutations from "@/queries/mutations/storage";
 import type { StorageBucket } from "@/lib/supabase/storage";
 
@@ -67,6 +68,11 @@ export const adminCampaigns = {
     campaignMutations.reorderCampaigns(admin(), ordered),
 };
 
+export const adminOrders = {
+  update: (id: string, row: TablesUpdate<"orders">) =>
+    orderMutations.updateOrder(admin(), id, row),
+};
+
 export const adminFooter = {
   updateSettings: (
     row: TablesInsert<"footer_settings"> | TablesUpdate<"footer_settings">,
@@ -99,6 +105,7 @@ export const supabaseAdmin = {
   adminCollections,
   adminHomepage,
   adminCampaigns,
+  adminOrders,
   adminFooter,
   adminStorage,
 };

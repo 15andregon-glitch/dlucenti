@@ -126,6 +126,7 @@ export async function fulfillStripeCheckoutSession(
     .insert({
       order_number: orderNumber,
       status: "paid",
+      fulfillment_status: "unfulfilled",
       subtotal,
       shipping_cost: Math.max(0, amountTotal - subtotal),
       tax: 0,
@@ -135,6 +136,8 @@ export async function fulfillStripeCheckoutSession(
       stripe_payment_intent: paymentIntent,
       customer_email: customerEmail,
       customer_name: customerName,
+      shipping_address: formatShippingAddressFromSession(session),
+      locale: localeFromSession(session),
       synced_to_finance: false,
     })
     .select("id")

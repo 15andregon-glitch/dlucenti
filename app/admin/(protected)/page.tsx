@@ -20,6 +20,11 @@ const LINKS = [
     description: "Catalog, unit economics, inventory, and publishing",
   },
   {
+    href: ADMIN_ROUTES.orders,
+    title: "Orders",
+    description: "Stripe orders, fulfillment, and shipping notifications",
+  },
+  {
     href: ADMIN_ROUTES.collections,
     title: "Collections",
     description: "Seasonal edits and cover art",

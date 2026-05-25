@@ -61,6 +61,7 @@ export type FinancialEntrySource =
 export type ReportingPeriodType = "month" | "quarter" | "year";
 
 export type OrderStatus = "pending" | "paid" | "shipped" | "completed" | "cancelled";
+export type FulfillmentStatus = "unfulfilled" | "processing" | "shipped";
 
 export interface Database {
   public: {
@@ -748,6 +749,14 @@ export interface Database {
           stripe_payment_intent: string | null;
           customer_email: string | null;
           customer_name: string | null;
+          fulfillment_status: FulfillmentStatus;
+          shipping_address: string | null;
+          locale: string;
+          tracking_number: string | null;
+          courier: string | null;
+          tracking_url: string | null;
+          shipped_at: string | null;
+          shipping_email_sent_at: string | null;
         };
         Insert: {
           id?: string;
@@ -766,6 +775,14 @@ export interface Database {
           stripe_payment_intent?: string | null;
           customer_email?: string | null;
           customer_name?: string | null;
+          fulfillment_status?: FulfillmentStatus;
+          shipping_address?: string | null;
+          locale?: string;
+          tracking_number?: string | null;
+          courier?: string | null;
+          tracking_url?: string | null;
+          shipped_at?: string | null;
+          shipping_email_sent_at?: string | null;
         };
         Update: {
           id?: string;
@@ -784,6 +801,14 @@ export interface Database {
           stripe_payment_intent?: string | null;
           customer_email?: string | null;
           customer_name?: string | null;
+          fulfillment_status?: FulfillmentStatus;
+          shipping_address?: string | null;
+          locale?: string;
+          tracking_number?: string | null;
+          courier?: string | null;
+          tracking_url?: string | null;
+          shipped_at?: string | null;
+          shipping_email_sent_at?: string | null;
         };
         Relationships: [
           {
@@ -856,6 +881,7 @@ export interface Database {
       financial_entry_source: FinancialEntrySource;
       reporting_period_type: ReportingPeriodType;
       order_status: OrderStatus;
+      fulfillment_status: FulfillmentStatus;
     };
     CompositeTypes: Record<string, never>;
   };
