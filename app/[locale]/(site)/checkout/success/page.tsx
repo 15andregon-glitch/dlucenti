@@ -33,6 +33,9 @@ export default async function CheckoutSuccessPage({
           <p className="mt-6 max-w-md font-sans text-[0.9375rem] leading-[1.7] text-[var(--maison-gray)]">
             {t("checkout.successDescription")}
           </p>
+          <p className="mt-8 max-w-md font-sans text-[0.75rem] leading-[1.65] tracking-[0.01em] text-[var(--maison-mist)]">
+            {t("checkout.successEmailNotice")}
+          </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row md:items-start">
             <Button href={routes.shop} variant="solid">
               {t("checkout.returnToShop")}

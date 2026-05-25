@@ -82,6 +82,8 @@ export const en = {
     successTitle: "Thank you for your order",
     successDescription:
       "Your payment was successful. A confirmation email will follow shortly.",
+    successEmailNotice:
+      "If you cannot find your confirmation email, please check your spam or promotions folder.",
     backHome: "Back to home",
     cancelLabel: "Checkout paused",
     cancelTitle: "Your selection awaits",

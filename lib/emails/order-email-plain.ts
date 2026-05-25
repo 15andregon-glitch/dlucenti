@@ -71,6 +71,10 @@ export function buildCustomerOrderEmailText(payload: OrderEmailPayload): string 
     sections.push("", copy.customerLabel, contact);
   }
 
+  if (copy.inboxNotice) {
+    sections.push("", copy.inboxNotice);
+  }
+
   sections.push("", "---", copy.footer);
 
   return sections.join("\n");

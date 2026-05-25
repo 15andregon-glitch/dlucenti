@@ -15,6 +15,7 @@ interface OrderEmailCopy {
   totalLabel: string;
   shippingAddressLabel: string;
   customerLabel: string;
+  inboxNotice: string;
   footer: string;
   adminTitle: string;
   adminIntro: string;
@@ -38,6 +39,8 @@ const COPY: Record<Locale, Record<EmailKind, OrderEmailCopy>> = {
       totalLabel: "Total",
       shippingAddressLabel: "Delivery address",
       customerLabel: "Contact",
+      inboxNotice:
+        "If you cannot find your confirmation email, please check your spam or promotions folder.",
       footer:
         "You received this email because you placed an order at dlucenti.com. If you have questions, reply to this message.",
       adminTitle: "New order",
@@ -58,6 +61,7 @@ const COPY: Record<Locale, Record<EmailKind, OrderEmailCopy>> = {
       totalLabel: "Total",
       shippingAddressLabel: "Delivery address",
       customerLabel: "Customer",
+      inboxNotice: "",
       footer: "Internal notification from dlucenti.com",
       adminTitle: "New order",
       adminIntro: "Order details for fulfillment.",
@@ -80,6 +84,8 @@ const COPY: Record<Locale, Record<EmailKind, OrderEmailCopy>> = {
       totalLabel: "Total",
       shippingAddressLabel: "Morada de entrega",
       customerLabel: "Contacto",
+      inboxNotice:
+        "Caso não encontre o email de confirmação, verifique a pasta de spam ou promoções.",
       footer:
         "Recebeu este email porque realizou uma encomenda em dlucenti.com. Para questões, responda a este email.",
       adminTitle: "Nova encomenda",
@@ -100,6 +106,7 @@ const COPY: Record<Locale, Record<EmailKind, OrderEmailCopy>> = {
       totalLabel: "Total",
       shippingAddressLabel: "Morada de entrega",
       customerLabel: "Cliente",
+      inboxNotice: "",
       footer: "Notificação interna — dlucenti.com",
       adminTitle: "Nova encomenda",
       adminIntro: "Detalhes da encomenda para expedição.",

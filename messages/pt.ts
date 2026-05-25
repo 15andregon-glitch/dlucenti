@@ -83,6 +83,8 @@ export const pt = {
     successTitle: "Obrigado pela sua encomenda",
     successDescription:
       "O pagamento foi recebido com sucesso. Receberá a confirmação por e-mail em breve.",
+    successEmailNotice:
+      "Caso não encontre o email de confirmação, verifique a pasta de spam ou promoções.",
     backHome: "Voltar à página inicial",
     cancelLabel: "Pagamento interrompido",
     cancelTitle: "A sua seleção aguarda",

@@ -11,7 +11,9 @@ const P = "font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6
 const H1 = "font-size:20px;font-weight:400;line-height:1.3;margin:0 0 16px;color:#3a3834;";
 const LABEL = "font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9a958c;margin:24px 0 8px;";
 const HR = "border:0;border-top:1px solid #e5e1da;margin:24px 0;";
-const FOOTER = "font-family:Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#9a958c;margin:28px 0 0;";
+const FOOTER_NOTICE =
+  "font-family:Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;color:#b5b0a8;margin:28px 0 10px;";
+const FOOTER = "font-family:Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#9a958c;margin:0;";
 
 function formatMultiline(text: string): string {
   return escapeHtml(text).replace(/\n/g, "<br />");
@@ -105,6 +107,7 @@ ${buildTotalsHtml(payload, locale, "customer")}
 <hr style="${HR}" />
 ${addressSection}
 ${contactSection}
+${copy.inboxNotice ? `<p style="${FOOTER_NOTICE}">${escapeHtml(copy.inboxNotice)}</p>` : ""}
 <p style="${FOOTER}">${escapeHtml(copy.footer)}</p>`;
 
   return emailShell(
