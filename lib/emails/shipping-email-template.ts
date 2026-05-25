@@ -1,86 +1,58 @@
 import { escapeHtml } from "@/lib/emails/escape-html";
 import { getShippingEmailCopy } from "@/lib/emails/shipping-email-copy";
-import type { Locale } from "@/lib/i18n/locale";
+import type { ShippingEmailPayload } from "@/lib/emails/shipping-email-types";
 
-export interface ShippingEmailPayload {
-  locale: Locale;
-  orderNumber: string;
-  customerName: string | null;
-  trackingNumber: string | null;
-  trackingUrl: string | null;
-  courier: string | null;
-}
-
-const STYLES = {
-  body: "margin:0;padding:0;background-color:#f7f4ef;",
-  wrap: "max-width:520px;margin:0 auto;padding:48px 28px 56px;",
-  label:
-    "font-family:Georgia,'Times New Roman',serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#9a958c;margin:0 0 8px;",
-  title:
-    "font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;letter-spacing:-0.02em;line-height:1.15;color:#3a3834;margin:0 0 20px;",
-  text: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.75;color:#6e6a63;margin:0 0 16px;",
-  link:
-    "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:#3a3834;text-decoration:underline;",
-  footer:
-    "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.65;color:#9a958c;margin:32px 0 0;",
-} as const;
+const BODY =
+  "margin:0;padding:0;background:#f7f4ef;font-family:Georgia,'Times New Roman',serif;color:#3a3834;";
+const MAIN = "max-width:520px;margin:0 auto;padding:32px 24px 40px;";
+const P = "font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:1.65;color:#5c5852;margin:0 0 14px;";
+const H1 = "font-size:20px;font-weight:400;line-height:1.3;margin:0 0 16px;color:#3a3834;";
+const LABEL = "font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9a958c;margin:20px 0 8px;";
+const FOOTER = "font-family:Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#9a958c;margin:28px 0 0;";
+const LINK = "color:#3a3834;text-decoration:underline;";
 
 export function buildShippingConfirmationEmailHtml(
   payload: ShippingEmailPayload,
 ): string {
   const copy = getShippingEmailCopy(payload.locale);
+  const lang = payload.locale === "pt" ? "pt" : "en";
   const greeting = payload.customerName
-    ? escapeHtml(payload.customerName)
-    : null;
+    ? `<p style="${P}">${escapeHtml(payload.customerName)},</p>`
+    : "";
 
-  const trackingLines: string[] = [];
-  if (payload.courier) {
-    trackingLines.push(escapeHtml(payload.courier));
-  }
-  if (payload.trackingNumber) {
-    trackingLines.push(escapeHtml(payload.trackingNumber));
-  }
+  const trackingParts: string[] = [];
+  if (payload.courier) trackingParts.push(escapeHtml(payload.courier));
+  if (payload.trackingNumber) trackingParts.push(escapeHtml(payload.trackingNumber));
 
   const trackingBlock =
-    trackingLines.length > 0 || payload.trackingUrl
-      ? `
-        <p style="${STYLES.label}">${escapeHtml(copy.trackingLabel)}</p>
-        ${trackingLines.length > 0 ? `<p style="${STYLES.text}">${trackingLines.join("<br />")}</p>` : ""}
-        ${
-          payload.trackingUrl
-            ? `<p style="margin:12px 0 0;"><a href="${escapeHtml(payload.trackingUrl)}" style="${STYLES.link}">${escapeHtml(copy.trackCta)}</a></p>`
-            : ""
-        }`
+    trackingParts.length > 0 || payload.trackingUrl
+      ? `<p style="${LABEL}">${escapeHtml(copy.trackingLabel)}</p>
+         ${trackingParts.length > 0 ? `<p style="${P}">${trackingParts.join("<br />")}</p>` : ""}
+         ${
+           payload.trackingUrl
+             ? `<p style="${P}"><a href="${escapeHtml(payload.trackingUrl)}" style="${LINK}">${escapeHtml(copy.trackCta)}</a></p>`
+             : ""
+         }`
       : "";
 
   return `<!DOCTYPE html>
-<html lang="${payload.locale === "pt" ? "pt" : "en"}">
+<html lang="${lang}">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escapeHtml(copy.subject)}</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>${escapeHtml(copy.subject(payload.orderNumber))}</title>
 </head>
-<body style="${STYLES.body}">
-  <div style="display:none;max-height:0;overflow:hidden;">${escapeHtml(copy.preheader)}</div>
-  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="${STYLES.body}">
-    <tr>
-      <td align="center">
-        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="${STYLES.wrap}">
-          <tr>
-            <td>
-              <p style="${STYLES.label}">D'LUCENTI</p>
-              <h1 style="${STYLES.title}">${escapeHtml(copy.title)}</h1>
-              ${greeting ? `<p style="${STYLES.text}">${greeting},</p>` : ""}
-              <p style="${STYLES.text}">${escapeHtml(copy.intro)}</p>
-              <p style="${STYLES.text}"><span style="color:#9a958c;">${escapeHtml(copy.orderLabel)}</span> ${escapeHtml(payload.orderNumber)}</p>
-              ${trackingBlock}
-              <p style="${STYLES.footer}">${escapeHtml(copy.footer)}</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<body style="${BODY}">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${escapeHtml(copy.preheader(payload.orderNumber))}</div>
+<main style="${MAIN}">
+<p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#9a958c;margin:0 0 12px;">D'LUCENTI</p>
+<h1 style="${H1}">${escapeHtml(copy.title)}</h1>
+${greeting}
+<p style="${P}">${escapeHtml(copy.intro)}</p>
+<p style="${P}"><span style="color:#9a958c;">${escapeHtml(copy.orderLabel)}:</span> ${escapeHtml(payload.orderNumber)}</p>
+${trackingBlock}
+<p style="${FOOTER}">${escapeHtml(copy.footer)}</p>
+</main>
 </body>
 </html>`;
 }

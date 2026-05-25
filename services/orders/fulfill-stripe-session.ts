@@ -83,6 +83,12 @@ export async function fulfillStripeCheckoutSession(
     throw new Error("Missing Stripe session id");
   }
 
+  if (session.payment_status !== "paid") {
+    throw new Error(
+      `Checkout session ${sessionId} is not paid (status: ${session.payment_status ?? "unknown"})`,
+    );
+  }
+
   const client = createSupabaseAdminClient();
 
   const { data: existing } = await client

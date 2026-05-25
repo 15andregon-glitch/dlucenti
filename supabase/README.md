@@ -41,11 +41,14 @@ After deploy, register in [Stripe Dashboard → Webhooks](https://dashboard.stri
 
 ### Resend (order emails)
 
-After `checkout.session.completed`, the webhook sends customer confirmation + admin notification when configured:
+After `checkout.session.completed` with `payment_status: paid`, the webhook sends customer confirmation + admin notification when configured:
 
 - `RESEND_API_KEY` — if missing, emails are skipped (checkout unaffected)
-- `RESEND_FROM_EMAIL` — e.g. `D'LUCENTI <hello@dlucenti.com>` (domain must be verified in Resend)
+- `RESEND_FROM_EMAIL` — default `D'LUCENTI <hello@dlucenti.com>` (verify **dlucenti.com** in Resend for SPF/DKIM/DMARC)
+- `RESEND_REPLY_TO_EMAIL` — optional; default `hello@dlucenti.com`
 - `ADMIN_ORDER_EMAIL` — internal new-order inbox
+
+Deliverability: use the verified domain only, keep `RESEND_FROM_EMAIL` on `@dlucenti.com`, and confirm DKIM + DMARC pass in Resend → Domains before production sends.
 
 ## Enable live data
 

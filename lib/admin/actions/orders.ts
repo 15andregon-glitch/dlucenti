@@ -98,6 +98,7 @@ export async function markOrderShippedAction(
     let emailSent = false;
     if (shouldSendEmail) {
       emailSent = await sendShippingConfirmationEmail({
+        id: orderId,
         orderNumber: order.order_number,
         customerEmail: order.customer_email,
         customerName: order.customer_name,

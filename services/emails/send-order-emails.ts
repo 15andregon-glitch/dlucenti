@@ -1,9 +1,14 @@
 import "server-only";
 
+import { buildMessageId } from "@/lib/emails/deliverability";
 import {
   buildAdminOrderEmailHtml,
   buildCustomerOrderEmailHtml,
 } from "@/lib/emails/order-email-template";
+import {
+  buildAdminOrderEmailText,
+  buildCustomerOrderEmailText,
+} from "@/lib/emails/order-email-plain";
 import { getOrderEmailCopy } from "@/lib/emails/order-email-copy";
 import type { OrderEmailPayload } from "@/lib/emails/order-email-types";
 import { sendTransactionalEmail } from "@/lib/emails/resend-send";
@@ -19,14 +24,18 @@ function logInfo(message: string, meta?: Record<string, unknown>) {
  * Never throws — webhook/checkout must not fail if email is unavailable.
  */
 export async function sendOrderEmails(payload: OrderEmailPayload): Promise<void> {
-  const copy = getOrderEmailCopy(payload.locale, "customer");
+  const customerCopy = getOrderEmailCopy(payload.locale, "customer");
 
   if (payload.customerEmail) {
     await sendTransactionalEmail({
       to: payload.customerEmail,
-      subject: copy.customerSubject,
+      subject: customerCopy.customerSubject(payload.orderNumber),
       html: buildCustomerOrderEmailHtml(payload),
+      text: buildCustomerOrderEmailText(payload),
       tag: "order-confirmation",
+      referenceId: payload.orderId,
+      messageId: buildMessageId("order-confirmation", payload.orderId),
+      includeListUnsubscribe: true,
     });
   } else {
     logInfo("customer confirmation skipped — no customer email", {
@@ -47,6 +56,10 @@ export async function sendOrderEmails(payload: OrderEmailPayload): Promise<void>
     to: adminEmail,
     subject: adminCopy.adminSubject(payload.orderNumber),
     html: buildAdminOrderEmailHtml(payload),
-    tag: "admin-notification",
+    text: buildAdminOrderEmailText(payload),
+    tag: "order-admin",
+    referenceId: payload.orderId,
+    messageId: buildMessageId("order-admin", payload.orderId),
+    includeListUnsubscribe: false,
   });
 }
