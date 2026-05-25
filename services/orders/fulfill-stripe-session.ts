@@ -4,8 +4,10 @@ import type Stripe from "stripe";
 import { formatShippingAddressFromSession } from "@/lib/emails/format-shipping-address";
 import type { OrderEmailPayload } from "@/lib/emails/order-email-types";
 import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locale";
+import { roundMoney } from "@/lib/prices";
+import { calculateShipping } from "@/lib/shipping";
+import { extractShippingCountryFromSession } from "@/lib/shipping/session-country";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import type { ValidatedCheckoutLine } from "@/lib/checkout/types";
 import { sendOrderEmails } from "@/services/emails/send-order-emails";
 
 interface CartMetadataLine {
@@ -33,6 +35,12 @@ function parseCartMetadata(raw: string | undefined): CartMetadataLine[] | null {
   }
 }
 
+function parseMetadataMoney(raw: string | undefined): number | null {
+  if (raw == null || raw === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? roundMoney(n) : null;
+}
+
 function generateOrderNumber(): string {
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
   const suffix = Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -44,13 +52,58 @@ function localeFromSession(session: Stripe.Checkout.Session): Locale {
   return isValidLocale(raw) ? raw : DEFAULT_LOCALE;
 }
 
+function resolveOrderAmounts(
+  session: Stripe.Checkout.Session,
+  metadataLines: CartMetadataLine[],
+): {
+  subtotal: number;
+  shippingCost: number;
+  total: number;
+  shippingCountry: string;
+} {
+  const linesSubtotal = roundMoney(
+    metadataLines.reduce(
+      (sum, line) => sum + line.unitPrice * line.quantity,
+      0,
+    ),
+  );
+
+  const metaSubtotal =
+    parseMetadataMoney(session.metadata?.subtotal) ?? linesSubtotal;
+  const metaShipping = parseMetadataMoney(session.metadata?.shipping_cost);
+
+  const shippingCountry = extractShippingCountryFromSession(session);
+  const expectedShipping =
+    metaShipping ??
+    calculateShipping(shippingCountry, metaSubtotal).shippingCost;
+
+  const amountTotal = roundMoney((session.amount_total ?? 0) / 100);
+  const shippingCost = roundMoney(expectedShipping);
+  const subtotal = metaSubtotal;
+  const total = amountTotal;
+
+  const expectedTotal = roundMoney(subtotal + shippingCost);
+  if (Math.abs(expectedTotal - total) > 0.02) {
+    console.warn("[stripe/webhook] order total mismatch", {
+      sessionId: session.id,
+      expectedTotal,
+      total,
+      subtotal,
+      shippingCost,
+    });
+  }
+
+  return { subtotal, shippingCost, total, shippingCountry };
+}
+
 function buildEmailPayload(
   session: Stripe.Checkout.Session,
   order: { id: string },
   orderNumber: string,
   metadataLines: CartMetadataLine[],
   subtotal: number,
-  amountTotal: number,
+  shippingCost: number,
+  total: number,
   currency: string,
   customerEmail: string | null,
   customerName: string | null,
@@ -64,8 +117,8 @@ function buildEmailPayload(
     shippingAddress: formatShippingAddressFromSession(session),
     currency,
     subtotal,
-    shippingCost: Math.max(0, amountTotal - subtotal),
-    total: amountTotal,
+    shippingCost,
+    total,
     items: metadataLines.map((line) => ({
       name: line.name,
       quantity: line.quantity,
@@ -107,11 +160,8 @@ export async function fulfillStripeCheckoutSession(
     throw new Error("Missing cart metadata on checkout session");
   }
 
-  const amountTotal = (session.amount_total ?? 0) / 100;
-  const subtotal = metadataLines.reduce(
-    (sum, line) => sum + line.unitPrice * line.quantity,
-    0,
-  );
+  const { subtotal, shippingCost, total, shippingCountry } =
+    resolveOrderAmounts(session, metadataLines);
   const currency = (session.currency ?? "eur").toUpperCase();
 
   const customerEmail =
@@ -134,10 +184,11 @@ export async function fulfillStripeCheckoutSession(
       status: "paid",
       fulfillment_status: "unfulfilled",
       subtotal,
-      shipping_cost: Math.max(0, amountTotal - subtotal),
+      shipping_cost: shippingCost,
       tax: 0,
-      total: amountTotal,
+      total,
       currency,
+      shipping_country: shippingCountry,
       stripe_session_id: sessionId,
       stripe_payment_intent: paymentIntent,
       customer_email: customerEmail,
@@ -190,6 +241,8 @@ export async function fulfillStripeCheckoutSession(
     orderId: order.id,
     sessionId,
     orderNumber,
+    shippingCountry,
+    shippingCost,
   });
 
   const emailPayload = buildEmailPayload(
@@ -198,7 +251,8 @@ export async function fulfillStripeCheckoutSession(
     orderNumber,
     metadataLines,
     subtotal,
-    amountTotal,
+    shippingCost,
+    total,
     currency,
     customerEmail,
     customerName,

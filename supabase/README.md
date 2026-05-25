@@ -28,6 +28,7 @@ Fill in keys from [Supabase Dashboard](https://supabase.com/dashboard) → Proje
 9. `finance.sql` — reporting periods, entries, orders (optional until finance module is used)
 10. `stripe-checkout.sql` — Stripe session columns on `orders`, idempotent indexes, `decrement_product_stock()` RPC (run before enabling live Checkout)
 11. `orders-fulfillment.sql` — fulfillment status, tracking, shipping address, shipping email guard (required for `/admin/orders`)
+12. `shipping-country.sql` — `shipping_country` on orders (ISO code from Stripe)
 
 Do **not** run `finance-seed.sql` — it contained demo data and is deprecated.
 

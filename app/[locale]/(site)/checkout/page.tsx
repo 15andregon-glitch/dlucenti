@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { StripeCheckout } from "@/components/checkout/StripeCheckout";
-import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { CheckoutExperience } from "@/components/checkout/CheckoutExperience";
 import { getTranslations } from "@/lib/i18n/translations";
 import { isValidLocale } from "@/lib/i18n/locale";
 import { localizedPageMetadata } from "@/lib/i18n/metadata";
@@ -43,12 +42,7 @@ export default async function CheckoutPage({
         </header>
 
         <div className="mt-14 grid gap-16 lg:mt-20 lg:grid-cols-[minmax(0,1fr)_minmax(280px,22rem)] lg:gap-20 xl:gap-24">
-          <div className="min-w-0 max-w-xl">
-            <StripeCheckout />
-          </div>
-          <div className="border-t border-[var(--maison-hairline)] pt-12 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-12 xl:pl-16">
-            <OrderSummary />
-          </div>
+          <CheckoutExperience />
         </div>
       </PageContainer>
     </main>

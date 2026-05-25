@@ -119,7 +119,15 @@ export default async function AdminOrderDetailPage({
               />
               <DetailRow
                 label="Shipping"
-                value={formatMoney(Number(order.shipping_cost), order.currency)}
+                value={
+                  Number(order.shipping_cost) > 0
+                    ? formatMoney(Number(order.shipping_cost), order.currency)
+                    : "Included"
+                }
+              />
+              <DetailRow
+                label="Shipping country"
+                value={order.shipping_country ?? "—"}
               />
               <DetailRow
                 label="Total"

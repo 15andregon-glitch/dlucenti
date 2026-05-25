@@ -1,3 +1,5 @@
+import type { ShippingQuote } from "@/lib/shipping/types";
+
 export interface CheckoutCartLineInput {
   productId: string;
   quantity: number;
@@ -17,5 +19,6 @@ export interface ValidatedCheckoutLine {
 export interface ValidatedCheckoutCart {
   lines: ValidatedCheckoutLine[];
   subtotal: number;
+  shipping: ShippingQuote;
   currency: string;
 }

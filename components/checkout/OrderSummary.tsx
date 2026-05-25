@@ -5,9 +5,20 @@ import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/cart";
 import { roundMoney } from "@/lib/prices";
+import { DEFAULT_SHIPPING_COUNTRY } from "@/lib/shipping";
 import { useTranslations } from "@/hooks/useTranslations";
+import { ShippingSummary } from "@/components/checkout/ShippingSummary";
+import { ShippingCountrySelect } from "@/components/checkout/ShippingCountrySelect";
 
-export function OrderSummary() {
+interface OrderSummaryProps {
+  shippingCountry: string;
+  onShippingCountryChange: (country: string) => void;
+}
+
+export function OrderSummary({
+  shippingCountry,
+  onShippingCountryChange,
+}: OrderSummaryProps) {
   const { t, locale } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const items = useCartStore((s) => s.items);
@@ -20,7 +31,7 @@ export function OrderSummary() {
   if (items.length === 0) return null;
 
   const currency = items[0]?.product.currency ?? "EUR";
-  const total = subtotal();
+  const itemsSubtotal = subtotal();
 
   return (
     <aside className="lg:sticky lg:top-28">
@@ -63,31 +74,17 @@ export function OrderSummary() {
         ))}
       </ul>
 
-      <div className="mt-10 space-y-3 border-t border-[var(--maison-hairline)] pt-8">
-        <div className="flex items-baseline justify-between gap-4">
-          <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
-            {t("cart.subtotal")}
-          </span>
-          <span className="font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
-            {formatPrice(total, currency, locale)}
-          </span>
-        </div>
-        <div className="flex items-baseline justify-between gap-4">
-          <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
-            {t("checkout.shipping")}
-          </span>
-          <span className="font-sans text-[0.8125rem] text-[var(--maison-mist)]">
-            {t("checkout.complimentary")}
-          </span>
-        </div>
-        <div className="flex items-baseline justify-between gap-4 pt-3">
-          <span className="font-sans text-[0.875rem] text-[var(--maison-charcoal)]">
-            {t("checkout.total")}
-          </span>
-          <span className="font-sans text-[0.9375rem] tabular-nums text-[var(--maison-charcoal)]">
-            {formatPrice(total, currency, locale)}
-          </span>
-        </div>
+      <div className="mt-10 border-t border-[var(--maison-hairline)] pt-8">
+        <ShippingCountrySelect
+          value={shippingCountry}
+          onChange={onShippingCountryChange}
+          className="mb-8"
+        />
+        <ShippingSummary
+          subtotal={itemsSubtotal}
+          currency={currency}
+          shippingCountry={shippingCountry || DEFAULT_SHIPPING_COUNTRY}
+        />
       </div>
 
       <p className="mt-8 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">

@@ -751,6 +751,7 @@ export interface Database {
           customer_name: string | null;
           fulfillment_status: FulfillmentStatus;
           shipping_address: string | null;
+          shipping_country: string | null;
           locale: string;
           tracking_number: string | null;
           courier: string | null;
@@ -777,6 +778,7 @@ export interface Database {
           customer_name?: string | null;
           fulfillment_status?: FulfillmentStatus;
           shipping_address?: string | null;
+          shipping_country?: string | null;
           locale?: string;
           tracking_number?: string | null;
           courier?: string | null;
@@ -803,6 +805,7 @@ export interface Database {
           customer_name?: string | null;
           fulfillment_status?: FulfillmentStatus;
           shipping_address?: string | null;
+          shipping_country?: string | null;
           locale?: string;
           tracking_number?: string | null;
           courier?: string | null;
