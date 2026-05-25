@@ -1,3 +1,4 @@
+import { formatPrice } from "@/lib/prices";
 import type { FulfillmentStatus, OrderStatus } from "@/types/database/schema";
 
 export function paymentStatusLabel(status: OrderStatus): string {
@@ -39,5 +40,5 @@ export function formatOrderDate(iso: string): string {
 }
 
 export function formatMoney(amount: number, currency: string): string {
-  return `${Number(amount).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
+  return formatPrice(amount, currency, "en");
 }

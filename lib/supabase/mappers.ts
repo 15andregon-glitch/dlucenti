@@ -1,4 +1,5 @@
 import { SITE } from "@/lib/constants";
+import { roundMoney } from "@/lib/prices";
 import { mapEditorialCollection } from "@/lib/supabase/collection-mapper";
 import type { Collection } from "@/lib/types";
 import type { Product, ProductCategory } from "@/lib/types";
@@ -34,7 +35,7 @@ export function mapProductRow(
     slug: row.slug,
     name: row.name,
     description: row.description,
-    price: Number(row.price),
+    price: roundMoney(Number(row.price)),
     currency: SITE.currency,
     category: row.category as ProductCategory,
     targetGender: row.target_gender ?? "unisex",

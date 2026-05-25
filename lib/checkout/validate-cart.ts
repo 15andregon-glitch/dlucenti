@@ -1,6 +1,7 @@
 import "server-only";
 
 import { isProductPurchasable } from "@/lib/product-availability";
+import { isValidStripeUnitPrice, roundMoney } from "@/lib/prices";
 import { isStorefrontProductVisible } from "@/lib/product-editorial-visibility";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { PRODUCT_SELECT } from "@/queries/products";
@@ -17,6 +18,7 @@ export class CheckoutValidationError extends Error {
       | "NOT_VISIBLE"
       | "SOLD_OUT"
       | "INSUFFICIENT_STOCK"
+      | "INVALID_PRICE"
       | "CONFIG",
   ) {
     super(message);
@@ -99,7 +101,7 @@ export async function validateCheckoutCart(
       slug: row.slug,
       name: row.name,
       description: row.description,
-      price: Number(row.price),
+      price: roundMoney(Number(row.price)),
       currency: "EUR",
       category: row.category,
       targetGender: row.target_gender ?? "unisex",
@@ -124,8 +126,15 @@ export async function validateCheckoutCart(
       );
     }
 
-    const unitPrice = Number(row.price);
-    const unitCost = Number(row.product_cost ?? 0);
+    const unitPrice = roundMoney(Number(row.price));
+    const unitCost = roundMoney(Number(row.product_cost ?? 0));
+
+    if (!isValidStripeUnitPrice(unitPrice)) {
+      throw new CheckoutValidationError(
+        `Invalid price for ${row.name} (minimum 0,01 EUR)`,
+        "INVALID_PRICE",
+      );
+    }
     const imageUrl =
       row.product_images
         ?.slice()
@@ -142,12 +151,12 @@ export async function validateCheckoutCart(
       imageUrl,
     });
 
-    subtotal += unitPrice * line.quantity;
+    subtotal = roundMoney(subtotal + unitPrice * line.quantity);
   }
 
   return {
     lines: validated,
-    subtotal,
+    subtotal: roundMoney(subtotal),
     currency: "EUR",
   };
 }

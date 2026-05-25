@@ -9,6 +9,7 @@ import {
   type ProductEconomicsInput,
 } from "@/lib/finance/product-economics";
 import { hiddenFromFrontendFromShowOnStorefront } from "@/lib/product-editorial-visibility";
+import { parsePriceInput } from "@/lib/prices";
 import { parseCheckbox, parseNumber, parseOptionalUuid } from "@/lib/admin/utils";
 
 export interface ParsedProductForm {
@@ -59,12 +60,12 @@ function parseOptionalNumber(value: FormDataEntryValue | null): number | null {
 
 export function parseProductForm(formData: FormData): ParsedProductForm {
   const economicsInput: ProductEconomicsInput = {
-    sellingPrice: parseNumber(formData.get("price")),
-    productCost: parseNumber(formData.get("product_cost")),
-    packagingCost: parseNumber(formData.get("packaging_cost")),
-    pouchCost: parseNumber(formData.get("pouch_cost")),
-    shippingCost: parseNumber(formData.get("shipping_cost")),
-    importCost: parseNumber(formData.get("import_cost")),
+    sellingPrice: parsePriceInput(formData.get("price")),
+    productCost: parsePriceInput(formData.get("product_cost")),
+    packagingCost: parsePriceInput(formData.get("packaging_cost")),
+    pouchCost: parsePriceInput(formData.get("pouch_cost")),
+    shippingCost: parsePriceInput(formData.get("shipping_cost")),
+    importCost: parsePriceInput(formData.get("import_cost")),
     paymentFeePercent: parseNumber(formData.get("payment_fee_percent"), 2.9),
     vatRate: parseNumber(formData.get("vat_rate"), 23),
     targetMarginPercent: parseOptionalNumber(formData.get("target_margin_percent")),
@@ -146,6 +147,9 @@ export function validateProductForm(row: ParsedProductForm): string | null {
   if (!row.name) return "Name is required";
   if (!row.slug) return "Slug is required";
   if (row.price < 0 || row.product_cost < 0) return "Values cannot be negative";
+  if (row.publication_status === "published" && row.price > 0 && row.price < 0.01) {
+    return "Selling price must be at least 0,01 EUR";
+  }
 
   if (row.publication_status === "published") {
     return validateProductForPublish({

@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/cart";
 import { useTranslations } from "@/hooks/useTranslations";
 import { isProductPurchasable } from "@/lib/product-availability";
 import { cn } from "@/lib/cn";
+import { useRefreshCartPrices } from "@/hooks/useRefreshCartPrices";
 
 export function StripeCheckout() {
   const { t, routes, locale } = useTranslations();
@@ -13,6 +14,8 @@ export function StripeCheckout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const items = useCartStore((s) => s.items);
+
+  useRefreshCartPrices(mounted && items.length > 0);
 
   useEffect(() => setMounted(true), []);
 

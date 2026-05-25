@@ -21,6 +21,7 @@ import type { ProductCategory } from "@/types/database/schema";
 import { showOnStorefrontFromRow } from "@/lib/product-editorial-visibility";
 import type { CollectionRow, ProductRow } from "@/types/database";
 import type { ProductEconomicsInput } from "@/lib/finance/product-economics";
+import { formatPriceInputValue, parsePriceInput } from "@/lib/prices";
 
 const CATEGORIES: ProductCategory[] = [
   "rings",
@@ -37,6 +38,11 @@ interface ProductFormProps {
 
 function num(value: number | null | undefined, fallback = 0): number {
   return value ?? fallback;
+}
+
+function moneyInputValue(value: number | null | undefined): string {
+  if (value == null) return "";
+  return formatPriceInputValue(Number(value));
 }
 
 export function ProductForm({ product, collections }: ProductFormProps) {
@@ -214,13 +220,14 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                 <AdminInput
                   id="price"
                   name="price"
-                  type="number"
-                  min={0}
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
                   required
-                  defaultValue={product?.price}
+                  placeholder="0,01"
+                  defaultValue={moneyInputValue(product?.price)}
                   onChange={(e) =>
-                    syncEconomics("sellingPrice", Number(e.target.value))
+                    syncEconomics("sellingPrice", parsePriceInput(e.target.value))
                   }
                 />
               </AdminField>
@@ -228,13 +235,14 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                 <AdminInput
                   id="product_cost"
                   name="product_cost"
-                  type="number"
-                  min={0}
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
                   required
-                  defaultValue={product?.product_cost ?? 0}
+                  placeholder="0,00"
+                  defaultValue={moneyInputValue(product?.product_cost)}
                   onChange={(e) =>
-                    syncEconomics("productCost", Number(e.target.value))
+                    syncEconomics("productCost", parsePriceInput(e.target.value))
                   }
                 />
               </AdminField>
@@ -244,12 +252,13 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                 <AdminInput
                   id="packaging_cost"
                   name="packaging_cost"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  defaultValue={product?.packaging_cost ?? 0}
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  placeholder="0,00"
+                  defaultValue={moneyInputValue(product?.packaging_cost)}
                   onChange={(e) =>
-                    syncEconomics("packagingCost", Number(e.target.value))
+                    syncEconomics("packagingCost", parsePriceInput(e.target.value))
                   }
                 />
               </AdminField>
@@ -257,23 +266,27 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                 <AdminInput
                   id="pouch_cost"
                   name="pouch_cost"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  defaultValue={product?.pouch_cost ?? 0}
-                  onChange={(e) => syncEconomics("pouchCost", Number(e.target.value))}
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  placeholder="0,00"
+                  defaultValue={moneyInputValue(product?.pouch_cost)}
+                  onChange={(e) =>
+                    syncEconomics("pouchCost", parsePriceInput(e.target.value))
+                  }
                 />
               </AdminField>
               <AdminField label="Est. shipping cost" htmlFor="shipping_cost">
                 <AdminInput
                   id="shipping_cost"
                   name="shipping_cost"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  defaultValue={product?.shipping_cost ?? 0}
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  placeholder="0,00"
+                  defaultValue={moneyInputValue(product?.shipping_cost)}
                   onChange={(e) =>
-                    syncEconomics("shippingCost", Number(e.target.value))
+                    syncEconomics("shippingCost", parsePriceInput(e.target.value))
                   }
                 />
               </AdminField>
@@ -281,11 +294,14 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                 <AdminInput
                   id="import_cost"
                   name="import_cost"
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  defaultValue={product?.import_cost ?? 0}
-                  onChange={(e) => syncEconomics("importCost", Number(e.target.value))}
+                  type="text"
+                  inputMode="decimal"
+                  autoComplete="off"
+                  placeholder="0,00"
+                  defaultValue={moneyInputValue(product?.import_cost)}
+                  onChange={(e) =>
+                    syncEconomics("importCost", parsePriceInput(e.target.value))
+                  }
                 />
               </AdminField>
               <AdminField label="Payment fee %" htmlFor="payment_fee_percent">

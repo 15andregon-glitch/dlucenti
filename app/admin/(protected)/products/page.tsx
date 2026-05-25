@@ -6,6 +6,7 @@ import {
   isHomepageProductVisible,
   isStorefrontProductVisible,
 } from "@/lib/product-editorial-visibility";
+import { formatPrice } from "@/lib/prices";
 import { listProductsAdmin } from "@/services/supabase/admin-read";
 
 export default async function AdminProductsPage() {
@@ -38,7 +39,7 @@ export default async function AdminProductsPage() {
                 <td className="font-sans font-extralight text-[0.9375rem]">{p.name}</td>
                 <td className="capitalize text-[var(--maison-gray)]">{p.category}</td>
                 <td className="tabular-nums">
-                  {Number(p.price).toLocaleString("fr-FR")} EUR
+                  {formatPrice(Number(p.price), "EUR", "en")}
                 </td>
                 <td className="text-[var(--maison-mist)]">
                   {p.publication_status === "published" ? "Publicado" : "Rascunho"}

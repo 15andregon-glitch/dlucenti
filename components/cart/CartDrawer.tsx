@@ -9,6 +9,7 @@ import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { CartLineItem } from "./CartLineItem";
+import { useRefreshCartPrices } from "@/hooks/useRefreshCartPrices";
 
 export function CartDrawer() {
   const { t, routes, locale } = useTranslations();
@@ -17,6 +18,8 @@ export function CartDrawer() {
   const setOpen = useCartStore((s) => s.setOpen);
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.subtotal);
+
+  useRefreshCartPrices(isOpen);
 
   useEffect(() => setMounted(true), []);
 

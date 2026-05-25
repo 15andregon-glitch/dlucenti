@@ -7,6 +7,7 @@ import {
   validateCheckoutCart,
 } from "@/lib/checkout/validate-cart";
 import type { CheckoutCartLineInput } from "@/lib/checkout/types";
+import { eurosToStripeCents } from "@/lib/prices";
 import { getSiteUrl, getStripe } from "@/lib/stripe/config";
 
 export const runtime = "nodejs";
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
           quantity: line.quantity,
           price_data: {
             currency: cart.currency.toLowerCase(),
-            unit_amount: Math.round(line.unitPrice * 100),
+            unit_amount: eurosToStripeCents(line.unitPrice),
             product_data: {
               name: line.name,
               ...(image ? { images: [image] } : {}),

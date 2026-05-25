@@ -4,10 +4,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/cart";
+import { roundMoney } from "@/lib/prices";
 import { useTranslations } from "@/hooks/useTranslations";
 
 export function OrderSummary() {
-  const { t } = useTranslations();
+  const { t, locale } = useTranslations();
   const [mounted, setMounted] = useState(false);
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.subtotal);
@@ -51,7 +52,11 @@ export function OrderSummary() {
                 {t("checkout.qty")} {quantity}
               </p>
               <p className="mt-2 font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
-                {formatPrice(product.price * quantity, product.currency)}
+                {formatPrice(
+                  roundMoney(product.price * quantity),
+                  product.currency,
+                  locale,
+                )}
               </p>
             </div>
           </li>
@@ -64,7 +69,7 @@ export function OrderSummary() {
             {t("cart.subtotal")}
           </span>
           <span className="font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
-            {formatPrice(total, currency)}
+            {formatPrice(total, currency, locale)}
           </span>
         </div>
         <div className="flex items-baseline justify-between gap-4">
@@ -80,7 +85,7 @@ export function OrderSummary() {
             {t("checkout.total")}
           </span>
           <span className="font-sans text-[0.9375rem] tabular-nums text-[var(--maison-charcoal)]">
-            {formatPrice(total, currency)}
+            {formatPrice(total, currency, locale)}
           </span>
         </div>
       </div>

@@ -6,6 +6,7 @@ import type { CartItem } from "@/store/cart";
 import { useCartStore } from "@/store/cart";
 import { formatPrice } from "@/lib/cart";
 import { ROUTES } from "@/lib/routes";
+import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
 
 interface CartLineItemProps {
@@ -14,6 +15,7 @@ interface CartLineItemProps {
 }
 
 export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
+  const { locale } = useTranslations();
   const { product, quantity } = item;
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
@@ -55,7 +57,7 @@ export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
             </p>
           )}
           <p className="mt-2 font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
-            {formatPrice(product.price, product.currency)}
+            {formatPrice(product.price, product.currency, locale)}
           </p>
         </div>
 
