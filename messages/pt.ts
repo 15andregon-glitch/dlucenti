@@ -110,7 +110,10 @@ export const pt = {
     shippingIncluded: "Incluídos",
     complimentary: "Oferta",
     deliveryCountry: "País de entrega",
-    freeShippingNote: "Envio gratuito em encomendas a partir de 50 EUR.",
+    deliveryCountryNote:
+      "Selecione o país de entrega. Deve coincidir com a morada indicada no pagamento Stripe.",
+    freeShippingNote: "Envio gratuito em encomendas para Portugal a partir de 50 EUR.",
+    europeShippingNote: "Envios para o resto da Europa: 80 EUR.",
     freeShippingRemaining: "Faltam {{amount}} para envio gratuito",
     freeShippingUnlocked: "Envio gratuito nesta encomenda",
     total: "Total",

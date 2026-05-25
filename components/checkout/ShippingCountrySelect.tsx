@@ -25,6 +25,9 @@ export function ShippingCountrySelect({
       >
         {t("checkout.deliveryCountry")}
       </label>
+      <p className="font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+        {t("checkout.deliveryCountryNote")}
+      </p>
       <select
         id="shipping-country"
         name="shipping-country"

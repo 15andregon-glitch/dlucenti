@@ -73,27 +73,40 @@ function resolveOrderAmounts(
   const metaShipping = parseMetadataMoney(session.metadata?.shipping_cost);
 
   const shippingCountry = extractShippingCountryFromSession(session);
-  const expectedShipping =
-    metaShipping ??
-    calculateShipping(shippingCountry, metaSubtotal).shippingCost;
-
+  const quote = calculateShipping(shippingCountry, metaSubtotal);
   const amountTotal = roundMoney((session.amount_total ?? 0) / 100);
-  const shippingCost = roundMoney(expectedShipping);
   const subtotal = metaSubtotal;
+  const paidShipping = roundMoney(amountTotal - subtotal);
   const total = amountTotal;
 
-  const expectedTotal = roundMoney(subtotal + shippingCost);
+  if (Math.abs(paidShipping - quote.shippingCost) > 0.02) {
+    console.warn("[stripe/webhook] paid shipping differs from address-country rules", {
+      sessionId: session.id,
+      shippingCountry,
+      paidShipping,
+      expectedShipping: quote.shippingCost,
+      metaShipping,
+    });
+  }
+
+  const expectedTotal = roundMoney(subtotal + quote.shippingCost);
   if (Math.abs(expectedTotal - total) > 0.02) {
     console.warn("[stripe/webhook] order total mismatch", {
       sessionId: session.id,
       expectedTotal,
       total,
       subtotal,
-      shippingCost,
+      paidShipping,
+      shippingCountry,
     });
   }
 
-  return { subtotal, shippingCost, total, shippingCountry };
+  return {
+    subtotal,
+    shippingCost: paidShipping,
+    total,
+    shippingCountry,
+  };
 }
 
 function buildEmailPayload(

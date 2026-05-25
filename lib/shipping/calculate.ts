@@ -1,9 +1,10 @@
 import { DEFAULT_SHIPPING_COUNTRY } from "@/lib/shipping/constants";
-import { fixedPortugalShippingProvider } from "@/lib/shipping/providers/fixed-portugal";
+import { fixedRegionalShippingProvider } from "@/lib/shipping/providers/fixed-regional";
 import type { ShippingRateProvider } from "@/lib/shipping/providers/types";
 import type { ShippingQuote, ShippingQuoteInput } from "@/lib/shipping/types";
 
-const defaultProvider: ShippingRateProvider = fixedPortugalShippingProvider;
+/** Active provider — swap for Packlink / Sendcloud when integrated */
+const defaultProvider: ShippingRateProvider = fixedRegionalShippingProvider;
 
 export function normalizeShippingCountry(
   code: string | null | undefined,
@@ -12,7 +13,7 @@ export function normalizeShippingCountry(
   return raw.length === 2 ? raw : DEFAULT_SHIPPING_COUNTRY;
 }
 
-/** Resolve shipping for checkout — swap provider when carrier APIs are integrated */
+/** Resolve shipping from delivery country + merchandise subtotal */
 export function calculateShipping(
   country: string | null | undefined,
   subtotal: number,

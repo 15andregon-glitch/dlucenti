@@ -4,9 +4,9 @@ import { formatPrice } from "@/lib/cart";
 import {
   calculateShipping,
   DEFAULT_SHIPPING_COUNTRY,
+  isPortugalShippingCountry,
   PORTUGAL_FREE_SHIPPING_THRESHOLD_EUR,
 } from "@/lib/shipping";
-import type { ShippingQuote } from "@/lib/shipping";
 import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
 
@@ -30,8 +30,8 @@ export function ShippingSummary({
   showPortugalHint = false,
 }: ShippingSummaryProps) {
   const { t, locale } = useTranslations();
-  const quote: ShippingQuote = calculateShipping(shippingCountry, subtotal, currency);
-  const isPortugal = quote.country === "PT";
+  const quote = calculateShipping(shippingCountry, subtotal, currency);
+  const isPortugal = isPortugalShippingCountry(quote.country);
   const threshold = quote.freeShippingThreshold ?? PORTUGAL_FREE_SHIPPING_THRESHOLD_EUR;
   const progress =
     isPortugal && threshold > 0
@@ -112,7 +112,11 @@ export function ShippingSummary({
             </p>
           ) : null}
         </div>
-      ) : null}
+      ) : (
+        <p className="pt-1 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+          {t("checkout.europeShippingNote")}
+        </p>
+      )}
     </div>
   );
 }
