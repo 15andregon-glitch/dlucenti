@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useTranslations } from "@/hooks/useTranslations";
 import { useCartStore } from "@/store/cart";
 import {
+  cartVariantFromProductVariant,
   getProductStock,
+  isCartLinePurchasable,
   isProductPurchasable,
   isProductSoldOut,
 } from "@/lib/product-availability";
-import type { Product } from "@/lib/types";
+import { getActiveRingVariants, isRingProduct } from "@/lib/product-variants";
+import type { Product, ProductVariant } from "@/lib/types";
+import { RingSizeSelector } from "@/components/product/RingSizeSelector";
 import { cn } from "@/lib/cn";
 
 interface ProductPurchaseProps {
@@ -20,15 +24,32 @@ interface ProductPurchaseProps {
 export function ProductPurchase({ product, className }: ProductPurchaseProps) {
   const { t } = useTranslations();
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+    null,
+  );
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
-  const purchasable = isProductPurchasable(product);
+
+  const isRing = isRingProduct(product);
   const soldOut = isProductSoldOut(product);
-  const maxStock = getProductStock(product);
+  const purchasable = isProductPurchasable(product);
+  const activeSizes = useMemo(
+    () => getActiveRingVariants(product.variants),
+    [product.variants],
+  );
+  const hasAvailableSize = activeSizes.some((s) => s.stock > 0);
+
+  const cartVariant = selectedVariant
+    ? cartVariantFromProductVariant(selectedVariant)
+    : undefined;
+  const maxStock = getProductStock(product, cartVariant);
+  const canAdd =
+    purchasable &&
+    (!isRing || (selectedVariant && isCartLinePurchasable(product, cartVariant)));
 
   const handleAdd = () => {
-    if (!purchasable) return;
-    addItem(product, quantity);
+    if (!canAdd) return;
+    addItem(product, quantity, cartVariant);
     setOpen(true);
   };
 
@@ -46,7 +67,15 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
   }
 
   return (
-    <div className={cn("mt-10", className)}>
+    <div className={cn("mt-10 space-y-8", className)}>
+      {isRing ? (
+        <RingSizeSelector
+          product={product}
+          selectedId={selectedVariant?.id ?? null}
+          onSelect={setSelectedVariant}
+        />
+      ) : null}
+
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
         <div
           className="inline-flex items-center gap-6 border border-[var(--maison-hairline)] px-5 py-2.5"
@@ -68,7 +97,7 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
             onClick={() =>
               setQuantity((q) => (maxStock > 0 ? Math.min(maxStock, q + 1) : q))
             }
-            disabled={quantity >= maxStock}
+            disabled={!canAdd || quantity >= maxStock}
             className="font-sans text-[var(--maison-chrome-size)] text-[var(--maison-gray)] transition-opacity duration-500 ease-[var(--ease-maison)] hover:opacity-55 disabled:opacity-35"
             aria-label="Increase quantity"
           >
@@ -78,12 +107,21 @@ export function ProductPurchase({ product, className }: ProductPurchaseProps) {
 
         <Button
           variant="solid"
-          className="w-full sm:w-auto sm:min-w-[12rem]"
+          className={cn(
+            "w-full sm:w-auto sm:min-w-[12rem]",
+            (!canAdd || (isRing && !hasAvailableSize)) && "pointer-events-none opacity-45",
+          )}
           onClick={handleAdd}
         >
           {t("product.addToCart")}
         </Button>
       </div>
+
+      {isRing && !selectedVariant && hasAvailableSize ? (
+        <p className="font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+          {t("product.ringSizeRequired")}
+        </p>
+      ) : null}
     </div>
   );
 }

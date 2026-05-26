@@ -367,6 +367,12 @@ export function ProductForm({ product, collections }: ProductFormProps) {
         </AdminPanel>
 
         <AdminPanel title="Inventory">
+          {product?.category === "rings" ? (
+            <p className="mb-6 font-sans text-[0.75rem] leading-relaxed text-[var(--maison-mist)]">
+              Ring stock is managed per size in the Ring sizes section below. Total
+              stock here syncs automatically when you save sizes.
+            </p>
+          ) : null}
           <div className="grid max-w-2xl gap-8">
             <div className="grid gap-8 sm:grid-cols-2">
               <AdminField label="SKU" htmlFor="sku">
@@ -387,6 +393,12 @@ export function ProductForm({ product, collections }: ProductFormProps) {
                   min={0}
                   defaultValue={product?.stock ?? 0}
                   onChange={(e) => setStock(Number(e.target.value))}
+                  readOnly={product?.category === "rings"}
+                  className={
+                    product?.category === "rings"
+                      ? "opacity-60"
+                      : undefined
+                  }
                 />
               </AdminField>
               <AdminField label="Minimum stock" htmlFor="minimum_stock">

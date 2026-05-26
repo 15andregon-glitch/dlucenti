@@ -5,9 +5,11 @@ import { ProductForm } from "@/components/admin/products/ProductForm";
 import { ProductImagesEditor } from "@/components/admin/products/ProductImagesEditor";
 import { DeleteProductButton } from "@/components/admin/products/DeleteProductButton";
 import { ADMIN_ROUTES } from "@/lib/admin/routes";
+import { RingSizesEditor } from "@/components/admin/products/RingSizesEditor";
 import {
   getProductAdmin,
   listCollectionsAdmin,
+  listRingSizesAdmin,
 } from "@/services/supabase/admin-read";
 
 interface AdminProductPageProps {
@@ -35,6 +37,10 @@ export default async function AdminProductPage({ params }: AdminProductPageProps
   if (!product) notFound();
 
   const images = product.product_images ?? [];
+  const ringSizes =
+    product.category === "rings"
+      ? await listRingSizesAdmin(product.id)
+      : [];
 
   return (
     <AdminShell
@@ -43,6 +49,21 @@ export default async function AdminProductPage({ params }: AdminProductPageProps
       actions={<DeleteProductButton productId={product.id} />}
     >
       <ProductForm product={product} collections={collections} />
+      {product.category === "rings" ? (
+        <div className="mt-8">
+          <RingSizesEditor
+            productId={product.id}
+            initialSizes={ringSizes.map((row) => ({
+              id: row.id,
+              label: row.label,
+              sku: row.sku ?? "",
+              stockQuantity: Number(row.stock_quantity ?? 0),
+              isActive: row.is_active,
+              sortOrder: row.sort_order,
+            }))}
+          />
+        </div>
+      ) : null}
       <ProductImagesEditor productId={product.id} images={images} />
       <p className="mt-10">
         <Link

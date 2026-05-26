@@ -2,6 +2,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { hasSupabaseServiceRole } from "@/lib/supabase/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fetchCollectionById } from "@/queries/collections";
+import { fetchVariantsByProductId } from "@/queries/product-variants";
 import type {
   CampaignRow,
   CollectionBlockRow,
@@ -13,6 +14,7 @@ import type {
   HomepageSettingsRow,
   ProductImageRow,
   ProductRow,
+  ProductVariantRow,
   ProductWithCollection,
 } from "@/types/database";
 
@@ -45,6 +47,12 @@ export async function getProductAdmin(id: string): Promise<ProductWithCollection
     .maybeSingle();
   if (error) throw error;
   return data as ProductWithCollection | null;
+}
+
+export async function listRingSizesAdmin(
+  productId: string,
+): Promise<ProductVariantRow[]> {
+  return fetchVariantsByProductId(await adminRead(), productId);
 }
 
 export async function listProductImagesAdmin(

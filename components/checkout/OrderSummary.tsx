@@ -29,8 +29,8 @@ export function OrderSummary() {
       </p>
 
       <ul className="mt-8 space-y-6">
-        {items.map(({ product, quantity }) => (
-          <li key={product.id} className="flex gap-4">
+        {items.map(({ product, quantity, variant, lineKey }) => (
+          <li key={lineKey} className="flex gap-4">
             <div className="relative aspect-[3/4] w-[4.5rem] shrink-0 overflow-hidden bg-[var(--maison-warm-white)]">
               {product.images[0] ? (
                 <Image
@@ -48,6 +48,14 @@ export function OrderSummary() {
               <p className="font-sans text-[1rem] leading-snug text-[var(--maison-charcoal)]">
                 {product.name}
               </p>
+              {variant ? (
+                <p className="mt-1 font-sans text-[0.75rem] tracking-[var(--tracking-label)] text-[var(--maison-mist)]">
+                  {t("product.ringSize")}{" "}
+                  <span className="tabular-nums text-[var(--maison-charcoal)]">
+                    {variant.label}
+                  </span>
+                </p>
+              ) : null}
               <p className="mt-1 font-sans text-[0.75rem] text-[var(--maison-mist)]">
                 {t("checkout.qty")} {quantity}
               </p>

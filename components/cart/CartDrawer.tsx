@@ -112,7 +112,7 @@ export function CartDrawer() {
             <>
               <ul className="flex-1 overflow-y-auto overscroll-contain px-6 sm:px-8">
                 {items.map((item) => (
-                  <CartLineItem key={item.product.id} item={item} onNavigate={close} />
+                  <CartLineItem key={item.lineKey} item={item} onNavigate={close} />
                 ))}
               </ul>
 

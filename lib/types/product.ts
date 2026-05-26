@@ -7,6 +7,15 @@ export type ProductCategory =
 
 export type ProductTargetGender = "women" | "men" | "unisex";
 
+export interface ProductVariant {
+  id: string;
+  label: string;
+  sku: string | null;
+  stock: number;
+  isActive: boolean;
+  sortOrder: number;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -24,6 +33,8 @@ export interface Product {
   featured?: boolean;
   /** CMS "Mostrar etiqueta Novidade" — visual badge only */
   isNew?: boolean;
-  /** Units on hand — visibility is CMS-only; stock controls purchasability. */
+  /** Units on hand — for rings, sum of active variant stock (synced from CMS). */
   stock: number;
+  /** Ring sizes — present when category is rings and sizes are configured. */
+  variants?: ProductVariant[];
 }

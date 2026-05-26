@@ -1,9 +1,11 @@
 import "server-only";
 
 import { isProductPurchasable } from "@/lib/product-availability";
+import { isRingProduct, RING_VARIANT_TYPE } from "@/lib/product-variants";
 import { isValidStripeUnitPrice, roundMoney } from "@/lib/prices";
 import { isStorefrontProductVisible } from "@/lib/product-editorial-visibility";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { fetchVariantById } from "@/queries/product-variants";
 import { PRODUCT_SELECT } from "@/queries/products";
 import type { CheckoutCartLineInput, ValidatedCheckoutCart } from "./types";
 import type { ProductWithCollection } from "@/types/database";
@@ -19,11 +21,16 @@ export class CheckoutValidationError extends Error {
       | "SOLD_OUT"
       | "INSUFFICIENT_STOCK"
       | "INVALID_PRICE"
+      | "SIZE_REQUIRED"
       | "CONFIG",
   ) {
     super(message);
     this.name = "CheckoutValidationError";
   }
+}
+
+function lineMergeKey(productId: string, variantId?: string): string {
+  return variantId ? `${productId}:${variantId}` : productId;
 }
 
 function normalizeLines(
@@ -33,15 +40,19 @@ function normalizeLines(
 
   for (const item of items) {
     const productId = item.productId?.trim();
+    const variantId = item.variantId?.trim() || undefined;
     const quantity = Math.floor(Number(item.quantity));
     if (!productId || quantity <= 0) continue;
-    merged.set(productId, (merged.get(productId) ?? 0) + quantity);
+    const key = lineMergeKey(productId, variantId);
+    merged.set(key, (merged.get(key) ?? 0) + quantity);
   }
 
-  return [...merged.entries()].map(([productId, quantity]) => ({
-    productId,
-    quantity,
-  }));
+  return [...merged.entries()].map(([key, quantity]) => {
+    const [productId, variantId] = key.includes(":")
+      ? (key.split(":") as [string, string])
+      : [key, undefined];
+    return { productId, quantity, variantId };
+  });
 }
 
 export async function validateCheckoutCart(
@@ -62,7 +73,7 @@ export async function validateCheckoutCart(
     );
   }
 
-  const ids = lines.map((l) => l.productId);
+  const ids = [...new Set(lines.map((l) => l.productId))];
   const { data, error } = await client
     .from("products")
     .select(PRODUCT_SELECT)
@@ -96,6 +107,22 @@ export async function validateCheckoutCart(
       );
     }
 
+    const isRing = isRingProduct({ category: row.category });
+
+    if (isRing && !line.variantId) {
+      throw new CheckoutValidationError(
+        `Ring size required for ${row.name}`,
+        "SIZE_REQUIRED",
+      );
+    }
+
+    if (!isRing && line.variantId) {
+      throw new CheckoutValidationError(
+        `Invalid cart line for ${row.name}`,
+        "INVALID_ITEM",
+      );
+    }
+
     const product = {
       id: row.id,
       slug: row.slug,
@@ -111,17 +138,52 @@ export async function validateCheckoutCart(
       stock: Number(row.stock ?? 0),
     };
 
-    if (!isProductPurchasable(product)) {
+    let variantId: string | undefined;
+    let variantType: string | undefined;
+    let variantLabel: string | undefined;
+    let variantSku: string | null | undefined;
+    let availableStock = Math.max(0, Number(row.stock ?? 0));
+
+    if (isRing) {
+      const variantRow = line.variantId
+        ? await fetchVariantById(client, line.variantId)
+        : null;
+
+      if (
+        !variantRow ||
+        variantRow.product_id !== row.id ||
+        variantRow.variant_type !== RING_VARIANT_TYPE
+      ) {
+        throw new CheckoutValidationError(
+          `Invalid ring size for ${row.name}`,
+          "INVALID_ITEM",
+        );
+      }
+
+      if (!variantRow.is_active) {
+        throw new CheckoutValidationError(
+          `Ring size unavailable for ${row.name}`,
+          "SOLD_OUT",
+        );
+      }
+
+      availableStock = Math.max(0, Number(variantRow.stock_quantity ?? 0));
+      variantId = variantRow.id;
+      variantType = variantRow.variant_type;
+      variantLabel = variantRow.label;
+      variantSku = variantRow.sku;
+    } else if (!isProductPurchasable(product)) {
       throw new CheckoutValidationError(
         `Product sold out: ${row.name}`,
         "SOLD_OUT",
       );
     }
 
-    const stock = Math.max(0, Number(row.stock ?? 0));
-    if (line.quantity > stock) {
+    if (line.quantity > availableStock) {
       throw new CheckoutValidationError(
-        `Insufficient stock for ${row.name}`,
+        isRing
+          ? `Insufficient stock for ${row.name} (size ${variantLabel})`
+          : `Insufficient stock for ${row.name}`,
         "INSUFFICIENT_STOCK",
       );
     }
@@ -135,6 +197,7 @@ export async function validateCheckoutCart(
         "INVALID_PRICE",
       );
     }
+
     const imageUrl =
       row.product_images
         ?.slice()
@@ -149,6 +212,10 @@ export async function validateCheckoutCart(
       unitCost,
       currency: "EUR",
       imageUrl,
+      variantId,
+      variantType,
+      variantLabel,
+      variantSku,
     });
 
     subtotal = roundMoney(subtotal + unitPrice * line.quantity);

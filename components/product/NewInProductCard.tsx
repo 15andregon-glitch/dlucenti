@@ -6,6 +6,7 @@ import type { Product } from "@/lib/types";
 import { useTranslations } from "@/hooks/useTranslations";
 import { formatPrice } from "@/lib/cart";
 import { isProductPurchasable } from "@/lib/product-availability";
+import { isRingProduct } from "@/lib/product-variants";
 import { resolveProductEditorialBadge } from "@/lib/product-editorial-visibility";
 import { useCartStore } from "@/store/cart";
 import { ProductEditorialBadge } from "@/components/product/ProductEditorialBadge";
@@ -29,13 +30,14 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
     newIn: t("product.newIn"),
   });
   const purchasable = isProductPurchasable(product);
+  const requiresSize = isRingProduct(product);
   const addItem = useCartStore((s) => s.addItem);
   const setOpen = useCartStore((s) => s.setOpen);
 
   const handleQuickAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!purchasable) return;
+    if (!purchasable || requiresSize) return;
     addItem(product, 1);
     setOpen(true);
   };
@@ -65,7 +67,7 @@ export function NewInProductCard({ product, className }: NewInProductCardProps) 
           )}
         </Link>
 
-        {purchasable ? (
+        {purchasable && !requiresSize ? (
           <button
             type="button"
             onClick={handleQuickAdd}

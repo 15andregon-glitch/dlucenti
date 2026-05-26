@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/store/cart";
 import { useTranslations } from "@/hooks/useTranslations";
-import { isProductPurchasable } from "@/lib/product-availability";
+import { isCartLinePurchasable } from "@/lib/product-availability";
 import { useRefreshCartPrices } from "@/hooks/useRefreshCartPrices";
 import { StripeEmbeddedCheckout } from "@/components/checkout/StripeEmbeddedCheckout";
 
@@ -18,7 +18,7 @@ export function StripeCheckout() {
   useEffect(() => setMounted(true), []);
 
   const purchasableItems = useMemo(
-    () => items.filter((item) => isProductPurchasable(item.product)),
+    () => items.filter((item) => isCartLinePurchasable(item.product, item.variant)),
     [items],
   );
 
@@ -27,6 +27,7 @@ export function StripeCheckout() {
       purchasableItems.map((item) => ({
         productId: item.product.id,
         quantity: item.quantity,
+        variantId: item.variant?.id,
       })),
     [purchasableItems],
   );

@@ -5,6 +5,7 @@ export type CollectionMediaRow = Tables<"collection_media">;
 export type CollectionBlockRow = Tables<"collection_blocks">;
 export type ProductRow = Tables<"products">;
 export type ProductImageRow = Tables<"product_images">;
+export type ProductVariantRow = Tables<"product_variants">;
 export type HomepageSettingsRow = Tables<"homepage_settings">;
 export type HomepageNewInRow = Tables<"homepage_new_in">;
 export type CampaignRow = Tables<"campaigns">;

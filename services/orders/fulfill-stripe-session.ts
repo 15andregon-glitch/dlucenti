@@ -18,6 +18,10 @@ interface CartMetadataLine {
   unitPrice: number;
   unitCost: number;
   name: string;
+  vId?: string;
+  vType?: string;
+  vLabel?: string;
+  vSku?: string;
 }
 
 function parseCartMetadata(raw: string | undefined): CartMetadataLine[] | null {
@@ -294,12 +298,16 @@ export async function fulfillStripeCheckoutSession(
       lineRevenue > 0 ? roundMoney((estimatedItemProfit / lineRevenue) * 100) : 0;
 
     return {
-    order_id: order.id,
-    product_id: line.productId,
-    product_name: line.name,
-    quantity: line.quantity,
-    unit_price: line.unitPrice,
-    unit_cost: line.unitCost,
+      order_id: order.id,
+      product_id: line.productId,
+      product_name: line.name,
+      quantity: line.quantity,
+      unit_price: line.unitPrice,
+      unit_cost: line.unitCost,
+      variant_id: line.vId ?? null,
+      selected_variant_type: line.vType ?? null,
+      selected_variant_label: line.vLabel ?? null,
+      selected_variant_sku: line.vSku?.trim() || null,
       allocated_shipping_cost: allocatedShippingCost,
       allocated_stripe_fee: allocatedStripeFee,
       allocated_total_cost: allocatedTotalCost,
@@ -318,18 +326,37 @@ export async function fulfillStripeCheckoutSession(
   }
 
   for (const line of metadataLines) {
-    const { error: stockError } = await client.rpc("decrement_product_stock", {
-      p_product_id: line.productId,
-      p_quantity: line.quantity,
-    });
-
-    if (stockError) {
-      console.error(
-        "[stripe/webhook] stock decrement failed",
-        line.productId,
-        stockError.message,
+    if (line.vId) {
+      const { error: stockError } = await client.rpc(
+        "decrement_product_variant_stock",
+        {
+          p_variant_id: line.vId,
+          p_quantity: line.quantity,
+        },
       );
-      throw new Error(stockError.message);
+
+      if (stockError) {
+        console.error(
+          "[stripe/webhook] variant stock decrement failed",
+          line.vId,
+          stockError.message,
+        );
+        throw new Error(stockError.message);
+      }
+    } else {
+      const { error: stockError } = await client.rpc("decrement_product_stock", {
+        p_product_id: line.productId,
+        p_quantity: line.quantity,
+      });
+
+      if (stockError) {
+        console.error(
+          "[stripe/webhook] stock decrement failed",
+          line.productId,
+          stockError.message,
+        );
+        throw new Error(stockError.message);
+      }
     }
   }
 

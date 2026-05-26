@@ -39,6 +39,14 @@ export async function POST(request: Request) {
         unitPrice: line.unitPrice,
         unitCost: line.unitCost,
         name: line.name,
+        ...(line.variantId
+          ? {
+              vId: line.variantId,
+              vType: line.variantType,
+              vLabel: line.variantLabel,
+              vSku: line.variantSku ?? "",
+            }
+          : {}),
       })),
     );
 
@@ -58,7 +66,9 @@ export async function POST(request: Request) {
           currency: cart.currency.toLowerCase(),
           unit_amount: eurosToStripeCents(line.unitPrice),
           product_data: {
-            name: line.name,
+            name: line.variantLabel
+              ? `${line.name} — Size ${line.variantLabel}`
+              : line.name,
             ...(image ? { images: [image] } : {}),
           },
         },

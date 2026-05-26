@@ -11,6 +11,7 @@ export type {
 export type {
   ProductRow,
   ProductImageRow,
+  ProductVariantRow,
   CollectionRow,
   CollectionMediaRow,
   CollectionBlockRow,

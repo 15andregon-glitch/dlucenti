@@ -366,6 +366,53 @@ export interface Database {
           },
         ];
       };
+      product_variants: {
+        Row: {
+          id: string;
+          product_id: string;
+          variant_type: string;
+          label: string;
+          sku: string | null;
+          stock_quantity: number;
+          is_active: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          variant_type?: string;
+          label: string;
+          sku?: string | null;
+          stock_quantity?: number;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          variant_type?: string;
+          label?: string;
+          sku?: string | null;
+          stock_quantity?: number;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       product_images: {
         Row: {
           id: string;
@@ -913,6 +960,10 @@ export interface Database {
           quantity: number;
           unit_price: number;
           unit_cost: number;
+          variant_id: string | null;
+          selected_variant_type: string | null;
+          selected_variant_label: string | null;
+          selected_variant_sku: string | null;
           allocated_shipping_cost: number;
           allocated_stripe_fee: number;
           allocated_total_cost: number;
@@ -929,6 +980,10 @@ export interface Database {
           quantity: number;
           unit_price: number;
           unit_cost?: number;
+          variant_id?: string | null;
+          selected_variant_type?: string | null;
+          selected_variant_label?: string | null;
+          selected_variant_sku?: string | null;
           allocated_shipping_cost?: number;
           allocated_stripe_fee?: number;
           allocated_total_cost?: number;
@@ -945,6 +1000,10 @@ export interface Database {
           quantity?: number;
           unit_price?: number;
           unit_cost?: number;
+          variant_id?: string | null;
+          selected_variant_type?: string | null;
+          selected_variant_label?: string | null;
+          selected_variant_sku?: string | null;
           allocated_shipping_cost?: number;
           allocated_stripe_fee?: number;
           allocated_total_cost?: number;
@@ -975,6 +1034,10 @@ export interface Database {
     Functions: {
       decrement_product_stock: {
         Args: { p_product_id: string; p_quantity: number };
+        Returns: number;
+      };
+      decrement_product_variant_stock: {
+        Args: { p_variant_id: string; p_quantity: number };
         Returns: number;
       };
     };

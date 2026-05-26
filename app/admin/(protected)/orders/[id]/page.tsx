@@ -92,7 +92,25 @@ export default async function AdminOrderDetailPage({
                 <tbody>
                   {items.map((item) => (
                     <tr key={item.id}>
-                      <td>{item.product_name}</td>
+                      <td>
+                        <div className="space-y-1">
+                          <p>{item.product_name}</p>
+                          {item.selected_variant_label ? (
+                            <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
+                              Size:{" "}
+                              <span className="text-[var(--maison-charcoal)]">
+                                {item.selected_variant_label}
+                              </span>
+                              {item.selected_variant_sku ? (
+                                <>
+                                  {" "}
+                                  · SKU: {item.selected_variant_sku}
+                                </>
+                              ) : null}
+                            </p>
+                          ) : null}
+                        </div>
+                      </td>
                       <td className="tabular-nums">{item.quantity}</td>
                       <td className="tabular-nums whitespace-nowrap">
                         {formatMoney(Number(item.unit_price), order.currency)}

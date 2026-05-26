@@ -20,6 +20,11 @@ import {
   targetGendersForAudience,
   type ShopAudienceSegment,
 } from "@/lib/shop-audience";
+import { isRingProduct } from "@/lib/product-variants";
+import {
+  fetchVariantsByProductId,
+  mapVariantRow,
+} from "@/queries/product-variants";
 import type { ProductWithCollection } from "@/types/database";
 
 function toProducts(
@@ -116,7 +121,23 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     logStorefrontProductPipeline(`product:${slug}`, { error: error.message });
     throw error;
   }
-  return toProduct(data as ProductWithCollection | null, `product:${slug}`);
+  const product = toProduct(data as ProductWithCollection | null, `product:${slug}`);
+  if (!product || !isRingProduct(product)) {
+    return product;
+  }
+
+  try {
+    const variantRows = await fetchVariantsByProductId(client, product.id, {
+      activeOnly: true,
+    });
+    return {
+      ...product,
+      variants: variantRows.map(mapVariantRow),
+    };
+  } catch (variantError) {
+    console.error(`[product:${slug}] variants fetch failed`, variantError);
+    return product;
+  }
 }
 
 export async function getProductsByCollection(

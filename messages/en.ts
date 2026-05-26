@@ -137,6 +137,10 @@ export const en = {
     addToBag: "Add to bag",
     addToCart: "Add to cart",
     quantity: "Quantity",
+    selectRingSize: "Select size",
+    ringSize: "Size",
+    ringSizeRequired: "Please select a size before adding to your bag.",
+    ringSizesUnavailable: "Sizes for this ring are not yet available.",
     materials: "Materials & craftsmanship",
     materialsNote:
       "Each piece is composed by hand in our Paris atelier. Minor variations in tone and form are a mark of artisanal work — never a flaw.",

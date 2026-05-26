@@ -138,6 +138,10 @@ export const pt = {
     addToBag: "Adicionar ao carrinho",
     addToCart: "Adicionar ao carrinho",
     quantity: "Quantidade",
+    selectRingSize: "Selecionar tamanho",
+    ringSize: "Tamanho",
+    ringSizeRequired: "Selecione um tamanho antes de adicionar ao carrinho.",
+    ringSizesUnavailable: "Os tamanhos deste anel ainda não estão disponíveis.",
     materials: "Materiais e artesanato",
     materialsNote:
       "Cada peça é composta à mão no nosso atelier parisiense. Pequenas variações de tom e de forma pertencem ao ofício — nunca a um defeito.",

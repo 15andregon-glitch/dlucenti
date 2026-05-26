@@ -1,6 +1,7 @@
 export interface CheckoutCartLineInput {
   productId: string;
   quantity: number;
+  variantId?: string;
 }
 
 export interface ValidatedCheckoutLine {
@@ -12,6 +13,10 @@ export interface ValidatedCheckoutLine {
   unitCost: number;
   currency: string;
   imageUrl: string | null;
+  variantId?: string;
+  variantType?: string;
+  variantLabel?: string;
+  variantSku?: string | null;
 }
 
 export interface ValidatedCheckoutCart {

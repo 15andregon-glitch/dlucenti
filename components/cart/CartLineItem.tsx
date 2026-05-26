@@ -15,8 +15,8 @@ interface CartLineItemProps {
 }
 
 export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
-  const { locale } = useTranslations();
-  const { product, quantity } = item;
+  const { t, locale } = useTranslations();
+  const { product, quantity, variant, lineKey } = item;
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
 
@@ -56,6 +56,14 @@ export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
               {product.subtitle}
             </p>
           )}
+          {variant ? (
+            <p className="mt-1.5 font-sans text-[0.75rem] tracking-[var(--tracking-label)] text-[var(--maison-mist)]">
+              {t("product.ringSize")}{" "}
+              <span className="tabular-nums text-[var(--maison-charcoal)]">
+                {variant.label}
+              </span>
+            </p>
+          ) : null}
           <p className="mt-2 font-sans text-[0.8125rem] tabular-nums text-[var(--maison-charcoal)]">
             {formatPrice(product.price, product.currency, locale)}
           </p>
@@ -68,7 +76,7 @@ export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
           >
             <button
               type="button"
-              onClick={() => updateQuantity(product.id, quantity - 1)}
+              onClick={() => updateQuantity(lineKey, quantity - 1)}
               className="font-sans text-[var(--maison-chrome-size)] text-[var(--maison-gray)] transition-opacity duration-500 ease-[var(--ease-maison)] hover:opacity-55"
               aria-label="Decrease quantity"
             >
@@ -79,7 +87,7 @@ export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
             </span>
             <button
               type="button"
-              onClick={() => updateQuantity(product.id, quantity + 1)}
+              onClick={() => updateQuantity(lineKey, quantity + 1)}
               className="font-sans text-[var(--maison-chrome-size)] text-[var(--maison-gray)] transition-opacity duration-500 ease-[var(--ease-maison)] hover:opacity-55"
               aria-label="Increase quantity"
             >
@@ -89,13 +97,13 @@ export function CartLineItem({ item, onNavigate }: CartLineItemProps) {
 
           <button
             type="button"
-            onClick={() => removeItem(product.id)}
+            onClick={() => removeItem(lineKey)}
             className={cn(
               "font-sans text-[0.75rem] tracking-[var(--tracking-label)] text-[var(--maison-mist)]",
               "transition-opacity duration-500 ease-[var(--ease-maison)] hover:text-[var(--maison-charcoal)]",
             )}
           >
-            Remove
+            {t("cart.remove")}
           </button>
         </div>
       </div>

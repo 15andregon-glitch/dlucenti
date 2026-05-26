@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 interface StripeEmbeddedCheckoutProps {
   locale: string;
-  items: { productId: string; quantity: number }[];
+  items: { productId: string; quantity: number; variantId?: string }[];
 }
 
 async function resolvePublishableKey(): Promise<string> {

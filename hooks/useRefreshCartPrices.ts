@@ -1,21 +1,26 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { ProductCategory } from "@/lib/types";
-import type { ProductTargetGender } from "@/types/database/schema";
 import { useCartStore } from "@/store/cart";
 
-/** Re-fetch live prices from the database when the cart is shown */
+/** Re-fetch live prices and stock from the database when the cart is shown */
 export function useRefreshCartPrices(active: boolean) {
   const syncPricesFromServer = useCartStore((s) => s.syncPricesFromServer);
-  const itemIds = useCartStore((s) => s.items.map((i) => i.product.id).join(","));
+  const items = useCartStore((s) => s.items);
+  const lineSignature = items
+    .map((i) => `${i.lineKey}:${i.quantity}`)
+    .join("|");
   const inFlight = useRef(false);
 
   useEffect(() => {
-    if (!active || !itemIds) return;
+    if (!active || !lineSignature) return;
 
-    const productIds = itemIds.split(",").filter(Boolean);
-    if (productIds.length === 0) return;
+    const lines = items.map((item) => ({
+      productId: item.product.id,
+      variantId: item.variant?.id,
+    }));
+
+    if (lines.length === 0) return;
 
     if (inFlight.current) return;
     inFlight.current = true;
@@ -23,31 +28,15 @@ export function useRefreshCartPrices(active: boolean) {
     fetch("/api/cart/prices", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productIds }),
+      body: JSON.stringify({ lines }),
     })
       .then(async (res) => {
         if (!res.ok) return;
         const data = (await res.json()) as {
-          products?: Array<{
-            id: string;
-            price: number;
-            stock: number;
-            name: string;
-            slug: string;
-            currency: string;
-            images: string[];
-            category: string;
-            targetGender: string;
-          }>;
+          products?: Parameters<typeof syncPricesFromServer>[0];
         };
         if (data.products?.length) {
-          syncPricesFromServer(
-            data.products.map((p) => ({
-              ...p,
-              category: p.category as ProductCategory,
-              targetGender: p.targetGender as ProductTargetGender,
-            })),
-          );
+          syncPricesFromServer(data.products);
         }
       })
       .catch(() => {
@@ -56,5 +45,5 @@ export function useRefreshCartPrices(active: boolean) {
       .finally(() => {
         inFlight.current = false;
       });
-  }, [active, itemIds, syncPricesFromServer]);
+  }, [active, lineSignature, items, syncPricesFromServer]);
 }
