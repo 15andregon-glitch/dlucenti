@@ -759,6 +759,16 @@ export interface Database {
           packlink_service_id: string | null;
           label_url: string | null;
           shipping_service_name: string | null;
+          customer_shipping_paid: number;
+          real_shipping_cost: number;
+          store_shipping_subsidy: number;
+          free_shipping_applied: boolean;
+          selected_free_shipping_service: string | null;
+          selected_free_shipping_carrier: string | null;
+          packaging_cost: number;
+          total_operational_cost: number;
+          estimated_profit: number;
+          estimated_margin: number;
           delivery_type: string | null;
           pickup_point_id: string | null;
           pickup_point_name: string | null;
@@ -793,6 +803,16 @@ export interface Database {
           packlink_service_id?: string | null;
           label_url?: string | null;
           shipping_service_name?: string | null;
+          customer_shipping_paid?: number;
+          real_shipping_cost?: number;
+          store_shipping_subsidy?: number;
+          free_shipping_applied?: boolean;
+          selected_free_shipping_service?: string | null;
+          selected_free_shipping_carrier?: string | null;
+          packaging_cost?: number;
+          total_operational_cost?: number;
+          estimated_profit?: number;
+          estimated_margin?: number;
           delivery_type?: string | null;
           pickup_point_id?: string | null;
           pickup_point_name?: string | null;
@@ -827,6 +847,16 @@ export interface Database {
           packlink_service_id?: string | null;
           label_url?: string | null;
           shipping_service_name?: string | null;
+          customer_shipping_paid?: number;
+          real_shipping_cost?: number;
+          store_shipping_subsidy?: number;
+          free_shipping_applied?: boolean;
+          selected_free_shipping_service?: string | null;
+          selected_free_shipping_carrier?: string | null;
+          packaging_cost?: number;
+          total_operational_cost?: number;
+          estimated_profit?: number;
+          estimated_margin?: number;
           delivery_type?: string | null;
           pickup_point_id?: string | null;
           pickup_point_name?: string | null;
@@ -853,6 +883,10 @@ export interface Database {
           quantity: number;
           unit_price: number;
           unit_cost: number;
+          allocated_shipping_cost: number;
+          allocated_total_cost: number;
+          estimated_item_profit: number;
+          estimated_item_margin: number;
         };
         Insert: {
           id?: string;
@@ -862,6 +896,10 @@ export interface Database {
           quantity: number;
           unit_price: number;
           unit_cost?: number;
+          allocated_shipping_cost?: number;
+          allocated_total_cost?: number;
+          estimated_item_profit?: number;
+          estimated_item_margin?: number;
         };
         Update: {
           id?: string;
@@ -871,6 +909,10 @@ export interface Database {
           quantity?: number;
           unit_price?: number;
           unit_cost?: number;
+          allocated_shipping_cost?: number;
+          allocated_total_cost?: number;
+          estimated_item_profit?: number;
+          estimated_item_margin?: number;
         };
         Relationships: [
           {

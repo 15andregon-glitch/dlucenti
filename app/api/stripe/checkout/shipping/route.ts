@@ -80,7 +80,9 @@ export async function POST(request: Request) {
       throw new Error("No shipping options available");
     }
 
-    const limitedOffers = offers.slice(0, 5);
+    const freeOffers = offers.filter((o) => o.freeShippingApplied);
+    const limitedOffers =
+      freeOffers.length > 0 ? [freeOffers[0]!] : offers.slice(0, 5);
     const shippingOptions = buildStripeShippingOptionsFromOffers(limitedOffers);
     const catalog = offersToCatalogEntries(limitedOffers);
     const catalogMeta = catalogToStripeMetadata(catalog);

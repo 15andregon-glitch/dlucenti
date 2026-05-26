@@ -195,10 +195,23 @@ export async function fulfillStripeCheckoutSession(
     session.metadata?.courier_name?.trim() ??
     null;
   const shippingServiceName = shippingSelection?.serviceName ?? null;
+  const freeShippingApplied = Boolean(shippingSelection?.freeShippingApplied);
+  const realShippingCost = roundMoney(
+    shippingSelection?.realShippingCost ?? shippingCost,
+  );
+  const customerShippingPaid = roundMoney(shippingCost);
+  const storeShippingSubsidy = roundMoney(
+    Math.max(realShippingCost - customerShippingPaid, 0),
+  );
+  const selectedFreeShippingService = freeShippingApplied ? shippingServiceName : null;
+  const selectedFreeShippingCarrier = freeShippingApplied ? courierName : null;
   const deliveryType = shippingSelection?.deliveryType ?? "home";
   const pickupPointId = shippingSelection?.pickupPointId ?? null;
   const pickupPointName = shippingSelection?.pickupPointName ?? null;
   const pickupPointAddress = shippingSelection?.pickupPointAddress ?? null;
+  const totalQuantity = metadataLines.reduce((sum, line) => sum + line.quantity, 0);
+  const allocatedShippingPerUnit =
+    totalQuantity > 0 ? roundMoney(storeShippingSubsidy / totalQuantity) : 0;
 
   const { data: order, error: orderError } = await client
     .from("orders")
@@ -215,6 +228,12 @@ export async function fulfillStripeCheckoutSession(
       packlink_service_id: packlinkServiceId,
       courier: courierName,
       shipping_service_name: shippingServiceName,
+      customer_shipping_paid: customerShippingPaid,
+      real_shipping_cost: realShippingCost,
+      store_shipping_subsidy: storeShippingSubsidy,
+      free_shipping_applied: freeShippingApplied,
+      selected_free_shipping_service: selectedFreeShippingService,
+      selected_free_shipping_carrier: selectedFreeShippingCarrier,
       delivery_type: deliveryType,
       pickup_point_id: pickupPointId,
       pickup_point_name: pickupPointName,
@@ -235,14 +254,31 @@ export async function fulfillStripeCheckoutSession(
     throw new Error(orderError?.message ?? "Failed to create order");
   }
 
-  const orderItems = metadataLines.map((line) => ({
+  const orderItems = metadataLines.map((line) => {
+    const allocatedShippingCost = roundMoney(
+      allocatedShippingPerUnit * line.quantity,
+    );
+    const allocatedTotalCost = roundMoney(
+      line.unitCost * line.quantity + allocatedShippingCost,
+    );
+    const lineRevenue = roundMoney(line.unitPrice * line.quantity);
+    const estimatedItemProfit = roundMoney(lineRevenue - allocatedTotalCost);
+    const estimatedItemMargin =
+      lineRevenue > 0 ? roundMoney((estimatedItemProfit / lineRevenue) * 100) : 0;
+
+    return {
     order_id: order.id,
     product_id: line.productId,
     product_name: line.name,
     quantity: line.quantity,
     unit_price: line.unitPrice,
     unit_cost: line.unitCost,
-  }));
+      allocated_shipping_cost: allocatedShippingCost,
+      allocated_total_cost: allocatedTotalCost,
+      estimated_item_profit: estimatedItemProfit,
+      estimated_item_margin: estimatedItemMargin,
+    };
+  });
 
   const { error: itemsError } = await client.from("order_items").insert(orderItems);
 

@@ -72,6 +72,11 @@ export default async function AdminOrderDetailPage({
                     <th>Product</th>
                     <th>Qty</th>
                     <th>Unit</th>
+                    <th>Unit cost</th>
+                    <th>Allocated shipping</th>
+                    <th>Allocated total cost</th>
+                    <th>Item profit</th>
+                    <th>Margin</th>
                     <th>Line</th>
                   </tr>
                 </thead>
@@ -82,6 +87,21 @@ export default async function AdminOrderDetailPage({
                       <td className="tabular-nums">{item.quantity}</td>
                       <td className="tabular-nums whitespace-nowrap">
                         {formatMoney(Number(item.unit_price), order.currency)}
+                      </td>
+                      <td className="tabular-nums whitespace-nowrap text-[var(--maison-mist)]">
+                        {formatMoney(Number(item.unit_cost), order.currency)}
+                      </td>
+                      <td className="tabular-nums whitespace-nowrap text-[var(--maison-mist)]">
+                        {formatMoney(Number(item.allocated_shipping_cost ?? 0), order.currency)}
+                      </td>
+                      <td className="tabular-nums whitespace-nowrap text-[var(--maison-mist)]">
+                        {formatMoney(Number(item.allocated_total_cost ?? 0), order.currency)}
+                      </td>
+                      <td className="tabular-nums whitespace-nowrap">
+                        {formatMoney(Number(item.estimated_item_profit ?? 0), order.currency)}
+                      </td>
+                      <td className="tabular-nums whitespace-nowrap">
+                        {Number(item.estimated_item_margin ?? 0).toFixed(2)}%
                       </td>
                       <td className="tabular-nums whitespace-nowrap">
                         {formatMoney(
@@ -135,6 +155,30 @@ export default async function AdminOrderDetailPage({
                 value={order.shipping_service_name ?? "—"}
               />
               <DetailRow
+                label="Customer shipping paid"
+                value={formatMoney(Number(order.customer_shipping_paid ?? order.shipping_cost), order.currency)}
+              />
+              <DetailRow
+                label="Real shipping cost"
+                value={formatMoney(Number(order.real_shipping_cost ?? order.shipping_cost), order.currency)}
+              />
+              <DetailRow
+                label="Store shipping subsidy"
+                value={formatMoney(Number(order.store_shipping_subsidy ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Free shipping applied"
+                value={order.free_shipping_applied ? "Yes" : "No"}
+              />
+              <DetailRow
+                label="Selected free service"
+                value={order.selected_free_shipping_service ?? "—"}
+              />
+              <DetailRow
+                label="Selected free carrier"
+                value={order.selected_free_shipping_carrier ?? "—"}
+              />
+              <DetailRow
                 label="Delivery"
                 value={
                   order.delivery_type === "pickup"
@@ -171,6 +215,54 @@ export default async function AdminOrderDetailPage({
                 value={order.stripe_payment_intent ?? "—"}
               />
               <DetailRow label="Order ID" value={order.id} />
+            </dl>
+          </AdminPanel>
+
+          <AdminPanel title="Cost Analysis">
+            <dl className="space-y-4 font-sans text-[0.8125rem]">
+              <DetailRow
+                label="Revenue (subtotal)"
+                value={formatMoney(Number(order.subtotal), order.currency)}
+              />
+              <DetailRow
+                label="Revenue (shipping paid)"
+                value={formatMoney(Number(order.customer_shipping_paid ?? order.shipping_cost), order.currency)}
+              />
+              <DetailRow
+                label="Revenue (total paid)"
+                value={formatMoney(Number(order.total), order.currency)}
+              />
+              <DetailRow
+                label="Product cost"
+                value={formatMoney(
+                  items.reduce((sum, item) => sum + Number(item.unit_cost) * item.quantity, 0),
+                  order.currency,
+                )}
+              />
+              <DetailRow
+                label="Packaging cost"
+                value={formatMoney(Number(order.packaging_cost ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Real shipping cost"
+                value={formatMoney(Number(order.real_shipping_cost ?? order.shipping_cost), order.currency)}
+              />
+              <DetailRow
+                label="Store shipping subsidy"
+                value={formatMoney(Number(order.store_shipping_subsidy ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Estimated operational cost"
+                value={formatMoney(Number(order.total_operational_cost ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Estimated profit"
+                value={formatMoney(Number(order.estimated_profit ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Estimated margin"
+                value={`${Number(order.estimated_margin ?? 0).toFixed(2)}%`}
+              />
             </dl>
           </AdminPanel>
         </div>

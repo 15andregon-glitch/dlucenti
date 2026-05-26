@@ -109,7 +109,7 @@ export const en = {
     shippingAtCheckout:
       "Shipping is calculated at checkout after entering the delivery address.",
     pickupShippingNote:
-      "When available, pickup points appear as shipping options in the payment form above.",
+      "Standard Shipping is calculated automatically at checkout.",
     freeShippingNotePortugal: "Free shipping within Portugal from €50.",
     freeShippingNoteEurope: "Free shipping within Europe from €80.",
     total: "Total",

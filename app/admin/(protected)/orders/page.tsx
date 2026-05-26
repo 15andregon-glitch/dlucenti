@@ -43,6 +43,8 @@ export default async function AdminOrdersPage() {
                 <th>Order</th>
                 <th>Customer</th>
                 <th>Total</th>
+                <th>Free shipping</th>
+                <th>Margin</th>
                 <th>Payment</th>
                 <th>Fulfillment</th>
                 <th>Date</th>
@@ -65,6 +67,15 @@ export default async function AdminOrdersPage() {
                   </td>
                   <td className="tabular-nums whitespace-nowrap">
                     {formatMoney(Number(order.total), order.currency)}
+                  </td>
+                  <td>
+                    <StatusBadge
+                      label={order.free_shipping_applied ? "Free applied" : "Standard"}
+                      tone={order.free_shipping_applied ? "warning" : "muted"}
+                    />
+                  </td>
+                  <td className="tabular-nums whitespace-nowrap">
+                    {Number(order.estimated_margin ?? 0).toFixed(1)}%
                   </td>
                   <td>
                     <StatusBadge

@@ -7,6 +7,8 @@ const MAX_METADATA_KEYS = 5;
 export interface ShippingCatalogEntry {
   displayName: string;
   shippingCost: number;
+  realShippingCost: number;
+  freeShippingApplied: boolean;
   deliveryType: "home" | "pickup";
   packlinkServiceId?: string;
   carrierName?: string;
@@ -22,6 +24,8 @@ export function offersToCatalogEntries(
   return offers.map((o) => ({
     displayName: o.stripeDisplayName,
     shippingCost: o.shippingCost,
+    realShippingCost: o.realShippingCost,
+    freeShippingApplied: o.freeShippingApplied,
     deliveryType: o.deliveryType,
     packlinkServiceId: o.packlinkServiceId,
     carrierName: o.carrierName,

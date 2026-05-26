@@ -30,7 +30,11 @@ export type ShippingDeliveryType = "home" | "pickup";
 
 export interface CheckoutShippingOffer {
   deliveryType: ShippingDeliveryType;
+  /** Price paid by customer in checkout. */
   shippingCost: number;
+  /** Real Packlink transportation cost (internal accounting). */
+  realShippingCost: number;
+  freeShippingApplied: boolean;
   currency: string;
   stripeDisplayName: string;
   packlinkServiceId?: string;
@@ -61,10 +65,7 @@ function offerDisplayName(
   locale: Locale,
 ): string {
   if (params.isFree) {
-    if (params.deliveryType === "pickup") {
-      return locale === "pt" ? "Recolha em ponto — incluído" : "Pickup point — included";
-    }
-    return locale === "pt" ? "Entrega em morada — incluído" : "Home delivery — included";
+    return locale === "pt" ? "Envio standard — incluído" : "Standard Shipping — Free";
   }
 
   if (params.deliveryType === "pickup" && params.pickupPointName) {
@@ -84,14 +85,18 @@ function offerDisplayName(
 
 function homeOfferFromService(
   service: PacklinkServiceQuote,
-  shippingCost: number,
+  customerShippingCost: number,
+  realShippingCost: number,
+  freeShippingApplied: boolean,
   currency: string,
   locale: Locale,
 ): CheckoutShippingOffer {
-  const isFree = shippingCost <= 0;
+  const isFree = customerShippingCost <= 0;
   return {
     deliveryType: "home",
-    shippingCost: roundMoney(shippingCost),
+    shippingCost: roundMoney(customerShippingCost),
+    realShippingCost: roundMoney(realShippingCost),
+    freeShippingApplied,
     currency,
     stripeDisplayName: offerDisplayName(
       {
@@ -110,16 +115,20 @@ function homeOfferFromService(
 
 function pickupOfferFromService(
   service: PacklinkServiceQuote,
-  shippingCost: number,
+  customerShippingCost: number,
+  realShippingCost: number,
+  freeShippingApplied: boolean,
   currency: string,
   locale: Locale,
   dropoff: Awaited<ReturnType<typeof listPacklinkDropoffs>>[number],
 ): CheckoutShippingOffer {
-  const isFree = shippingCost <= 0;
+  const isFree = customerShippingCost <= 0;
   const address = formatPacklinkDropoffAddress(dropoff);
   return {
     deliveryType: "pickup",
-    shippingCost: roundMoney(shippingCost),
+    shippingCost: roundMoney(customerShippingCost),
+    realShippingCost: roundMoney(realShippingCost),
+    freeShippingApplied,
     currency,
     stripeDisplayName: offerDisplayName(
       {
@@ -152,6 +161,8 @@ function fallbackHomeOffer(
     {
       deliveryType: "home",
       shippingCost: cost,
+      realShippingCost: cost,
+      freeShippingApplied: false,
       currency,
       stripeDisplayName: offerDisplayName(
         {
@@ -185,7 +196,7 @@ export async function buildCheckoutShippingOffers(
   const postalCode = input.postalCode.trim();
   const threshold = freeShippingThresholdForCountry(country);
   const isFreeShipping = subtotal >= threshold;
-  const paidCost = (service: PacklinkServiceQuote) =>
+  const customerPaidCost = (service: PacklinkServiceQuote) =>
     isFreeShipping ? 0 : service.totalPrice;
 
   if (!postalCode) {
@@ -212,6 +223,27 @@ export async function buildCheckoutShippingOffers(
       throw new PacklinkApiError("No services", 404);
     }
 
+    // Defensive branch: above threshold the customer must see only one free option.
+    if (isFreeShipping) {
+      const cheapest = services[0];
+      if (!cheapest) {
+        throw new PacklinkApiError("No services", 404);
+      }
+      const singleFreeShippingOffer: CheckoutShippingOffer = {
+        deliveryType: cheapest.deliveryToParcelshop ? "pickup" : "home",
+        shippingCost: 0,
+        realShippingCost: roundMoney(cheapest.totalPrice),
+        freeShippingApplied: true,
+        currency,
+        stripeDisplayName: "Standard Shipping — Free",
+        packlinkServiceId: cheapest.serviceId,
+        carrierName: cheapest.carrierName,
+        serviceName: cheapest.serviceName,
+      };
+
+      return [singleFreeShippingOffer];
+    }
+
     const homeServices = services.filter((s) => !s.deliveryToParcelshop);
     const pickupServices = services.filter((s) => s.deliveryToParcelshop);
 
@@ -219,11 +251,21 @@ export async function buildCheckoutShippingOffers(
 
     const bestHome = homeServices[0] ?? services[0];
     if (bestHome) {
-      offers.push(homeOfferFromService(bestHome, paidCost(bestHome), currency, locale));
+      offers.push(
+        homeOfferFromService(
+          bestHome,
+          customerPaidCost(bestHome),
+          bestHome.totalPrice,
+          isFreeShipping,
+          currency,
+          locale,
+        ),
+      );
     }
 
-    const pickupService = pickupServices[0];
-    if (pickupService) {
+    if (!isFreeShipping) {
+      const pickupService = pickupServices[0];
+      if (pickupService) {
       const dropoffs = await listPacklinkDropoffs(
         pickupService.serviceId,
         country,
@@ -234,7 +276,9 @@ export async function buildCheckoutShippingOffers(
         offers.push(
           pickupOfferFromService(
             pickupService,
-            paidCost(pickupService),
+            customerPaidCost(pickupService),
+            pickupService.totalPrice,
+            false,
             currency,
             locale,
             point,
@@ -242,12 +286,13 @@ export async function buildCheckoutShippingOffers(
         );
       }
 
-      if (points.length === 0) {
-        console.info("[shipping] pickup service available but no dropoffs returned", {
-          serviceId: pickupService.serviceId,
-          country,
-          postalCode,
-        });
+        if (points.length === 0) {
+          console.info("[shipping] pickup service available but no dropoffs returned", {
+            serviceId: pickupService.serviceId,
+            country,
+            postalCode,
+          });
+        }
       }
     }
 
