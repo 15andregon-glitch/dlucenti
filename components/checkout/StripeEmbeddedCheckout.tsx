@@ -46,6 +46,10 @@ export function StripeEmbeddedCheckout({ locale, items }: StripeEmbeddedCheckout
     async function mountCheckout() {
       const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim();
       if (!publishableKey) {
+        console.error(
+          "[stripe/embedded] Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+        );
+        // Redirect checkout didn't need this key, but embedded checkout does.
         setError(t("checkout.errorGeneric"));
         setLoading(false);
         return;
@@ -53,6 +57,9 @@ export function StripeEmbeddedCheckout({ locale, items }: StripeEmbeddedCheckout
 
       const stripe = await stripePromise;
       if (!stripe || cancelled || !containerRef.current) {
+        console.error("[stripe/embedded] Stripe failed to initialize", {
+          hasPublishableKey: Boolean(publishableKey),
+        });
         setError(t("checkout.errorGeneric"));
         setLoading(false);
         return;
