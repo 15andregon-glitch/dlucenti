@@ -115,12 +115,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const stripeMessage =
-      error instanceof Stripe.errors.StripeError ? error.message : null;
-    console.error("[stripe/checkout] unexpected error", stripeMessage ?? error);
-    return NextResponse.json(
-      { error: "Unable to start checkout" },
-      { status: 500 },
-    );
+    if (error instanceof Stripe.errors.StripeError) {
+      // Surface the exact Stripe error message to unblock integration debugging.
+      // (This only happens when checkout session creation fails.)
+      console.error("[stripe/checkout] stripe error", {
+        code: error.code,
+        message: error.message,
+      });
+      return NextResponse.json(
+        { error: error.message, code: error.code ?? "STRIPE" },
+        { status: 500 },
+      );
+    }
+
+    console.error("[stripe/checkout] unexpected error", error);
+    return NextResponse.json({ error: "Unable to start checkout" }, { status: 500 });
   }
 }
