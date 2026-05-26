@@ -34,6 +34,10 @@ export interface PacklinkServiceQuote {
   totalPrice: number;
   currency: string;
   transitHours?: string;
+  /** Customer collects parcel at a pickup point / parcel shop */
+  deliveryToParcelshop: boolean;
+  /** Sender can drop off at a parcel shop */
+  dropoff: boolean;
 }
 
 interface PacklinkApiPrice {
@@ -47,6 +51,8 @@ interface PacklinkApiService {
   name?: string;
   price?: PacklinkApiPrice;
   transit_hours?: string;
+  delivery_to_parcelshop?: boolean;
+  dropoff?: boolean;
 }
 
 export class PacklinkApiError extends Error {
@@ -94,11 +100,23 @@ function parseService(service: PacklinkApiService): PacklinkServiceQuote | null 
     totalPrice: roundMoney(total),
     currency: (service.price?.currency ?? "EUR").toUpperCase(),
     transitHours: service.transit_hours,
+    deliveryToParcelshop: Boolean(service.delivery_to_parcelshop),
+    dropoff: Boolean(service.dropoff),
   };
+}
+
+function sortServices(services: PacklinkServiceQuote[]): PacklinkServiceQuote[] {
+  return [...services].sort((a, b) => {
+    if (a.deliveryToParcelshop !== b.deliveryToParcelshop) {
+      return a.deliveryToParcelshop ? 1 : -1;
+    }
+    return a.totalPrice - b.totalPrice;
+  });
 }
 
 /**
  * Packlink PRO services API — quotes only (no label purchase).
+ * Services with delivery_to_parcelshop support pickup-point delivery.
  * @see https://docs.packlink.com
  */
 export class PacklinkClient {
@@ -124,15 +142,17 @@ export class PacklinkClient {
     to: PacklinkAddress,
     packages?: PacklinkPackage[],
   ): Promise<PacklinkServiceQuote> {
-    const from = getPacklinkOrigin();
-    const pkg = packages ?? [getDefaultPackage()];
-
-    const quotes = await this.listServiceQuotes({ from, to, packages: pkg });
-    if (quotes.length === 0) {
+    const quotes = await this.listServiceQuotes({
+      from: getPacklinkOrigin(),
+      to,
+      packages: packages ?? [getDefaultPackage()],
+    });
+    const homeQuotes = quotes.filter((q) => !q.deliveryToParcelshop);
+    const pool = homeQuotes.length > 0 ? homeQuotes : quotes;
+    if (pool.length === 0) {
       throw new PacklinkApiError("No Packlink services available for this route", 404);
     }
-
-    return quotes.reduce((best, current) =>
+    return pool.reduce((best, current) =>
       current.totalPrice < best.totalPrice ? current : best,
     );
   }
@@ -165,9 +185,10 @@ export class PacklinkClient {
     const data = (await response.json()) as PacklinkApiService[] | { data?: PacklinkApiService[] };
     const services = Array.isArray(data) ? data : (data.data ?? []);
 
-    return services
-      .map(parseService)
-      .filter((q): q is PacklinkServiceQuote => q != null)
-      .sort((a, b) => a.totalPrice - b.totalPrice);
+    return sortServices(
+      services
+        .map(parseService)
+        .filter((q): q is PacklinkServiceQuote => q != null),
+    );
   }
 }

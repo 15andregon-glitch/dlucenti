@@ -109,6 +109,8 @@ export const pt = {
     shipping: "Portes",
     shippingAtCheckout:
       "Os portes são calculados no checkout após introduzir a morada.",
+    pickupShippingNote:
+      "Quando disponível, os pontos de recolha aparecem como opções de envio no formulário de pagamento acima.",
     freeShippingNotePortugal: "Envio gratuito para Portugal a partir de 50 EUR.",
     freeShippingNoteEurope: "Envio gratuito para a Europa a partir de 80 EUR.",
     total: "Total",

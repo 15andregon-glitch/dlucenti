@@ -131,8 +131,35 @@ export default async function AdminOrderDetailPage({
               />
               <DetailRow label="Courier" value={order.courier ?? "—"} />
               <DetailRow
-                label="Packlink service"
+                label="Service"
+                value={order.shipping_service_name ?? "—"}
+              />
+              <DetailRow
+                label="Delivery"
+                value={
+                  order.delivery_type === "pickup"
+                    ? "Pickup point"
+                    : order.delivery_type === "home"
+                      ? "Home"
+                      : "—"
+                }
+              />
+              <DetailRow
+                label="Pickup point"
+                value={order.pickup_point_name ?? "—"}
+              />
+              <DetailRow
+                label="Pickup address"
+                value={order.pickup_point_address ?? "—"}
+              />
+              <DetailRow
+                label="Packlink service ID"
                 value={order.packlink_service_id ?? "—"}
+              />
+              <DetailRow label="Label URL" value={order.label_url ?? "—"} />
+              <DetailRow
+                label="Tracking"
+                value={order.tracking_number ?? "—"}
               />
               <DetailRow
                 label="Total"

@@ -5,7 +5,9 @@ import { formatShippingAddressFromSession } from "@/lib/emails/format-shipping-a
 import type { OrderEmailPayload } from "@/lib/emails/order-email-types";
 import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locale";
 import { roundMoney } from "@/lib/prices";
+import { resolveOrderShippingFromSession } from "@/lib/shipping/resolve-order-shipping";
 import { extractShippingCountryFromSession } from "@/lib/shipping/session-country";
+import { getStripe } from "@/lib/stripe/config";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendOrderEmails } from "@/services/emails/send-order-emails";
 
@@ -174,8 +176,29 @@ export async function fulfillStripeCheckoutSession(
       : session.payment_intent?.id ?? null;
 
   const orderNumber = generateOrderNumber();
-  const packlinkServiceId = session.metadata?.packlink_service_id?.trim() || null;
-  const courierName = session.metadata?.courier_name?.trim() || null;
+
+  let shippingSelection = resolveOrderShippingFromSession(session, subtotal);
+  if (!shippingSelection?.displayName) {
+    const stripe = getStripe();
+    const expanded = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["shipping_cost.shipping_rate"],
+    });
+    shippingSelection = resolveOrderShippingFromSession(expanded, subtotal);
+  }
+
+  const packlinkServiceId =
+    shippingSelection?.packlinkServiceId ??
+    session.metadata?.packlink_service_id?.trim() ??
+    null;
+  const courierName =
+    shippingSelection?.carrierName ??
+    session.metadata?.courier_name?.trim() ??
+    null;
+  const shippingServiceName = shippingSelection?.serviceName ?? null;
+  const deliveryType = shippingSelection?.deliveryType ?? "home";
+  const pickupPointId = shippingSelection?.pickupPointId ?? null;
+  const pickupPointName = shippingSelection?.pickupPointName ?? null;
+  const pickupPointAddress = shippingSelection?.pickupPointAddress ?? null;
 
   const { data: order, error: orderError } = await client
     .from("orders")
@@ -191,6 +214,11 @@ export async function fulfillStripeCheckoutSession(
       shipping_country: shippingCountry,
       packlink_service_id: packlinkServiceId,
       courier: courierName,
+      shipping_service_name: shippingServiceName,
+      delivery_type: deliveryType,
+      pickup_point_id: pickupPointId,
+      pickup_point_name: pickupPointName,
+      pickup_point_address: pickupPointAddress,
       stripe_session_id: sessionId,
       stripe_payment_intent: paymentIntent,
       customer_email: customerEmail,
@@ -245,6 +273,8 @@ export async function fulfillStripeCheckoutSession(
     orderNumber,
     shippingCountry,
     shippingCost,
+    deliveryType,
+    pickupPointId,
   });
 
   const emailPayload = buildEmailPayload(

@@ -758,6 +758,11 @@ export interface Database {
           tracking_url: string | null;
           packlink_service_id: string | null;
           label_url: string | null;
+          shipping_service_name: string | null;
+          delivery_type: string | null;
+          pickup_point_id: string | null;
+          pickup_point_name: string | null;
+          pickup_point_address: string | null;
           shipped_at: string | null;
           shipping_email_sent_at: string | null;
         };
@@ -787,6 +792,11 @@ export interface Database {
           tracking_url?: string | null;
           packlink_service_id?: string | null;
           label_url?: string | null;
+          shipping_service_name?: string | null;
+          delivery_type?: string | null;
+          pickup_point_id?: string | null;
+          pickup_point_name?: string | null;
+          pickup_point_address?: string | null;
           shipped_at?: string | null;
           shipping_email_sent_at?: string | null;
         };
@@ -816,6 +826,11 @@ export interface Database {
           tracking_url?: string | null;
           packlink_service_id?: string | null;
           label_url?: string | null;
+          shipping_service_name?: string | null;
+          delivery_type?: string | null;
+          pickup_point_id?: string | null;
+          pickup_point_name?: string | null;
+          pickup_point_address?: string | null;
           shipped_at?: string | null;
           shipping_email_sent_at?: string | null;
         };

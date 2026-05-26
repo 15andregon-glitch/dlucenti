@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { roundMoney } from "@/lib/prices";
 import { isValidLocale, type Locale } from "@/lib/i18n/locale";
-import { quoteShippingForDestination } from "@/lib/shipping/quote-destination";
-import { buildStripeShippingOptionFromQuote } from "@/lib/shipping/stripe-embedded-shipping";
+import { buildCheckoutShippingOffers } from "@/lib/shipping/checkout-shipping-offers";
+import {
+  catalogToStripeMetadata,
+  offersToCatalogEntries,
+} from "@/lib/shipping/shipping-catalog";
+import { buildStripeShippingOptionsFromOffers } from "@/lib/shipping/stripe-embedded-shipping";
 import { getStripe } from "@/lib/stripe/config";
 
 export const runtime = "nodejs";
@@ -64,17 +68,25 @@ export async function POST(request: Request) {
     const currency = (session.currency ?? "eur").toUpperCase();
     const locale = localeFromSession(session);
 
-    const quote = await quoteShippingForDestination({
+    const offers = await buildCheckoutShippingOffers({
       country: shippingDetails.address.country,
       postalCode,
       subtotal,
       currency,
+      locale,
     });
 
-    const shippingOption = buildStripeShippingOptionFromQuote(quote, locale);
+    if (offers.length === 0) {
+      throw new Error("No shipping options available");
+    }
+
+    const shippingOptions = buildStripeShippingOptionsFromOffers(offers);
+    const catalog = offersToCatalogEntries(offers);
+    const catalogMeta = catalogToStripeMetadata(catalog);
 
     const address = shippingDetails.address;
     const countryCode = address.country!.toUpperCase();
+    const hasPickup = offers.some((o) => o.deliveryType === "pickup");
 
     await stripe.checkout.sessions.update(sessionId, {
       collected_information: {
@@ -90,28 +102,29 @@ export async function POST(request: Request) {
           },
         },
       },
-      shipping_options: [shippingOption],
+      shipping_options: shippingOptions,
       metadata: {
         ...session.metadata,
         subtotal: String(subtotal),
-        shipping_cost: String(quote.shippingCost),
-        shipping_country: quote.country,
-        shipping_provider: quote.providerId,
-        ...(quote.packlinkServiceId
-          ? { packlink_service_id: quote.packlinkServiceId }
-          : {}),
-        ...(quote.carrierName ? { courier_name: quote.carrierName } : {}),
+        shipping_country: countryCode,
+        shipping_provider: "packlink",
+        has_pickup_options: hasPickup ? "true" : "false",
+        ...catalogMeta,
       },
     } as Stripe.Checkout.SessionUpdateParams);
 
     console.info("[stripe/checkout/shipping] session updated", {
       sessionId,
-      country: quote.country,
-      shippingCost: quote.shippingCost,
-      provider: quote.providerId,
+      country: countryCode,
+      offerCount: offers.length,
+      hasPickup,
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({
+      ok: true,
+      offerCount: offers.length,
+      hasPickupOptions: hasPickup,
+    });
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unable to update shipping";

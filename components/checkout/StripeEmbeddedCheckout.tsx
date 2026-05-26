@@ -120,6 +120,10 @@ export function StripeEmbeddedCheckout({ locale, items }: StripeEmbeddedCheckout
 
   return (
     <div className="space-y-6">
+      <p className="max-w-md font-sans text-[0.8125rem] leading-[1.65] text-[var(--maison-gray)]">
+        {t("checkout.pickupShippingNote")}
+      </p>
+
       {loading ? (
         <p className="font-sans text-[0.8125rem] text-[var(--maison-gray)]">
           {t("checkout.redirecting")}

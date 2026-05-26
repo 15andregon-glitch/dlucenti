@@ -11,8 +11,9 @@ export { calculateShipping, normalizeShippingCountry } from "@/lib/shipping/calc
 export { extractShippingCountryFromSession } from "@/lib/shipping/session-country";
 export {
   buildPlaceholderStripeShippingOption,
-  buildStripeShippingOptionFromQuote,
+  buildStripeShippingOptionsFromOffers,
 } from "@/lib/shipping/stripe-embedded-shipping";
+export { buildCheckoutShippingOffers } from "@/lib/shipping/checkout-shipping-offers";
 export { quoteShippingForDestination } from "@/lib/shipping/quote-destination";
 export type { DestinationShippingQuote } from "@/lib/shipping/quote-destination";
 export type { ShippingQuote, ShippingQuoteInput } from "@/lib/shipping/types";
