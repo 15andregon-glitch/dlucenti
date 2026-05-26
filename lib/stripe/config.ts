@@ -12,6 +12,20 @@ export function getStripeSecretKey(): string {
   return key;
 }
 
+/** Publishable key for Embedded Checkout (safe to expose to the browser). */
+export function getStripePublishableKey(): string {
+  const key =
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim() ||
+    process.env.STRIPE_PUBLISHABLE_KEY?.trim();
+  if (!key) {
+    throw new Error("Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
+  }
+  if (!key.startsWith("pk_")) {
+    throw new Error("Invalid Stripe publishable key");
+  }
+  return key;
+}
+
 export function getStripeWebhookSecret(): string {
   const secret = process.env.STRIPE_WEBHOOK_SECRET?.trim();
   if (!secret) {

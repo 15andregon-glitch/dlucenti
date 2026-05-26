@@ -1,17 +1,30 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { loadStripe, type StripeEmbeddedCheckout } from "@stripe/stripe-js";
+import { loadStripe, type Stripe, type StripeEmbeddedCheckout } from "@stripe/stripe-js";
 import { useTranslations } from "@/hooks/useTranslations";
 import { cn } from "@/lib/cn";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
-);
 
 interface StripeEmbeddedCheckoutProps {
   locale: string;
   items: { productId: string; quantity: number }[];
+}
+
+async function resolvePublishableKey(): Promise<string> {
+  const fromBuild = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim();
+  if (fromBuild) return fromBuild;
+
+  const response = await fetch("/api/stripe/config");
+  const data = (await response.json()) as {
+    publishableKey?: string;
+    error?: string;
+  };
+
+  if (!response.ok || !data.publishableKey) {
+    throw new Error(data.error ?? "Missing Stripe publishable key");
+  }
+
+  return data.publishableKey;
 }
 
 export function StripeEmbeddedCheckout({ locale, items }: StripeEmbeddedCheckoutProps) {
@@ -44,26 +57,23 @@ export function StripeEmbeddedCheckout({ locale, items }: StripeEmbeddedCheckout
     let cancelled = false;
 
     async function mountCheckout() {
-      const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim();
-      if (!publishableKey) {
-        console.error(
-          "[stripe/embedded] Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
-        );
-        // Redirect checkout didn't need this key, but embedded checkout does.
+      let publishableKey: string;
+      try {
+        publishableKey = await resolvePublishableKey();
+      } catch (keyError) {
+        console.error("[stripe/embedded] publishable key", keyError);
         setError(
           locale === "pt"
-            ? "Chave Stripe pública não configurada (NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)."
-            : "Missing Stripe publishable key (NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY).",
+            ? "Chave Stripe pública não configurada. Verifique NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY no Vercel."
+            : "Stripe publishable key is not configured. Check NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY on Vercel.",
         );
         setLoading(false);
         return;
       }
 
-      const stripe = await stripePromise;
+      const stripe: Stripe | null = await loadStripe(publishableKey);
       if (!stripe || cancelled || !containerRef.current) {
-        console.error("[stripe/embedded] Stripe failed to initialize", {
-          hasPublishableKey: Boolean(publishableKey),
-        });
+        console.error("[stripe/embedded] Stripe failed to initialize");
         setError(t("checkout.errorGeneric"));
         setLoading(false);
         return;
