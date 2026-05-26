@@ -89,6 +89,11 @@ export function OrderFulfillmentPanel({ order }: OrderFulfillmentPanelProps) {
           name="tracking_url"
           defaultValue={order.tracking_url ?? ""}
         />
+        <Field
+          label="Label URL"
+          name="label_url"
+          defaultValue={order.label_url ?? ""}
+        />
         <div>
           <label className="admin-label" htmlFor="shipping_address">
             Shipping address

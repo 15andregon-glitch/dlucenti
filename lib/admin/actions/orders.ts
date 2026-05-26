@@ -55,6 +55,7 @@ export async function updateOrderFulfillmentAction(
       courier: parseOptionalString(formData.get("courier")),
       tracking_number: parseOptionalString(formData.get("tracking_number")),
       tracking_url: parseOptionalString(formData.get("tracking_url")),
+      label_url: parseOptionalString(formData.get("label_url")),
       shipping_address: parseOptionalString(formData.get("shipping_address")),
     });
 
@@ -80,6 +81,7 @@ export async function markOrderShippedAction(
     const courier = parseOptionalString(formData.get("courier"));
     const trackingNumber = parseOptionalString(formData.get("tracking_number"));
     const trackingUrl = parseOptionalString(formData.get("tracking_url"));
+    const labelUrl = parseOptionalString(formData.get("label_url"));
     const shippedAt = new Date().toISOString();
 
     await updateOrderAdmin(orderId, {
@@ -88,6 +90,7 @@ export async function markOrderShippedAction(
       courier,
       tracking_number: trackingNumber,
       tracking_url: trackingUrl,
+      label_url: labelUrl,
       shipped_at: order.shipped_at ?? shippedAt,
     });
 

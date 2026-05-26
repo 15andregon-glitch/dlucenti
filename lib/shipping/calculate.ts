@@ -3,7 +3,7 @@ import { fixedRegionalShippingProvider } from "@/lib/shipping/providers/fixed-re
 import type { ShippingRateProvider } from "@/lib/shipping/providers/types";
 import type { ShippingQuote, ShippingQuoteInput } from "@/lib/shipping/types";
 
-/** Active provider — swap for Packlink / Sendcloud when integrated */
+/** Sync fallback (Portugal only). Live quotes use Packlink via quoteShippingForDestination. */
 const defaultProvider: ShippingRateProvider = fixedRegionalShippingProvider;
 
 export function normalizeShippingCountry(

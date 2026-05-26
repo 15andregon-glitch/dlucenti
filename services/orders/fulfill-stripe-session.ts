@@ -5,7 +5,6 @@ import { formatShippingAddressFromSession } from "@/lib/emails/format-shipping-a
 import type { OrderEmailPayload } from "@/lib/emails/order-email-types";
 import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locale";
 import { roundMoney } from "@/lib/prices";
-import { calculateShipping } from "@/lib/shipping";
 import { extractShippingCountryFromSession } from "@/lib/shipping/session-country";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendOrderEmails } from "@/services/emails/send-order-emails";
@@ -73,30 +72,17 @@ function resolveOrderAmounts(
   const metaShipping = parseMetadataMoney(session.metadata?.shipping_cost);
 
   const shippingCountry = extractShippingCountryFromSession(session);
-  const quote = calculateShipping(shippingCountry, metaSubtotal);
   const amountTotal = roundMoney((session.amount_total ?? 0) / 100);
   const subtotal = metaSubtotal;
-  const paidShipping = roundMoney(amountTotal - subtotal);
+  const paidShipping =
+    metaShipping != null ? metaShipping : roundMoney(amountTotal - subtotal);
   const total = amountTotal;
 
-  if (Math.abs(paidShipping - quote.shippingCost) > 0.02) {
-    console.warn("[stripe/webhook] paid shipping differs from address-country rules", {
+  if (metaShipping != null && Math.abs(metaShipping - paidShipping) > 0.01) {
+    console.warn("[stripe/webhook] metadata shipping_cost mismatch", {
       sessionId: session.id,
-      shippingCountry,
+      metaShipping,
       paidShipping,
-      expectedShipping: quote.shippingCost,
-    });
-  }
-
-  const expectedTotal = roundMoney(subtotal + quote.shippingCost);
-  if (Math.abs(expectedTotal - total) > 0.02) {
-    console.warn("[stripe/webhook] order total mismatch", {
-      sessionId: session.id,
-      expectedTotal,
-      total,
-      subtotal,
-      paidShipping,
-      shippingCountry,
     });
   }
 
@@ -188,6 +174,8 @@ export async function fulfillStripeCheckoutSession(
       : session.payment_intent?.id ?? null;
 
   const orderNumber = generateOrderNumber();
+  const packlinkServiceId = session.metadata?.packlink_service_id?.trim() || null;
+  const courierName = session.metadata?.courier_name?.trim() || null;
 
   const { data: order, error: orderError } = await client
     .from("orders")
@@ -201,6 +189,8 @@ export async function fulfillStripeCheckoutSession(
       total,
       currency,
       shipping_country: shippingCountry,
+      packlink_service_id: packlinkServiceId,
+      courier: courierName,
       stripe_session_id: sessionId,
       stripe_payment_intent: paymentIntent,
       customer_email: customerEmail,

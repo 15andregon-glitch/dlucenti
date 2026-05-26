@@ -129,6 +129,11 @@ export default async function AdminOrderDetailPage({
                 label="Shipping country"
                 value={order.shipping_country ?? "—"}
               />
+              <DetailRow label="Courier" value={order.courier ?? "—"} />
+              <DetailRow
+                label="Packlink service"
+                value={order.packlink_service_id ?? "—"}
+              />
               <DetailRow
                 label="Total"
                 value={formatMoney(Number(order.total), order.currency)}

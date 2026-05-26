@@ -756,6 +756,8 @@ export interface Database {
           tracking_number: string | null;
           courier: string | null;
           tracking_url: string | null;
+          packlink_service_id: string | null;
+          label_url: string | null;
           shipped_at: string | null;
           shipping_email_sent_at: string | null;
         };
@@ -783,6 +785,8 @@ export interface Database {
           tracking_number?: string | null;
           courier?: string | null;
           tracking_url?: string | null;
+          packlink_service_id?: string | null;
+          label_url?: string | null;
           shipped_at?: string | null;
           shipping_email_sent_at?: string | null;
         };
@@ -810,6 +814,8 @@ export interface Database {
           tracking_number?: string | null;
           courier?: string | null;
           tracking_url?: string | null;
+          packlink_service_id?: string | null;
+          label_url?: string | null;
           shipped_at?: string | null;
           shipping_email_sent_at?: string | null;
         };

@@ -9,10 +9,11 @@ import {
 import type { CheckoutCartLineInput } from "@/lib/checkout/types";
 import { eurosToStripeCents } from "@/lib/prices";
 import {
-  buildStripeCheckoutShippingOptions,
   CHECKOUT_SHIPPING_COUNTRIES,
+  buildPlaceholderStripeShippingOption,
 } from "@/lib/shipping";
 import { getSiteUrl, getStripe } from "@/lib/stripe/config";
+import type Stripe from "stripe";
 
 export const runtime = "nodejs";
 
@@ -64,14 +65,13 @@ export async function POST(request: Request) {
       };
     });
 
-    const shippingOptions = buildStripeCheckoutShippingOptions(
-      cart.subtotal,
-      cart.currency,
-      locale,
-    );
+    const placeholderShipping = buildPlaceholderStripeShippingOption(cart.currency);
 
+    // embedded_page + server-only shipping updates (Packlink quotes after address entry).
+    // Redirect/hosted Checkout cannot recalculate shipping once the session is created.
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      ui_mode: "embedded_page",
       locale: locale === "pt" ? "pt" : "en",
       currency: cart.currency.toLowerCase(),
       line_items: lineItems,
@@ -79,32 +79,36 @@ export async function POST(request: Request) {
       shipping_address_collection: {
         allowed_countries: [...CHECKOUT_SHIPPING_COUNTRIES],
       },
-      shipping_options: shippingOptions,
+      permissions: {
+        update: {
+          shipping_details: "server_only",
+        },
+      },
+      shipping_options: [placeholderShipping],
       automatic_tax: { enabled: false },
       payment_method_types: ["card"],
-      success_url: `${siteUrl}${localizedPath(locale, "/checkout/success")}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}${localizedPath(locale, "/checkout/cancel")}`,
+      return_url: `${siteUrl}${localizedPath(locale, "/checkout/success")}?session_id={CHECKOUT_SESSION_ID}`,
       metadata: {
         locale,
         cart: cartMetadata,
         subtotal: String(cart.subtotal),
       },
-    });
+    } as Stripe.Checkout.SessionCreateParams);
 
-    if (!session.url) {
-      console.error("[stripe/checkout] session missing url", session.id);
+    if (!session.client_secret) {
+      console.error("[stripe/checkout] session missing client_secret", session.id);
       return NextResponse.json(
         { error: "Unable to start checkout" },
         { status: 500 },
       );
     }
 
-    console.info("[stripe/checkout] session created", {
+    console.info("[stripe/checkout] embedded session created", {
       sessionId: session.id,
       subtotal: cart.subtotal,
     });
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ clientSecret: session.client_secret });
   } catch (error) {
     if (error instanceof CheckoutValidationError) {
       return NextResponse.json(
