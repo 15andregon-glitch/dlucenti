@@ -76,7 +76,7 @@ export const en = {
     paymentNote: "Secure payment powered by Stripe.",
     placeOrder: "Complete purchase",
     secureNote:
-      "You will be redirected to Stripe’s secure checkout. Billing and shipping details are collected there.",
+      "Complete payment in the secure form below. Billing and shipping details are collected there.",
     redirecting: "Redirecting…",
     errorGeneric: "Unable to start checkout. Please try again.",
     successLabel: "Order confirmed",

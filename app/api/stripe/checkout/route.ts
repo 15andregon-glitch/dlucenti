@@ -13,7 +13,7 @@ import {
   buildPlaceholderStripeShippingOption,
 } from "@/lib/shipping";
 import { getSiteUrl, getStripe } from "@/lib/stripe/config";
-import type Stripe from "stripe";
+import Stripe from "stripe";
 
 export const runtime = "nodejs";
 
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     const placeholderShipping = buildPlaceholderStripeShippingOption(cart.currency);
 
     // embedded_page + server-only shipping updates (Packlink quotes after address entry).
-    // Redirect/hosted Checkout cannot recalculate shipping once the session is created.
+    // permissions.update_shipping_details must be top-level (not permissions.update.*).
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       ui_mode: "embedded_page",
@@ -80,9 +80,7 @@ export async function POST(request: Request) {
         allowed_countries: [...CHECKOUT_SHIPPING_COUNTRIES],
       },
       permissions: {
-        update: {
-          shipping_details: "server_only",
-        },
+        update_shipping_details: "server_only",
       },
       shipping_options: [placeholderShipping],
       automatic_tax: { enabled: false },
@@ -93,7 +91,7 @@ export async function POST(request: Request) {
         cart: cartMetadata,
         subtotal: String(cart.subtotal),
       },
-    } as Stripe.Checkout.SessionCreateParams);
+    });
 
     if (!session.client_secret) {
       console.error("[stripe/checkout] session missing client_secret", session.id);
@@ -117,7 +115,9 @@ export async function POST(request: Request) {
       );
     }
 
-    console.error("[stripe/checkout] unexpected error", error);
+    const stripeMessage =
+      error instanceof Stripe.errors.StripeError ? error.message : null;
+    console.error("[stripe/checkout] unexpected error", stripeMessage ?? error);
     return NextResponse.json(
       { error: "Unable to start checkout" },
       { status: 500 },

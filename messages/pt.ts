@@ -77,7 +77,7 @@ export const pt = {
     paymentNote: "Pagamento seguro com Stripe.",
     placeOrder: "Finalizar compra",
     secureNote:
-      "Será redirecionado para o pagamento seguro Stripe. Morada de faturação e envio recolhidas no checkout.",
+      "Conclua o pagamento no formulário seguro abaixo. Morada de faturação e envio recolhidas aí.",
     redirecting: "A redirecionar…",
     errorGeneric: "Não foi possível iniciar o pagamento. Tente novamente.",
     successLabel: "Encomenda confirmada",
