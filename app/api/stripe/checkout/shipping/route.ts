@@ -80,13 +80,14 @@ export async function POST(request: Request) {
       throw new Error("No shipping options available");
     }
 
-    const shippingOptions = buildStripeShippingOptionsFromOffers(offers);
-    const catalog = offersToCatalogEntries(offers);
+    const limitedOffers = offers.slice(0, 5);
+    const shippingOptions = buildStripeShippingOptionsFromOffers(limitedOffers);
+    const catalog = offersToCatalogEntries(limitedOffers);
     const catalogMeta = catalogToStripeMetadata(catalog);
 
     const address = shippingDetails.address;
     const countryCode = address.country!.toUpperCase();
-    const hasPickup = offers.some((o) => o.deliveryType === "pickup");
+    const hasPickup = limitedOffers.some((o) => o.deliveryType === "pickup");
 
     await stripe.checkout.sessions.update(sessionId, {
       collected_information: {
@@ -116,13 +117,13 @@ export async function POST(request: Request) {
     console.info("[stripe/checkout/shipping] session updated", {
       sessionId,
       country: countryCode,
-      offerCount: offers.length,
+      offerCount: limitedOffers.length,
       hasPickup,
     });
 
     return NextResponse.json({
       ok: true,
-      offerCount: offers.length,
+      offerCount: limitedOffers.length,
       hasPickupOptions: hasPickup,
     });
   } catch (error) {

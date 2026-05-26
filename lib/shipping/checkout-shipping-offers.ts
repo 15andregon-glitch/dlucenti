@@ -23,8 +23,8 @@ import {
 } from "@/lib/shipping/packlink-config";
 import type { Locale } from "@/lib/i18n/locale";
 
-/** Max pickup-point options shown in Stripe (plus one home delivery). */
-const MAX_PICKUP_OPTIONS = 5;
+/** Max pickup-point options shown in Stripe (Stripe allows max 5 total). */
+const MAX_PICKUP_OPTIONS = 4;
 
 export type ShippingDeliveryType = "home" | "pickup";
 
