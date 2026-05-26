@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE } from "@/lib/constants";
 
 /** Bump when replacing favicon assets to bust browser/CDN caches after deploy. */
-export const FAVICON_VERSION = "3";
+export const FAVICON_VERSION = "4";
 
 const iconVersionQuery = `?v=${FAVICON_VERSION}`;
 
