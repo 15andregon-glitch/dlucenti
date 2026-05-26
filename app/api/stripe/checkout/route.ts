@@ -94,9 +94,12 @@ export async function POST(request: Request) {
     });
 
     if (!session.client_secret) {
-      console.error("[stripe/checkout] session missing client_secret", session.id);
+      console.error(
+        "[stripe/checkout] session missing client_secret",
+        session.id,
+      );
       return NextResponse.json(
-        { error: "Unable to start checkout" },
+        { error: "Unable to start checkout: missing client_secret", code: "NO_CLIENT_SECRET" },
         { status: 500 },
       );
     }
@@ -115,20 +118,16 @@ export async function POST(request: Request) {
       );
     }
 
+    const message = error instanceof Error ? error.message : "Unable to start checkout";
+    const code =
+      error instanceof Stripe.errors.StripeError ? error.code ?? "STRIPE" : "CHECKOUT";
+
     if (error instanceof Stripe.errors.StripeError) {
-      // Surface the exact Stripe error message to unblock integration debugging.
-      // (This only happens when checkout session creation fails.)
-      console.error("[stripe/checkout] stripe error", {
-        code: error.code,
-        message: error.message,
-      });
-      return NextResponse.json(
-        { error: error.message, code: error.code ?? "STRIPE" },
-        { status: 500 },
-      );
+      console.error("[stripe/checkout] stripe error", { code, message });
+    } else {
+      console.error("[stripe/checkout] unexpected error", { code, message, error });
     }
 
-    console.error("[stripe/checkout] unexpected error", error);
-    return NextResponse.json({ error: "Unable to start checkout" }, { status: 500 });
+    return NextResponse.json({ error: message, code }, { status: 500 });
   }
 }
