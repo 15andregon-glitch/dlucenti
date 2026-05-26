@@ -90,7 +90,7 @@ async function prepareCrispMark() {
   }
 
   const bounds = findInkBounds(pixels, info.width, info.height);
-  const bold = dilateInk(pixels, info.width, info.height, 2);
+  const bold = dilateInk(pixels, info.width, info.height, 1);
 
   return sharp(bold, {
     raw: {
@@ -104,17 +104,45 @@ async function prepareCrispMark() {
     .toBuffer();
 }
 
-/** Scale mark to fill the entire favicon square (cover = maximum visible size). */
-async function resizeCrisp(mark, size) {
-  return mark
-    .clone()
-    .resize(size, size, {
-      fit: "cover",
-      position: "centre",
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
+/**
+ * Balanced sizing: visible D'L with comfortable padding (not cover, not tiny).
+ * Wide marks are height-led, then capped if they exceed ~86% of canvas width.
+ */
+async function resizeCrisp(markPng, size) {
+  const meta = await sharp(markPng).metadata();
+  const markW = meta.width ?? size;
+  const markH = meta.height ?? size;
+
+  const targetHeight = size * 0.5;
+  let scale = targetHeight / markH;
+  let w = Math.round(markW * scale);
+  let h = Math.round(markH * scale);
+
+  const maxWidth = Math.round(size * 0.86);
+  if (w > maxWidth) {
+    scale = maxWidth / markW;
+    w = maxWidth;
+    h = Math.round(markH * scale);
+  }
+
+  const resized = await sharp(markPng)
+    .resize(w, h, {
       kernel: sharp.kernel.lanczos3,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
-    .sharpen({ sigma: size <= 32 ? 0.6 : 0.35, m1: 1, m2: 0.5 })
+    .png()
+    .toBuffer();
+
+  return sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
+  })
+    .composite([{ input: resized, gravity: "centre" }])
+    .sharpen({ sigma: size <= 32 ? 0.5 : 0.3, m1: 1, m2: 0.5 })
     .png({ compressionLevel: 9, adaptiveFiltering: false })
     .toBuffer();
 }
@@ -126,11 +154,11 @@ async function main() {
   console.log(`Cropped mark: ${meta.width}x${meta.height}`);
 
   const [png16, png32, png48, png180, png512] = await Promise.all([
-    resizeCrisp(mark, 16),
-    resizeCrisp(mark, 32),
-    resizeCrisp(mark, 48),
-    resizeCrisp(mark, 180),
-    resizeCrisp(mark, 512),
+    resizeCrisp(markPng, 16),
+    resizeCrisp(markPng, 32),
+    resizeCrisp(markPng, 48),
+    resizeCrisp(markPng, 180),
+    resizeCrisp(markPng, 512),
   ]);
 
   const ico = await toIco([png16, png32, png48]);
@@ -148,7 +176,7 @@ async function main() {
     fs.writeFile(path.join(appDir, "apple-icon.png"), png180),
   ]);
 
-  console.log("Crisp favicon assets generated (large fill):");
+  console.log("Crisp favicon assets generated (balanced padding):");
   console.log("  favicon.ico (16, 32, 48)");
   console.log("  icon.png (32x32)");
   console.log("  apple-icon.png (180x180)");
