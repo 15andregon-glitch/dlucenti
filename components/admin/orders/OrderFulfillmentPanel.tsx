@@ -16,14 +16,48 @@ interface OrderFulfillmentPanelProps {
 }
 
 type FulfillmentAction = "save" | "processing" | "shipped";
+type DocAction = "label" | "receipt";
 
 export function OrderFulfillmentPanel({ order }: OrderFulfillmentPanelProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [docPending, setDocPending] = useState<DocAction | null>(null);
 
   const emailSent = Boolean(order.shipping_email_sent_at);
+  const labelExists = Boolean(order.packlink_label_url ?? order.label_url);
+  const receiptExists = Boolean(order.receipt_pdf_url);
+
+  const handleGenerateDocument = async (kind: DocAction) => {
+    setMessage(null);
+    setError(null);
+    setDocPending(kind);
+    try {
+      const endpoint =
+        kind === "label"
+          ? `/api/admin/orders/${order.id}/generate-label`
+          : `/api/admin/orders/${order.id}/generate-receipt`;
+      const response = await fetch(endpoint, { method: "POST" });
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || `Failed to generate ${kind}`);
+      }
+      setMessage(
+        kind === "label"
+          ? "Official carrier label generated."
+          : "Packing receipt generated.",
+      );
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Request failed");
+    } finally {
+      setDocPending(null);
+    }
+  };
 
   const submit = (action: FulfillmentAction, form: HTMLFormElement) => {
     setMessage(null);
@@ -92,7 +126,7 @@ export function OrderFulfillmentPanel({ order }: OrderFulfillmentPanelProps) {
         <Field
           label="Label URL"
           name="label_url"
-          defaultValue={order.label_url ?? ""}
+          defaultValue={order.packlink_label_url ?? order.label_url ?? ""}
         />
         <div>
           <label className="admin-label" htmlFor="shipping_address">
@@ -153,6 +187,109 @@ export function OrderFulfillmentPanel({ order }: OrderFulfillmentPanelProps) {
             Shipped at {new Date(order.shipped_at).toLocaleString("en-GB")}
           </p>
         ) : null}
+
+        <div className="space-y-4 border-t border-[var(--maison-hairline)] pt-6">
+          <p className="admin-label">Shipping Label</p>
+          <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
+            {order.shipping_status
+              ? `Status: ${order.shipping_status}`
+              : "Status: Not generated"}
+          </p>
+          <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
+            Carrier: {order.selected_free_shipping_carrier ?? order.courier ?? "—"} • Service:{" "}
+            {order.selected_free_shipping_service ?? order.shipping_service_name ?? "—"}
+          </p>
+          <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
+            Tracking: {order.packlink_tracking_number ?? order.tracking_number ?? "—"}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {!labelExists ? (
+              <AdminButton
+                type="button"
+                variant="solid"
+                disabled={docPending !== null}
+                onClick={() => void handleGenerateDocument("label")}
+              >
+                {docPending === "label" ? "Generating..." : "Generate shipping label"}
+              </AdminButton>
+            ) : (
+              <>
+                <a
+                  className="admin-btn"
+                  href={`/api/admin/orders/${order.id}/documents/label`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View label
+                </a>
+                <a
+                  className="admin-btn"
+                  href={`/api/admin/orders/${order.id}/documents/label?download=1`}
+                >
+                  Download label
+                </a>
+                {(order.packlink_tracking_url ?? order.tracking_url) ? (
+                  <a
+                    className="admin-btn"
+                    href={order.packlink_tracking_url ?? order.tracking_url ?? "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Track shipment
+                  </a>
+                ) : null}
+              </>
+            )}
+          </div>
+          {order.packlink_label_generated_at ? (
+            <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
+              Label generated{" "}
+              {new Date(order.packlink_label_generated_at).toLocaleString("en-GB")}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-4 border-t border-[var(--maison-hairline)] pt-6">
+          <p className="admin-label">Packing Receipt</p>
+          <div className="flex flex-wrap gap-3">
+            <AdminButton
+              type="button"
+              variant={receiptExists ? "default" : "solid"}
+              disabled={docPending !== null}
+              onClick={() => void handleGenerateDocument("receipt")}
+            >
+              {docPending === "receipt"
+                ? "Generating..."
+                : receiptExists
+                  ? "Regenerate receipt"
+                  : "Generate receipt"}
+            </AdminButton>
+            {receiptExists ? (
+              <>
+                <a
+                  className="admin-btn"
+                  href={`/api/admin/orders/${order.id}/documents/receipt`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View receipt
+                </a>
+                <a
+                  className="admin-btn"
+                  href={`/api/admin/orders/${order.id}/documents/receipt?download=1`}
+                >
+                  Download receipt
+                </a>
+              </>
+            ) : null}
+          </div>
+          {order.receipt_generated_at ? (
+            <p className="font-sans text-[0.75rem] text-[var(--maison-mist)]">
+              Receipt generated{" "}
+              {new Date(order.receipt_generated_at).toLocaleString("en-GB")}
+            </p>
+          ) : null}
+        </div>
 
         {message ? (
           <p className="font-sans text-[0.8125rem] text-[var(--maison-charcoal)]" role="status">

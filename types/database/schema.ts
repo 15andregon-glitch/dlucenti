@@ -756,8 +756,14 @@ export interface Database {
           tracking_number: string | null;
           courier: string | null;
           tracking_url: string | null;
+          shipping_status: string | null;
           packlink_service_id: string | null;
           label_url: string | null;
+          packlink_shipment_id: string | null;
+          packlink_tracking_number: string | null;
+          packlink_tracking_url: string | null;
+          packlink_label_url: string | null;
+          packlink_label_generated_at: string | null;
           shipping_service_name: string | null;
           customer_shipping_paid: number;
           real_shipping_cost: number;
@@ -777,6 +783,8 @@ export interface Database {
           pickup_point_address: string | null;
           shipped_at: string | null;
           shipping_email_sent_at: string | null;
+          receipt_pdf_url: string | null;
+          receipt_generated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -802,8 +810,14 @@ export interface Database {
           tracking_number?: string | null;
           courier?: string | null;
           tracking_url?: string | null;
+          shipping_status?: string | null;
           packlink_service_id?: string | null;
           label_url?: string | null;
+          packlink_shipment_id?: string | null;
+          packlink_tracking_number?: string | null;
+          packlink_tracking_url?: string | null;
+          packlink_label_url?: string | null;
+          packlink_label_generated_at?: string | null;
           shipping_service_name?: string | null;
           customer_shipping_paid?: number;
           real_shipping_cost?: number;
@@ -823,6 +837,8 @@ export interface Database {
           pickup_point_address?: string | null;
           shipped_at?: string | null;
           shipping_email_sent_at?: string | null;
+          receipt_pdf_url?: string | null;
+          receipt_generated_at?: string | null;
         };
         Update: {
           id?: string;
@@ -848,8 +864,14 @@ export interface Database {
           tracking_number?: string | null;
           courier?: string | null;
           tracking_url?: string | null;
+          shipping_status?: string | null;
           packlink_service_id?: string | null;
           label_url?: string | null;
+          packlink_shipment_id?: string | null;
+          packlink_tracking_number?: string | null;
+          packlink_tracking_url?: string | null;
+          packlink_label_url?: string | null;
+          packlink_label_generated_at?: string | null;
           shipping_service_name?: string | null;
           customer_shipping_paid?: number;
           real_shipping_cost?: number;
@@ -869,6 +891,8 @@ export interface Database {
           pickup_point_address?: string | null;
           shipped_at?: string | null;
           shipping_email_sent_at?: string | null;
+          receipt_pdf_url?: string | null;
+          receipt_generated_at?: string | null;
         };
         Relationships: [
           {
