@@ -4,6 +4,7 @@ import type Stripe from "stripe";
 import { formatShippingAddressFromSession } from "@/lib/emails/format-shipping-address";
 import type { OrderEmailPayload } from "@/lib/emails/order-email-types";
 import { DEFAULT_LOCALE, isValidLocale, type Locale } from "@/lib/i18n/locale";
+import { calculateTransactionFee } from "@/lib/payments/transaction-fees";
 import { roundMoney } from "@/lib/prices";
 import { resolveOrderShippingFromSession } from "@/lib/shipping/resolve-order-shipping";
 import { extractShippingCountryFromSession } from "@/lib/shipping/session-country";
@@ -210,8 +211,25 @@ export async function fulfillStripeCheckoutSession(
   const pickupPointName = shippingSelection?.pickupPointName ?? null;
   const pickupPointAddress = shippingSelection?.pickupPointAddress ?? null;
   const totalQuantity = metadataLines.reduce((sum, line) => sum + line.quantity, 0);
+  const productCost = roundMoney(
+    metadataLines.reduce(
+      (sum, line) => sum + roundMoney(line.unitCost * line.quantity),
+      0,
+    ),
+  );
+  const packagingCost = 0;
+  const stripeFee = calculateTransactionFee(total);
+  const netAfterStripe = roundMoney(total - stripeFee);
+  const totalOperationalCost = roundMoney(
+    productCost + packagingCost + realShippingCost + stripeFee,
+  );
+  const estimatedProfit = roundMoney(total - totalOperationalCost);
+  const estimatedMargin =
+    total > 0 ? roundMoney((estimatedProfit / total) * 100) : 0;
   const allocatedShippingPerUnit =
     totalQuantity > 0 ? roundMoney(storeShippingSubsidy / totalQuantity) : 0;
+  const allocatedStripeFeePerUnit =
+    totalQuantity > 0 ? roundMoney(stripeFee / totalQuantity) : 0;
 
   const { data: order, error: orderError } = await client
     .from("orders")
@@ -234,6 +252,12 @@ export async function fulfillStripeCheckoutSession(
       free_shipping_applied: freeShippingApplied,
       selected_free_shipping_service: selectedFreeShippingService,
       selected_free_shipping_carrier: selectedFreeShippingCarrier,
+      stripe_fee: stripeFee,
+      net_after_stripe: netAfterStripe,
+      packaging_cost: packagingCost,
+      total_operational_cost: totalOperationalCost,
+      estimated_profit: estimatedProfit,
+      estimated_margin: estimatedMargin,
       delivery_type: deliveryType,
       pickup_point_id: pickupPointId,
       pickup_point_name: pickupPointName,
@@ -258,8 +282,11 @@ export async function fulfillStripeCheckoutSession(
     const allocatedShippingCost = roundMoney(
       allocatedShippingPerUnit * line.quantity,
     );
+    const allocatedStripeFee = roundMoney(
+      allocatedStripeFeePerUnit * line.quantity,
+    );
     const allocatedTotalCost = roundMoney(
-      line.unitCost * line.quantity + allocatedShippingCost,
+      line.unitCost * line.quantity + allocatedShippingCost + allocatedStripeFee,
     );
     const lineRevenue = roundMoney(line.unitPrice * line.quantity);
     const estimatedItemProfit = roundMoney(lineRevenue - allocatedTotalCost);
@@ -274,9 +301,12 @@ export async function fulfillStripeCheckoutSession(
     unit_price: line.unitPrice,
     unit_cost: line.unitCost,
       allocated_shipping_cost: allocatedShippingCost,
+      allocated_stripe_fee: allocatedStripeFee,
       allocated_total_cost: allocatedTotalCost,
       estimated_item_profit: estimatedItemProfit,
       estimated_item_margin: estimatedItemMargin,
+      net_item_profit_after_fees: estimatedItemProfit,
+      net_item_margin_after_fees: estimatedItemMargin,
     };
   });
 

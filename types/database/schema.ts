@@ -765,6 +765,8 @@ export interface Database {
           free_shipping_applied: boolean;
           selected_free_shipping_service: string | null;
           selected_free_shipping_carrier: string | null;
+          stripe_fee: number;
+          net_after_stripe: number;
           packaging_cost: number;
           total_operational_cost: number;
           estimated_profit: number;
@@ -809,6 +811,8 @@ export interface Database {
           free_shipping_applied?: boolean;
           selected_free_shipping_service?: string | null;
           selected_free_shipping_carrier?: string | null;
+          stripe_fee?: number;
+          net_after_stripe?: number;
           packaging_cost?: number;
           total_operational_cost?: number;
           estimated_profit?: number;
@@ -853,6 +857,8 @@ export interface Database {
           free_shipping_applied?: boolean;
           selected_free_shipping_service?: string | null;
           selected_free_shipping_carrier?: string | null;
+          stripe_fee?: number;
+          net_after_stripe?: number;
           packaging_cost?: number;
           total_operational_cost?: number;
           estimated_profit?: number;
@@ -884,9 +890,12 @@ export interface Database {
           unit_price: number;
           unit_cost: number;
           allocated_shipping_cost: number;
+          allocated_stripe_fee: number;
           allocated_total_cost: number;
           estimated_item_profit: number;
           estimated_item_margin: number;
+          net_item_profit_after_fees: number;
+          net_item_margin_after_fees: number;
         };
         Insert: {
           id?: string;
@@ -897,9 +906,12 @@ export interface Database {
           unit_price: number;
           unit_cost?: number;
           allocated_shipping_cost?: number;
+          allocated_stripe_fee?: number;
           allocated_total_cost?: number;
           estimated_item_profit?: number;
           estimated_item_margin?: number;
+          net_item_profit_after_fees?: number;
+          net_item_margin_after_fees?: number;
         };
         Update: {
           id?: string;
@@ -910,9 +922,12 @@ export interface Database {
           unit_price?: number;
           unit_cost?: number;
           allocated_shipping_cost?: number;
+          allocated_stripe_fee?: number;
           allocated_total_cost?: number;
           estimated_item_profit?: number;
           estimated_item_margin?: number;
+          net_item_profit_after_fees?: number;
+          net_item_margin_after_fees?: number;
         };
         Relationships: [
           {

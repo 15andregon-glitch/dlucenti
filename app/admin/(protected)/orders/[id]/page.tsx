@@ -30,6 +30,14 @@ export default async function AdminOrderDetailPage({
   if (!order) notFound();
 
   const items = order.order_items ?? [];
+  const productCost = items.reduce(
+    (sum, item) => sum + Number(item.unit_cost) * item.quantity,
+    0,
+  );
+  const netMarginAfterStripe =
+    Number(order.net_after_stripe ?? 0) > 0
+      ? (Number(order.estimated_profit ?? 0) / Number(order.net_after_stripe ?? 0)) * 100
+      : 0;
 
   return (
     <AdminShell
@@ -74,9 +82,10 @@ export default async function AdminOrderDetailPage({
                     <th>Unit</th>
                     <th>Unit cost</th>
                     <th>Allocated shipping</th>
+                    <th>Allocated Stripe fee</th>
                     <th>Allocated total cost</th>
-                    <th>Item profit</th>
-                    <th>Margin</th>
+                    <th>Profit after fees</th>
+                    <th>Margin after fees</th>
                     <th>Line</th>
                   </tr>
                 </thead>
@@ -95,13 +104,22 @@ export default async function AdminOrderDetailPage({
                         {formatMoney(Number(item.allocated_shipping_cost ?? 0), order.currency)}
                       </td>
                       <td className="tabular-nums whitespace-nowrap text-[var(--maison-mist)]">
+                        {formatMoney(Number(item.allocated_stripe_fee ?? 0), order.currency)}
+                      </td>
+                      <td className="tabular-nums whitespace-nowrap text-[var(--maison-mist)]">
                         {formatMoney(Number(item.allocated_total_cost ?? 0), order.currency)}
                       </td>
                       <td className="tabular-nums whitespace-nowrap">
-                        {formatMoney(Number(item.estimated_item_profit ?? 0), order.currency)}
+                        {formatMoney(
+                          Number(item.net_item_profit_after_fees ?? item.estimated_item_profit ?? 0),
+                          order.currency,
+                        )}
                       </td>
                       <td className="tabular-nums whitespace-nowrap">
-                        {Number(item.estimated_item_margin ?? 0).toFixed(2)}%
+                        {Number(
+                          item.net_item_margin_after_fees ?? item.estimated_item_margin ?? 0,
+                        ).toFixed(2)}
+                        %
                       </td>
                       <td className="tabular-nums whitespace-nowrap">
                         {formatMoney(
@@ -165,6 +183,14 @@ export default async function AdminOrderDetailPage({
               <DetailRow
                 label="Store shipping subsidy"
                 value={formatMoney(Number(order.store_shipping_subsidy ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Stripe fee"
+                value={formatMoney(Number(order.stripe_fee ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Net after Stripe"
+                value={formatMoney(Number(order.net_after_stripe ?? 0), order.currency)}
               />
               <DetailRow
                 label="Free shipping applied"
@@ -234,10 +260,7 @@ export default async function AdminOrderDetailPage({
               />
               <DetailRow
                 label="Product cost"
-                value={formatMoney(
-                  items.reduce((sum, item) => sum + Number(item.unit_cost) * item.quantity, 0),
-                  order.currency,
-                )}
+                value={formatMoney(productCost, order.currency)}
               />
               <DetailRow
                 label="Packaging cost"
@@ -252,6 +275,14 @@ export default async function AdminOrderDetailPage({
                 value={formatMoney(Number(order.store_shipping_subsidy ?? 0), order.currency)}
               />
               <DetailRow
+                label="Stripe fee"
+                value={formatMoney(Number(order.stripe_fee ?? 0), order.currency)}
+              />
+              <DetailRow
+                label="Net after Stripe"
+                value={formatMoney(Number(order.net_after_stripe ?? 0), order.currency)}
+              />
+              <DetailRow
                 label="Estimated operational cost"
                 value={formatMoney(Number(order.total_operational_cost ?? 0), order.currency)}
               />
@@ -262,6 +293,10 @@ export default async function AdminOrderDetailPage({
               <DetailRow
                 label="Estimated margin"
                 value={`${Number(order.estimated_margin ?? 0).toFixed(2)}%`}
+              />
+              <DetailRow
+                label="Net margin after Stripe"
+                value={`${netMarginAfterStripe.toFixed(2)}%`}
               />
             </dl>
           </AdminPanel>
