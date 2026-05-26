@@ -50,7 +50,11 @@ export function StripeEmbeddedCheckout({ locale, items }: StripeEmbeddedCheckout
           "[stripe/embedded] Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
         );
         // Redirect checkout didn't need this key, but embedded checkout does.
-        setError(t("checkout.errorGeneric"));
+        setError(
+          locale === "pt"
+            ? "Chave Stripe pública não configurada (NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)."
+            : "Missing Stripe publishable key (NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY).",
+        );
         setLoading(false);
         return;
       }
