@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "diagnose:products": "node scripts/diagnose-storefront-products.mjs"
+    "diagnose:products": "node scripts/diagnose-storefront-products.mjs",
+    "generate:favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.4.0",
@@ -29,6 +30,8 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "sharp": "^0.34.5",
+    "to-ico": "^1.1.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteIcons } from "@/lib/metadata";
 import "@/styles/admin.css";
 
 export const metadata: Metadata = {
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
     template: "%s · CMS · Maison Aurélie",
   },
   robots: { index: false, follow: false },
+  icons: siteIcons,
 };
 
 /** Root admin layout — auth split between /admin/login and (protected) */
