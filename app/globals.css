@@ -323,6 +323,15 @@ button {
   --navbar-icon-hover: #fdfcf9;
 }
 
+@media (max-width: 767.98px) {
+  .site-header[data-over-hero] {
+    background-color: rgba(22, 20, 18, 0.12);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-bottom-color: rgba(236, 231, 225, 0.2);
+  }
+}
+
 .navbar-nav-link,
 .navbar-brand-link {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
@@ -428,29 +437,21 @@ button {
     min-height: 22.5rem;
   }
 
-  .storefront-footer {
-    padding-block: 3.5rem;
-  }
-
   .storefront-footer__grid {
-    gap: 2rem;
+    gap: 1.75rem;
   }
 
   .storefront-footer__label {
-    margin-bottom: 0.75rem;
-  }
-
-  .storefront-footer__brand-slogan {
-    margin-top: 1.25rem;
+    margin-bottom: 0.625rem;
   }
 
   .storefront-footer__brand-lang {
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
   }
 
   .storefront-footer__legal {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
+    margin-top: 2.125rem;
+    padding-top: 1.25rem;
   }
 
   .mobile-menu-drawer {

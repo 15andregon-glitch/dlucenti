@@ -39,27 +39,24 @@ export async function Footer({ locale }: FooterProps) {
 
   return (
     <footer className="storefront-footer border-t border-[var(--maison-hairline)] bg-[var(--maison-beige)]">
-      <PageContainer className="py-14 md:py-24">
-        <div className="storefront-footer__grid grid gap-10 md:grid-cols-12 md:gap-10">
+      <PageContainer className="py-12 md:py-24">
+        <div className="storefront-footer__grid grid gap-8 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-4">
             <BrandLogo
               href={routes.home}
               variant="footer"
               className="text-[var(--maison-charcoal)]"
             />
-            <p className="storefront-footer__brand-slogan mt-5 max-w-xs text-maison-body-sm md:mt-6">
-              {footer.slogan}
-            </p>
-            <p className="mt-3 text-maison-body-sm text-[var(--maison-charcoal)]">
+            <p className="mt-6 text-maison-body-sm text-[var(--maison-charcoal)] md:mt-6">
               {footer.location}
             </p>
-            <div className="storefront-footer__brand-lang mt-6 md:mt-8">
+            <div className="storefront-footer__brand-lang mt-5 md:mt-8">
               <LanguageSwitcher locale={locale} />
             </div>
           </div>
 
           <div className="md:col-span-2">
-            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+            <p className="storefront-footer__label mb-3 text-maison-label md:mb-5">
               {footer.exploreTitle}
             </p>
             <ul className="space-y-2.5">
@@ -74,7 +71,7 @@ export async function Footer({ locale }: FooterProps) {
           </div>
 
           <div className="md:col-span-2">
-            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+            <p className="storefront-footer__label mb-3 text-maison-label md:mb-5">
               {t("footer.service")}
             </p>
             <ul className="space-y-2.5">
@@ -89,7 +86,7 @@ export async function Footer({ locale }: FooterProps) {
           </div>
 
           <div className="md:col-span-2">
-            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+            <p className="storefront-footer__label mb-3 text-maison-label md:mb-5">
               {footer.contactsTitle}
             </p>
             <a href={`mailto:${footer.contactEmail}`} className="text-maison-link">
@@ -98,7 +95,7 @@ export async function Footer({ locale }: FooterProps) {
           </div>
 
           <div className="md:col-span-2">
-            <p className="storefront-footer__label mb-4 text-maison-label md:mb-5">
+            <p className="storefront-footer__label mb-3 text-maison-label md:mb-5">
               {footer.socialsTitle}
             </p>
             <ul className="space-y-2.5">
@@ -118,7 +115,7 @@ export async function Footer({ locale }: FooterProps) {
           </div>
         </div>
 
-        <div className="storefront-footer__legal mt-12 flex flex-col gap-3 border-t border-[var(--maison-hairline)] pt-6 md:mt-16 md:pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="storefront-footer__legal mt-10 flex flex-col gap-2.5 border-t border-[var(--maison-hairline)] pt-5 md:mt-16 md:pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-maison-label">
             © {new Date().getFullYear()} {messages.meta.siteName}
           </p>
